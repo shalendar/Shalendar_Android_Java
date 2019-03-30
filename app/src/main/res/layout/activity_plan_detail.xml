@@ -6,21 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".PlanDetailActivity">
 
 
     <TextView
-        android:id="@+id/login_title_textView"
+        android:id="@+id/planDetail_title_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="loginActivit(로그인 화면)"
+        android:text="planDetailActivity(일정 상세보기)"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
     <Button
-        android:id="@+id/login_toMain_button"
+        android:id="@+id/planDetail_toUpdate_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="goto MainActivity" />
+        android:text="goTo UpdatePlanActivity"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-
-
+    <Button
+        android:id="@+id/planDetail_toDelete_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="goTo DeletePlanActivity"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 </LinearLayout>

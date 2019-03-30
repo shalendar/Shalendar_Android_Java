@@ -6,21 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
-
+    tools:context=".UpdatePlanActivity">
 
     <TextView
-        android:id="@+id/login_title_textView"
+        android:id="@+id/updatePlan_title_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="loginActivit(로그인 화면)"
+        android:text="UpdatePlanActivity(일정 수정 화면)"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
     <Button
-        android:id="@+id/login_toMain_button"
+        android:id="@+id/updatePlan_toMain_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="goto MainActivity" />
-
-
-
+        android:text="goTo MainActivity"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 </LinearLayout>

@@ -1,5 +1,6 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,14 +13,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private TextView textViewTitle;
+    private Button buttonToBoard;
+    private Button buttonToRegisterPlan;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textViewTitle = (TextView)findViewById(R.id.main_title_textView);
+        buttonToBoard = (Button)findViewById(R.id.main_toBoard_button);
+        buttonToRegisterPlan = (Button)findViewById(R.id.main_ToRegister_button);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -40,6 +53,34 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+        /*
+          MainActivity에서 BoardActivity로 넘어간다.
+        */
+        buttonToBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+                startActivityForResult(intent, CodeNumber.TO_BOARD_ACTIVITY);
+            }
+        });
+
+        /*
+          MainActivity에서 RegisterPlanActivity로 넘어간다.
+        */
+        buttonToRegisterPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getApplicationContext(), RegisterPlanActivity.class);
+                startActivityForResult(intent, CodeNumber.TO_REGISTERPLAN_ACTIVITY);
+
+            }
+        });
+
     }
 
     @Override
