@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //플로팅액션버튼
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,12 +46,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        //드로워
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        //내비게이션뷰
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -108,9 +111,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -121,13 +122,21 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.toNotice_item) {
+            Intent intent = new Intent(getApplicationContext(), NoticeActivity.class);
+            startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
 
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.toInviteMember_item) {
+            Intent intent = new Intent(getApplicationContext(), InviteActivity.class);
+            startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.toMakeCalendar_item) {
+            Intent intent = new Intent(getApplicationContext(), CreateCalendarActivity.class);
+            startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
+
+        } else if (id == R.id.toSetting_item) {
+            Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+            startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
 
         } else if (id == R.id.nav_share) {
 

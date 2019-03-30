@@ -11,5 +11,10 @@ public class CodeNumber {
     public static int TO_PLANDETAIL_ACTIVITY = 1010;
     public static int TO_UPDATEPLAN_ACTIVITY = 1011;
     public static int TO_DELETEPLAN_ACTIVITY = 1012;
+    public static int TO_NOTICE_ACTIVITY = 1003;
+    public static int TO_SETTING_ACTIVITY = 1004;
+    public static int TO_INVITE_ACTIVITY = 1005;
+    public static int TO_CREATE_CALENDAR_ACTIVITY = 1006;
+    public static int TO_INVITEBYEMAIL_ACTIVITY = 1014;
 
 }
