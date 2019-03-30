@@ -5,21 +5,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/toNotice_item"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:title="공지사항" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/toSetting_item"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="설정" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/toMakeCalendar_item"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:title="달력생성" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/toInviteMember_item"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="사용자초대" />
     </group>
 
     <item android:title="Communicate">
