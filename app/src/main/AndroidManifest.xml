@@ -20,11 +20,17 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".BoardActivity" />
+        <activity android:name=".RegisterPlanActivity" />
+        <activity android:name=".RecommandTimeActivity" />
+        <activity android:name=".PlanDetailActivity" />
+        <activity android:name=".UpdatePlanActivity" />
+        <activity android:name=".DeletePlanActivity"></activity>
         <activity android:name=".NoticeActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".InviteActivity" />
         <activity android:name=".CreateCalendarActivity" />
         <activity android:name=".InviteByEmailActivity"></activity>
-    </application>
+</application>
 
 </manifest>

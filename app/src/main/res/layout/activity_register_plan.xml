@@ -6,21 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".RegisterPlanActivity">
 
 
     <TextView
-        android:id="@+id/login_title_textView"
+        android:id="@+id/registerPlan_title_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="loginActivit(로그인 화면)"
+        android:text="RegisterPlanActivity(일정 작성 화면)"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
     <Button
-        android:id="@+id/login_toMain_button"
+        android:id="@+id/registerPlan_toRecommand_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="goto MainActivity" />
+        android:text="goTo RecommandTimeActivity"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
-
-
+    <Button
+        android:id="@+id/registerPlan_completeRegister_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="일정 작성 완료"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 </LinearLayout>

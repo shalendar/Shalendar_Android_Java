@@ -6,21 +6,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
-
+    tools:context=".RecommandTimeActivity">
 
     <TextView
-        android:id="@+id/login_title_textView"
+        android:id="@+id/recommandTime_title_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="loginActivit(로그인 화면)"
+        android:text="RecommandTimeActivity(추천시간 받는 뷰)"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
     <Button
-        android:id="@+id/login_toMain_button"
+        android:id="@+id/recommandTime_getTime_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="goto MainActivity" />
-
-
-
+        android:text="추천시간 받기"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 </LinearLayout>

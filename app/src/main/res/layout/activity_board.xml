@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,21 +7,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".LoginActivity">
+    tools:context=".BoardActivity">
 
 
     <TextView
-        android:id="@+id/login_title_textView"
+        android:id="@+id/registerPlan_title_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="loginActivit(로그인 화면)"
+        android:text="BoardActivity(등록된 일정의 게시판 뷰)"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
     <Button
-        android:id="@+id/login_toMain_button"
+        android:id="@+id/board_toPlanDetail_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="goto MainActivity" />
-
-
-
+        android:text="goTo planDetailActivity"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 </LinearLayout>
