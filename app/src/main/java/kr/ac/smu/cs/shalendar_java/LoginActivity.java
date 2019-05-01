@@ -23,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         buttonToMain = findViewById(R.id.login_toMain_button);
 
         buttonToMember1 = findViewById(R.id.login_signin_button);

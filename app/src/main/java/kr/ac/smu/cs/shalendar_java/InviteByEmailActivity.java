@@ -1,7 +1,7 @@
 package kr.ac.smu.cs.shalendar_java;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+        import android.support.v7.app.AppCompatActivity;
+        import android.os.Bundle;
 
 /*
     초대장보낼 이메일 입력하는 액티비티
