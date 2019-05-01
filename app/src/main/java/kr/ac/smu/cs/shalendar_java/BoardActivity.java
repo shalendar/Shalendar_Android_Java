@@ -76,7 +76,7 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         boardListview.addHeaderView(header);
 
         final BoardPlanAdapter planAdapter = new BoardPlanAdapter();
-        planAdapter.addItem(new BoardPlanItem("5월 1일 12시 - 5월 2일 14시","치킨먹기","소대공학관","3"));
+        planAdapter.addItem(new BoardPlanItem("5월 1일 12시 - 5월 1일 14시","치킨먹기","소대공학관","3"));
         planAdapter.addItem(new BoardPlanItem("5월 2일 14시 - 5월 2일 17시","짜장면먹기","소대공학관","33"));
         planAdapter.addItem(new BoardPlanItem("5월 2일 18시 - 5월 2일 21시","봉구스먹기","소대공학관","23"));
         planAdapter.addItem(new BoardPlanItem("5월 3일 3시 - 5월 3일 10시","학식먹기","소대공학관","43"));
@@ -123,6 +123,7 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
 
             BoardPlanItemView view = null;
             if(convertView == null) {
+
                 view = new BoardPlanItemView(getApplicationContext());
             }
             else{
