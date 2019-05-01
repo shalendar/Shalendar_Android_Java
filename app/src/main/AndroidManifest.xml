@@ -32,7 +32,9 @@
         <activity
             android:name=".BoardActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".RegisterPlanActivity" />
+        <activity
+            android:name=".RegisterPlanActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".RecommandTimeActivity" />
         <activity android:name=".PlanDetailActivity" />
         <activity android:name=".UpdatePlanActivity" />

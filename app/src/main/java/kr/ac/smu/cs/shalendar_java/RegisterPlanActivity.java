@@ -187,7 +187,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         intFirstmon = month;
                         intFirstday = dayOfMonth;
                         strfirstDate = dateFormatByUserCase(1, year, month, dayOfMonth);
-
                     }
                 }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
                 //dialog.getDatePicker().setMaxDate(new Date().getTime());//입력한 날짜 이후로 클릭 안되게 옵션
@@ -302,7 +301,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 setSelectFirstOrSelectLast(flag, txtmsg);
             }
         }
-
         return format;
     }
 }
