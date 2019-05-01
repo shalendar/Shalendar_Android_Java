@@ -9,7 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".CreateMember3"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".CreateMember2"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateMember1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,12 +37,12 @@
         <activity android:name=".RecommandTimeActivity" />
         <activity android:name=".PlanDetailActivity" />
         <activity android:name=".UpdatePlanActivity" />
-        <activity android:name=".DeletePlanActivity"></activity>
+        <activity android:name=".DeletePlanActivity" />
         <activity android:name=".NoticeActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".InviteActivity" />
         <activity android:name=".CreateCalendarActivity" />
-        <activity android:name=".InviteByEmailActivity"></activity>
-</application>
+        <activity android:name=".InviteByEmailActivity" />
+    </application>
 
 </manifest>
