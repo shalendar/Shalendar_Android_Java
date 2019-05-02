@@ -22,7 +22,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -33,7 +32,9 @@
         <activity
             android:name=".BoardActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".RegisterPlanActivity" />
+        <activity
+            android:name=".RegisterPlanActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".RecommandTimeActivity" />
         <activity android:name=".PlanDetailActivity" />
         <activity android:name=".UpdatePlanActivity" />
