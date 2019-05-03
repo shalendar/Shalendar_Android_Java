@@ -58,7 +58,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
         buttonToRecommandTime = findViewById(R.id.register_getTime_Button);
         buttonCompleteRegister = findViewById(R.id.register_registerPlan_Button);
 
-
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("FFF");
 
