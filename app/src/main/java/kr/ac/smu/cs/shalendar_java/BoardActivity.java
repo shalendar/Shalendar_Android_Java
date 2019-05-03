@@ -39,6 +39,7 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
 
+        //앱바(툴바)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -53,9 +54,11 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //buttonToPlanDtail = (Button)findViewById(R.id.board_toPlanDetail_button);
 
         /*
+        buttonToPlanDtail = (Button)findViewById(R.id.board_toPlanDetail_button);
+
+
           버튼 누르면 'PlanDetailActivity로 넘어간다.
 
         buttonToPlanDtail.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +72,6 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         */
 
         //리스트뷰
-
         ListView boardListview =(ListView) findViewById(R.id.boardListView);
         //헤더 삽입
         View header = getLayoutInflater().inflate(R.layout.activity_boardheader, null, false);
@@ -87,57 +89,12 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         boardListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BoardPlanItem item = (BoardPlanItem) planAdapter.getItem(position);
-                Toast.makeText(getApplicationContext(), "선택된것 : "+item.getPlanname(), Toast.LENGTH_LONG).show();
+                BoardPlanItem item = (BoardPlanItem) planAdapter.getItem(position-1);
+                Toast.makeText(getApplicationContext(), "선택된것 : "+item.getPlanname(), Toast.LENGTH_SHORT).show();
             }
         });
 
 
-    }
-
-    class BoardPlanAdapter extends BaseAdapter{
-
-        ArrayList<BoardPlanItem> items = new ArrayList<BoardPlanItem>();
-
-        public void addItem(BoardPlanItem item){
-            items.add(item);
-        }
-
-        @Override
-        public int getCount() {
-            return items.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return items.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            BoardPlanItemView view = null;
-            if(convertView == null) {
-
-                view = new BoardPlanItemView(getApplicationContext());
-            }
-            else{
-                view = (BoardPlanItemView) convertView;
-            }
-
-            BoardPlanItem item = items.get(position);
-            view.setDateandtimetext(item.dateandtime);
-            view.setLocationtext(item.location);
-            view.setPlannametext(item.planname);
-            view.setReplynumtext(item.replynum);
-
-            return view;
-        }
     }
 
     @Override
