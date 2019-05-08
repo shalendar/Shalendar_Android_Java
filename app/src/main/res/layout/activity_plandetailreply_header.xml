@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/planDetail_title_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#444444"
+        android:text="졸업 프로젝트 교수님 미팅"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:src="@drawable/ic_launcher_background"
+            android:id="@+id/plandetail_header_profile_pic"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#444444"
+            android:text="장원영"
+            android:id="@+id/plandetail_header_profile_name"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#9b9b9b"
+            android:text="장소 | "/>
+
+        <TextView
+            android:id="@+id/plandetail_header_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#a4a4a4"
+            android:text="공학관"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#444444"
+        android:text="해당 일정에 대한 자세한 설명입니다."
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#265570"
+        android:text="일정"
+        />
+
+    <TextView
+        android:layout_width="340dp"
+        android:layout_height="40dp"
+        android:textSize="14sp"
+        android:textColor="#4a4a4a"
+        android:background="#f8f8f8"
+        android:text="4월 5일 금요일 오전 10:00 ~ 4월 6일 토요일 오전 10:00"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:textColor="#f6f6f6"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#4a4a4a"
+        tools:text="댓글"
+        />
+
+</LinearLayout>

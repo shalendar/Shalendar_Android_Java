@@ -36,7 +36,8 @@
             android:name=".RegisterPlanActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".RecommandTimeActivity" />
-        <activity android:name=".PlanDetailActivity" />
+        <activity android:name=".PlanDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".UpdatePlanActivity" />
         <activity android:name=".DeletePlanActivity" />
         <activity android:name=".NoticeActivity" />

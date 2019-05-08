@@ -19,6 +19,7 @@ public class CreateMember1 extends AppCompatActivity {
         buttonToMember2 = findViewById(R.id.create_member2_button);
 
         buttonToMember2.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(getApplicationContext(), CreateMember2.class);

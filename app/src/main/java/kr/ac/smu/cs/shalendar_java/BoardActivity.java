@@ -7,6 +7,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -39,6 +42,7 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
 
+        //앱바(툴바)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -53,9 +57,11 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //buttonToPlanDtail = (Button)findViewById(R.id.board_toPlanDetail_button);
 
         /*
+        buttonToPlanDtail = (Button)findViewById(R.id.board_toPlanDetail_button);
+
+
           버튼 누르면 'PlanDetailActivity로 넘어간다.
 
         buttonToPlanDtail.setOnClickListener(new View.OnClickListener() {
@@ -66,10 +72,26 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
                 startActivityForResult(intent, CodeNumber.TO_PLANDETAIL_ACTIVITY);
             }
         });
+
+
+
+        //리사이클링뷰(팀원멤버)
+        ArrayList<String> teamlist = new ArrayList<>();
+        for(int i=0; i<5; i++){
+            teamlist.add(String.format("박성준ddddddddd", i));
+        }
+
+        //리사이클링뷰가 보더레이아웃이 아니라 컨텐츠보더에 있으니까 인플레이터 이용해서 부른다
+        View inflatedView = getLayoutInflater().inflate(R.layout.content_board, null);
+        RecyclerView memberrecyclerview = inflatedView.findViewById(R.id.teammemberRecyclerview);
+        //레이아웃 매니져가 null값을 받는다 이유는?
+        TeammemberAdapter recycleadapter = new TeammemberAdapter(teamlist);
+        memberrecyclerview.setAdapter(recycleadapter);
+        memberrecyclerview.setLayoutManager(new LinearLayoutManager(inflatedView.getContext() ,LinearLayout.HORIZONTAL, true));
         */
 
-        //리스트뷰
 
+        //리스트뷰
         ListView boardListview =(ListView) findViewById(R.id.boardListView);
         //헤더 삽입
         View header = getLayoutInflater().inflate(R.layout.activity_boardheader, null, false);
@@ -79,65 +101,19 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         planAdapter.addItem(new BoardPlanItem("5월 1일 12시 - 5월 1일 14시","치킨먹기","소대공학관","3"));
         planAdapter.addItem(new BoardPlanItem("5월 2일 14시 - 5월 2일 17시","짜장면먹기","소대공학관","33"));
         planAdapter.addItem(new BoardPlanItem("5월 2일 18시 - 5월 2일 21시","봉구스먹기","소대공학관","23"));
-        planAdapter.addItem(new BoardPlanItem("5월 3일 3시 - 5월 3일 10시","학식먹기","소대공학관","43"));
-        planAdapter.addItem(new BoardPlanItem("5월 4일 6시 - 5월 4일 11시","치킨먹기","소대공학관","23"));
 
         boardListview.setAdapter(planAdapter);
 
         boardListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BoardPlanItem item = (BoardPlanItem) planAdapter.getItem(position);
-                Toast.makeText(getApplicationContext(), "선택된것 : "+item.getPlanname(), Toast.LENGTH_LONG).show();
+                BoardPlanItem item = (BoardPlanItem) planAdapter.getItem(position-1);
+                Toast.makeText(getApplicationContext(), "선택된것 : "+item.getPlanname(), Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getApplicationContext(), PlanDetailActivity.class);
+                startActivityForResult(intent, CodeNumber.TO_PLANDETAIL_ACTIVITY);
             }
         });
-
-
-    }
-
-    class BoardPlanAdapter extends BaseAdapter{
-
-        ArrayList<BoardPlanItem> items = new ArrayList<BoardPlanItem>();
-
-        public void addItem(BoardPlanItem item){
-            items.add(item);
-        }
-
-        @Override
-        public int getCount() {
-            return items.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return items.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-
-            BoardPlanItemView view = null;
-            if(convertView == null) {
-
-                view = new BoardPlanItemView(getApplicationContext());
-            }
-            else{
-                view = (BoardPlanItemView) convertView;
-            }
-
-            BoardPlanItem item = items.get(position);
-            view.setDateandtimetext(item.dateandtime);
-            view.setLocationtext(item.location);
-            view.setPlannametext(item.planname);
-            view.setReplynumtext(item.replynum);
-
-            return view;
-        }
     }
 
     @Override
