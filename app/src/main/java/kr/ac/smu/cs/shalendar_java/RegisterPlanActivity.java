@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -63,7 +64,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
         SimpleDateFormat format = new SimpleDateFormat("FFF");
 
 
-
         //날짜 선택
         initDate();
 
@@ -100,17 +100,31 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 TimePickerDialog dialog = new TimePickerDialog(RegisterPlanActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
                         startHour = hourOfDay;
                         startMinute = minute;
-                        startTime.setText(timeFormat(hourOfDay, minute));
+
+                        Log.d("시작시간", Integer.toString(hourOfDay));
+                        Log.d("시작 분", Integer.toString(minute));
+                        /*
+                          시간 형식 08:12 오후
+                         */
+                        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+                        try {
+                            Date date1 = format.parse("" + hourOfDay + ":" + minute);
+                            startTime.setText(new SimpleDateFormat("hh:mm a").format(date1.getTime()));
+                        }catch(Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true);
+                }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false);
                 dialog.show();
             }
         });
 
 
         endTime.setOnClickListener(new View.OnClickListener() {
+            final Calendar cal = Calendar.getInstance();
             @Override
             public void onClick(View v) {
                 TimePickerDialog dialog = new TimePickerDialog(RegisterPlanActivity.this, new TimePickerDialog.OnTimeSetListener() {
@@ -118,60 +132,22 @@ public class RegisterPlanActivity extends AppCompatActivity {
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                         endHour = hourOfDay;
                         endMinute = minute;
-                        endTime.setText(timeFormat(hourOfDay, minute));
+
+                        Log.d("끝 시간", Integer.toString(hourOfDay));
+                        Log.d("끝 분", Integer.toString(minute));
+
+                        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+                        try {
+                            Date date2 = format.parse("" + hourOfDay + ":" + minute);
+                            endTime.setText(new SimpleDateFormat("hh:mm a").format(date2.getTime()));
+                        }catch(Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true);
+                }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false);
                 dialog.show();
             }
         });
-    }
-
-
-    /*
-     시간 출력 형식 : 오후(오전)05:30
-     으로 나타내주는 메소드
-     */
-    private String timeFormat(int hour, int minute) {
-        String timeFormat;
-        if(hour < 12) {
-            if(hour < 10) {
-                if(minute < 10) {
-                    timeFormat = String.format("오전 0%d:0%d", startHour, startMinute);
-                }
-                else {
-                    timeFormat = String.format("오전 0%d:%d", startHour, startMinute);
-                }
-            }
-            else {
-                if(minute < 10) {
-                    timeFormat = String.format("오전 %d:%0d", startHour, startMinute);
-                }
-                else {
-                    timeFormat = String.format("오전 %d:%d", startHour, startMinute);
-                }
-            }
-        }
-
-        else {
-            if(hour< 10) {
-                if(minute < 10) {
-                    timeFormat = String.format("오후 0%d:0%d", startHour-12, startMinute);
-                }
-                else {
-                    timeFormat = String.format("오후 0%d:%d", startHour-12, startMinute);
-                }
-            }
-
-            else {
-                if(minute < 10) {
-                    timeFormat = String.format("오후 %d:0%d", startHour-12, startMinute);
-                }
-                else {
-                    timeFormat = String.format("오후 %d:%d", startHour-12, startMinute);
-                }
-            }
-        }
-        return timeFormat;
     }
 
     private void initDate() {
@@ -214,9 +190,9 @@ public class RegisterPlanActivity extends AppCompatActivity {
     }
 
 
-    private void checkDate(int firstMon, int lastMon, int firstDay, int lastDay, int lastYear){
+    private void checkDate(int firstMon, int lastMon, int firstDay, int lastDay, int lastYear) {
 
-        if(firstMon<lastMon) {
+        if (firstMon < lastMon) {
             strlastDate = dateFormatByUserCase(2, lastYear, lastMon, lastDay);
 
         } else if (firstMon > lastMon) {
@@ -238,10 +214,9 @@ public class RegisterPlanActivity extends AppCompatActivity {
       selectLast에 setText할지 구분해주는 메소드.
      */
     private void setSelectFirstOrSelectLast(int flag, String txtmsg) {
-        if(flag == 1) {
+        if (flag == 1) {
             startDate.setText(txtmsg);
-        }
-        else if(flag == 2) {
+        } else if (flag == 2) {
             endDate.setText(txtmsg);
         }
     }
@@ -257,46 +232,40 @@ public class RegisterPlanActivity extends AppCompatActivity {
         String txtmsg;
 
         SimpleDateFormat dateformat = new SimpleDateFormat("EEE");
-        Date date = new Date(year, month, dayOfMonth-1);
+        Date date = new Date(year, month, dayOfMonth - 1);
         String dayOfWeek = dateformat.format(date);
 
-        if(month + 1 < 10) {
+        if (month + 1 < 10) {
             int ten_month = (month + 1) / 10;
             int one_month = (month + 1) % 10;
 
             String month1 = Integer.toString(ten_month) + Integer.toString(one_month);
 
-            if(dayOfMonth < 10) {
+            if (dayOfMonth < 10) {
                 int ten_date = (dayOfMonth) / 10;
                 int one_date = (dayOfMonth) % 10;
                 String date1 = Integer.toString(ten_date) + Integer.toString(one_date);
 
-                txtmsg = month1 + "월" + String.format("%d일", dayOfMonth) + String.format("(%s)", dayOfWeek);
+                txtmsg = month1 + "월" + date1 + "일" + String.format("(%s)", dayOfWeek);
                 format = String.format("%d-", year) + month1 + "-" + date1;
 
                 setSelectFirstOrSelectLast(flag, txtmsg);
-            }
-
-            else if(dayOfMonth >= 10) {
+            } else if (dayOfMonth >= 10) {
                 txtmsg = month1 + "월" + String.format("%d일", dayOfMonth) + String.format("(%s)", dayOfWeek);
                 format = String.format("%d-", year) + month1 + "-" + String.format("%d", dayOfMonth);
                 setSelectFirstOrSelectLast(flag, txtmsg);
             }
-        }
-
-        else if(month + 1 >= 10) {
-            if(dayOfMonth < 10) {
+        } else if (month + 1 >= 10) {
+            if (dayOfMonth < 10) {
                 int ten_date = (dayOfMonth) / 10;
                 int one_date = (dayOfMonth) % 10;
                 String date1 = Integer.toString(ten_date) + Integer.toString(one_date);
 
-                txtmsg = (month+1) + "월" + String.format("%d일", dayOfMonth) + String.format("(%s)", dayOfWeek);
-                format = String.format("%d-", year) + (month+1) + "-" + date1; //String.format("%d일", dayOfMonth);
+                txtmsg = (month + 1) + "월" + date1 + "일" + String.format("(%s)", dayOfWeek);
+                format = String.format("%d-", year) + (month + 1) + "-" + date1; //String.format("%d일", dayOfMonth);
                 setSelectFirstOrSelectLast(flag, txtmsg);
-            }
-
-            else if(dayOfMonth >= 10) {
-                txtmsg = (month+1) + "월" + String.format("%d일", dayOfMonth) + String.format("(%s)", dayOfWeek);
+            } else if (dayOfMonth >= 10) {
+                txtmsg = (month + 1) + "월" + String.format("%d일", dayOfMonth) + String.format("(%s)", dayOfWeek);
                 format = String.format("%d-", year) + (month + 1) + "-" + String.format("%d", dayOfMonth);
                 setSelectFirstOrSelectLast(flag, txtmsg);
             }
