@@ -1,38 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view">
+    tools:showIn="navigation_view"
+    tools:background="#FFFFFF">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:checkableBehavior="single">
+
         <item
             android:id="@+id/toNotice_item"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@android:drawable/ic_dialog_info"
             android:title="공지사항" />
         <item
             android:id="@+id/toSetting_item"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@android:drawable/ic_menu_preferences"
             android:title="설정" />
-        <item
-            android:id="@+id/toMakeCalendar_item"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="달력생성" />
-        <item
-            android:id="@+id/toInviteMember_item"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="사용자초대" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="내캘린더">
         <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
                 android:title="Send" />
+            <item
+                android:id="@+id/toInviteMember_item"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="사용자초대" />
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
         </menu>
     </item>
+    <group >
+        <item
+            android:id="@+id/toMakeCalendar_item"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="달력생성" />
+    </group>
 
 </menu>
+
