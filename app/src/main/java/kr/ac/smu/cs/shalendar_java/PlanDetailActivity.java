@@ -1,21 +1,23 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
 /*
-
   일정 상세보기 Activity
   app bar의 메뉴에서 '일정 수정', '일정 삭제' 선택시
   UpdatePlan, DeletePlanActivity로 각각 넘어간다.
@@ -50,43 +52,49 @@ public class PlanDetailActivity extends AppCompatActivity implements NavigationV
         //buttonToDelete = findViewById(R.id.planDetail_toDelete_button);
 
         //리스트뷰
-        ListView plandetail_Listview =(ListView) findViewById(R.id.planDetail_listView);
+        ListView plandetail_Listview = (ListView) findViewById(R.id.planDetail_listView);
         //헤더 삽입
         View header = getLayoutInflater().inflate(R.layout.activity_plandetailreply_header, null, false);
         plandetail_Listview.addHeaderView(header);
 
         final PlandetailAdapter plandetailAdapter = new PlandetailAdapter();
 
-        plandetailAdapter.addItem(new PlandetailItem("박성준","5월9일","댓글입니다"));
-        plandetailAdapter.addItem(new PlandetailItem("박성준","5월9일","댓글입니다"));
-        plandetailAdapter.addItem(new PlandetailItem("박성준","5월9일","댓글입니다"));
-        plandetailAdapter.addItem(new PlandetailItem("박성준","5월9일","댓글입니다"));
+        plandetailAdapter.addItem(new PlandetailItem("박성준", "5월9일", "댓글입니다"));
+        plandetailAdapter.addItem(new PlandetailItem("박성준", "5월9일", "댓글입니다"));
+        plandetailAdapter.addItem(new PlandetailItem("박성준", "5월9일", "댓글입니다"));
+        plandetailAdapter.addItem(new PlandetailItem("박성준", "5월9일", "댓글입니다"));
+        plandetailAdapter.addItem(new PlandetailItem("박성준", "5월9일", "댓글입니다"));
+        plandetailAdapter.addItem(new PlandetailItem("박성준", "5월9일", "댓글입니다"));
 
         plandetail_Listview.setAdapter(plandetailAdapter);
 
-        /*
-         일정 수정 화면으로 이동
 
-        buttonToUpdate.setOnClickListener(new View.OnClickListener() {
+        //길게 눌렀을 때
+        plandetail_Listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), UpdatePlanActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_UPDATEPLAN_ACTIVITY);
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
+                dialog.setTitle("댓글 수정/삭제");
+
+                dialog.setMessage("댓글 수정, 삭제하십니까?")
+                        .setPositiveButton("수정", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alertDialog = dialog.create();
+                alertDialog.show();
+
+                return false;
             }
         });
-        */
-
-          /*
-         일정 삭제 화면으로 이동
-
-        buttonToDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), DeletePlanActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_DELETEPLAN_ACTIVITY);
-            }
-        });
-        */
     }
 
     @Override
@@ -152,3 +160,28 @@ public class PlanDetailActivity extends AppCompatActivity implements NavigationV
         return true;
     }
 }
+
+
+      /*
+         일정 수정 화면으로 이동
+
+        buttonToUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), UpdatePlanActivity.class);
+                startActivityForResult(intent, CodeNumber.TO_UPDATEPLAN_ACTIVITY);
+            }
+        });
+        */
+
+          /*
+         일정 삭제 화면으로 이동
+
+        buttonToDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), DeletePlanActivity.class);
+                startActivityForResult(intent, CodeNumber.TO_DELETEPLAN_ACTIVITY);
+            }
+        });
+        */
