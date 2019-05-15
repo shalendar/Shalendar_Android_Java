@@ -7,14 +7,13 @@
     android:orientation="vertical"
     tools:context=".InviteActivity">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="InviteActivity"
-        tools:layout_editor_absoluteX="163dp"
-        tools:layout_editor_absoluteY="245dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
+        android:ems="10"
+        android:hint="이메일 주소를 입력하세요"
+        android:inputType="textAutoCorrect|textPersonName" />
 
     <Button
         android:id="@+id/Invite_email_button"

@@ -5,14 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SettingActivity">
+    tools:context=".SettingActivity"
+    tools:background="#FFFFFF"
+    >
 
     <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
+        android:id="@+id/MyInformationText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SettingActivity"
-        tools:layout_editor_absoluteX="147dp"
-        tools:layout_editor_absoluteY="246dp"
+        android:drawableLeft="@drawable/ic_my_info1"
+        android:paddingLeft="10dp"
+        android:text="   내 정보 보기"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="2sp"
+        android:background="@color/subMainTextColor" />
+
+    <TextView
+        android:id="@+id/ChangePassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_modify_pw1"
+        android:paddingLeft="10dp"
+        android:text="   비밀번호 변경"
+
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="match_parent"
+        android:layout_height="2sp"
+        android:background="@color/subMainTextColor" />
+
 </LinearLayout>

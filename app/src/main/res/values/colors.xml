@@ -4,8 +4,8 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="mainTextColor">#4a4a4a</color>
-    <color name="subMainTextColor">#a4a4a4</color>
-    <color name="buttonTextColor">#ffffff</color>
+    <color name="subMainTextColor">#A4A4A4</color>
+    <color name="buttonTextColor">#FFFFFF</color>
     <color name="appbarColor">#ffffff</color>
     <!--<color name="colorAccent">#EF7172</color>-->
 </resources>
