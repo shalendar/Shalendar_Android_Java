@@ -17,7 +17,6 @@ public class CreateMember3 extends AppCompatActivity {
         setContentView(R.layout.activity_create_member3);
 
         buttonToLogin = findViewById(R.id.loginpage_button);
-
         buttonToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -26,7 +25,5 @@ public class CreateMember3 extends AppCompatActivity {
 
             }
         });
-
-
     }
 }
