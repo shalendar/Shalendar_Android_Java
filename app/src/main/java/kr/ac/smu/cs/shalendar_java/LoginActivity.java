@@ -63,7 +63,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 //입력하는 e-mail주소 형식 예외처리
-                if(userEmail.equals("jacob456") && userPassword.equals("456")) {
+                //사용자 이메일 & 비밀번호 dummy data
+                if(userEmail.equals("jacob") && userPassword.equals("456")) {
+
                     Toast.makeText(getApplicationContext(), "사용자정보 일치 메인화면으로이동", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
