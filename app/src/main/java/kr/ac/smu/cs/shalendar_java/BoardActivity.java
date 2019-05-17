@@ -26,7 +26,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 /*
-
   등록된 일정에 대하여
   게시판 형식으로 보여주는 Activity.
   일정 item을 누르면 PlanDetailActivity로 넘어간다.
@@ -57,7 +56,6 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
         /*
         buttonToPlanDtail = (Button)findViewById(R.id.board_toPlanDetail_button);
 
@@ -72,8 +70,7 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
                 startActivityForResult(intent, CodeNumber.TO_PLANDETAIL_ACTIVITY);
             }
         });
-
-
+        */
 
         //리사이클링뷰(팀원멤버)
         ArrayList<String> teamlist = new ArrayList<>();
@@ -82,14 +79,12 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         }
 
         //리사이클링뷰가 보더레이아웃이 아니라 컨텐츠보더에 있으니까 인플레이터 이용해서 부른다
-        View inflatedView = getLayoutInflater().inflate(R.layout.content_board, null);
+        View inflatedView = getLayoutInflater().inflate(R.layout.activity_boardheader, null);
         RecyclerView memberrecyclerview = inflatedView.findViewById(R.id.teammemberRecyclerview);
         //레이아웃 매니져가 null값을 받는다 이유는?
         TeammemberAdapter recycleadapter = new TeammemberAdapter(teamlist);
         memberrecyclerview.setAdapter(recycleadapter);
         memberrecyclerview.setLayoutManager(new LinearLayoutManager(inflatedView.getContext() ,LinearLayout.HORIZONTAL, true));
-        */
-
 
         //리스트뷰
         ListView boardListview =(ListView) findViewById(R.id.boardListView);
