@@ -13,7 +13,7 @@
         android:id="@+id/MyInformationText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_my_info1"
+        android:drawableLeft="@drawable/ic_my_info"
         android:paddingLeft="10dp"
         android:text="   내 정보 보기"
         android:textAppearance="@style/TextAppearance.AppCompat.Large" />
@@ -28,7 +28,7 @@
         android:id="@+id/ChangePassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_modify_pw1"
+        android:drawableLeft="@drawable/ic_modify_pw"
         android:paddingLeft="10dp"
         android:text="   비밀번호 변경"
 
