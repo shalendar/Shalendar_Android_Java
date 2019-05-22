@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity
         buttonToBoard = (Button)findViewById(R.id.main_toBoard_button);
         buttonToRegisterPlan = (Button)findViewById(R.id.main_ToRegister_button);
 
+        //툴바
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
 
@@ -107,6 +109,11 @@ public class MainActivity extends AppCompatActivity
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if(id==R.id.toolbar_search){
+            Intent intent = new Intent(getApplicationContext(), SearchPlanActivity.class );
+            startActivityForResult(intent, CodeNumber.TO_SEARCH_PLAN_ACTIVITY);
+        }
 
         //noinspection SimplifiableIfStatement
 
