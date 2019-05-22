@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,19 +8,65 @@
     android:orientation="vertical"
     tools:context=".InviteActivity">
 
-    <EditText
-        android:id="@+id/editText"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="이메일 주소를 입력하세요"
-        android:inputType="textAutoCorrect|textPersonName" />
+        android:layout_margin="8dp"
+        android:background="@drawable/createborderline"
+        android:orientation="horizontal"
+        android:weightSum="5">
 
-    <Button
-        android:id="@+id/Invite_email_button"
+        <EditText
+            android:id="@+id/register_title_EditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="4"
+            android:ems="10"
+            android:hint="E-mail을 입력해 주세요"
+            android:inputType="textPersonName"
+            android:padding="10dp"
+            android:textColor="@color/mainTextColor"
+            android:textColorHint="#cdcdcd" />
+
+        <TextView
+            android:id="@+id/invite_addEamil_TextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="추가"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#cdcdcd" />
+
+    </LinearLayout>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="emailview로 이동"
+        android:layout_margin="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#265570"
+        tools:text="초대 가능한 사람" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/invite_email_RecycleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp" />
+
+    <Button
+        android:id="@+id/invite_email_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@drawable/round_button"
+        android:padding="8dp"
+        android:text="초대 하기"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/buttonTextColor"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp" />
+
 </LinearLayout>
