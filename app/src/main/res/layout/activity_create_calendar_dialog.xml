@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="250dp"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="#ffffff"
+    tools:context=".CreateCalendarActivityDialog">
+
+    <ImageView
+        android:id="@+id/add_date"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:paddingTop="10dp"
+        app:srcCompat="@drawable/ic_add_date" />
+
+    <TextView
+        android:id="@+id/Calendar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="10dp"
+        android:paddingTop="15dp"
+        android:text="해당 캘린더가 등록되었습니다."
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="#000000"
+        tools:layout_editor_absoluteX="233dp"
+        tools:layout_editor_absoluteY="129dp" />
+
+    <Button
+        android:id="@+id/CreateCalendarComplete"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:background="#ffffff"
+        android:gravity="center"
+        android:text="확인"
+        android:textColor="#ff6067"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+
+</LinearLayout>
