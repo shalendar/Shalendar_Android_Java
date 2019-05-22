@@ -13,4 +13,5 @@
     <string name="title_activity_demo">Demo</string>
     <string name="title_demo1">라이센스</string>
     <string name="title_demo2">자주하는 질문</string>
+    <string name="title_activity_search__plan">Search_Plan</string>
 </resources>
