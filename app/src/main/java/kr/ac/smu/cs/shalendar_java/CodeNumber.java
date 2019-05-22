@@ -18,5 +18,6 @@ public class CodeNumber {
     public static int TO_INVITE_ACTIVITY = 1005;
     public static int TO_CREATE_CALENDAR_ACTIVITY = 1006;
     public static int TO_INVITEBYEMAIL_ACTIVITY = 1014;
+    public static int TO_SEARCH_PLAN_ACTIVITY = 1009;
 
 }
