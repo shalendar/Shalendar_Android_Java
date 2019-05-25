@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity
         buttonToRegisterPlan = (Button)findViewById(R.id.main_ToRegister_button);
 
         //툴바
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
         //플로팅액션버튼
