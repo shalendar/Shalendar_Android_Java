@@ -173,5 +173,4 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }

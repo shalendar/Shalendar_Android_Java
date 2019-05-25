@@ -10,7 +10,6 @@ public class CreateMember1 extends AppCompatActivity {
 
     private Button buttonToMember2;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

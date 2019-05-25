@@ -113,9 +113,9 @@ public class NoticeActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return new Demo1Fragment();
+                return new LicenseFragment();
             } else {
-                return new Demo2Fragment();
+                return new QuestionsFragment();
             }
         }
 
@@ -128,19 +128,19 @@ public class NoticeActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return getString(R.string.title_demo1);
+                    return getString(R.string.title_license);
                 case 1:
-                    return getString(R.string.title_demo2);
+                    return getString(R.string.title_questions);
             }
             return null;
         }
     }
 
-    public static class Demo1Fragment extends Fragment {
+    public static class LicenseFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_demo1, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_license, container, false);
 
             ((TextView) rootView.findViewById(R.id.sample1).findViewById(R.id.title)).setText("Sample 1");
             ((TextView) rootView.findViewById(R.id.sample2).findViewById(R.id.title)).setText("Sample 2");
@@ -164,7 +164,7 @@ public class NoticeActivity extends AppCompatActivity {
         }
     }
 
-    public static class Demo2Fragment extends ListFragment {
+    public static class QuestionsFragment extends ListFragment {
         @Override
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);

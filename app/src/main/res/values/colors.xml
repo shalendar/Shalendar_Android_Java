@@ -2,7 +2,10 @@
 <resources>
     <color name="colorPrimary">#FFFFFF</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#d81b60</color>
+    <color name="colorStatusBar">#d81b60</color>
+    <color name="colorExpandableTextViewUnderBarColor">#ff6067</color>
+    <color name="colorExpandableTextViewTextColor">#444444</color>
     <color name="mainTextColor">#4a4a4a</color>
     <color name="subMainTextColor">#A4A4A4</color>
     <color name="buttonTextColor">#FFFFFF</color>
