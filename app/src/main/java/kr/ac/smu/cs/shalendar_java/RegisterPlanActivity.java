@@ -5,16 +5,22 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -36,6 +42,22 @@ public class RegisterPlanActivity extends AppCompatActivity {
     private TextView endTime;
     private Button buttonToRecommandTime;
     private Button buttonCompleteRegister;
+    private TextView recommandedTime;
+
+    //추가본 7.10
+    boolean isPageOpen = false;
+    ArrayList<RecommandTimeItem> itemList;
+
+    RecommandTimeAdapter t_adapter;
+
+    Animation translateUpAnim;
+    Animation translateDownAnim;
+
+    LinearLayout page;
+    Button reccomandtime_button;
+
+    Button sndbutton;
+    //
 
 
     private String strfirstDate, strlastDate; //시작 날짜, 마지막 날짜
@@ -49,6 +71,68 @@ public class RegisterPlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_plan);
 
+        //7.10추가 부분
+
+        page = findViewById(R.id.page);
+
+        sndbutton = findViewById(R.id.sendButton);
+
+        RecyclerView recyclerView = findViewById(R.id.recotime_Recycler);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        t_adapter = new RecommandTimeAdapter(this, itemList);
+
+        t_adapter.addItem(new RecommandTimeItem("1", "14:00-15:00"));
+        t_adapter.addItem(new RecommandTimeItem("2", "15:00-16:00"));
+        t_adapter.addItem(new RecommandTimeItem("3", "16:00-17:00"));
+        t_adapter.addItem(new RecommandTimeItem("4", "17:00-18:00"));
+
+        recyclerView.setAdapter(t_adapter);
+
+        t_adapter.notifyDataSetChanged();
+
+        translateUpAnim = AnimationUtils.loadAnimation(this, R.anim.translate_up);
+        translateDownAnim = AnimationUtils.loadAnimation(this, R.anim.translate_down);
+
+        SlidingPageAnimationListner animListener = new SlidingPageAnimationListner();
+        translateUpAnim.setAnimationListener(animListener);
+        translateDownAnim.setAnimationListener(animListener);
+
+        //전송버튼 눌릴때
+        sndbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                t_adapter.sendServer();
+                recommandedTime.setText(t_adapter.sendRecommandTime());
+
+                if (isPageOpen) {
+                    page.startAnimation(translateDownAnim);
+                } else {
+                    page.setVisibility(View.VISIBLE);
+                    page.startAnimation(translateUpAnim);
+                }
+            }
+        });
+
+        //추천시간 눌릴때
+        reccomandtime_button = findViewById(R.id.register_getTime_Button);
+        reccomandtime_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPageOpen) {
+                    page.startAnimation(translateDownAnim);
+                } else {
+                    page.setVisibility(View.VISIBLE);
+                    page.startAnimation(translateUpAnim);
+                }
+            }
+        });
+
+
+
+        //
+
         planTitle = findViewById(R.id.register_title_EditText);
         aboutPlan = findViewById(R.id.register_aboutPlan_EditText);
         location = findViewById(R.id.register_location_EditText);
@@ -58,6 +142,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
         endTime = findViewById(R.id.register_endTime_TextView);
         buttonToRecommandTime = findViewById(R.id.register_getTime_Button);
         buttonCompleteRegister = findViewById(R.id.register_registerPlan_Button);
+        recommandedTime = findViewById(R.id.register_getTime_TextView);
 
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("FFF");
@@ -71,7 +156,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
         /*
          추천시간 버튼 누를시 RecommandTimeActivity로 넘어간다.
-         */
+
         buttonToRecommandTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +164,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 startActivityForResult(intent, CodeNumber.TO_RECOMMANDTIME_ACTIVITY);
             }
         });
-
+        */
         buttonCompleteRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +172,32 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    //7.10 추가부분
+    private class SlidingPageAnimationListner implements Animation.AnimationListener {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            if (isPageOpen) {
+                page.setVisibility(View.INVISIBLE);
+
+                reccomandtime_button.setText("Open");
+                isPageOpen = false;
+            } else {
+                reccomandtime_button.setText("Close");
+                isPageOpen = true;
+            }
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
     }
 
 
@@ -112,7 +223,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         try {
                             Date date1 = format.parse("" + hourOfDay + ":" + minute);
                             startTime.setText(new SimpleDateFormat("hh:mm a").format(date1.getTime()));
-                        }catch(Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -124,6 +235,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
         endTime.setOnClickListener(new View.OnClickListener() {
             final Calendar cal = Calendar.getInstance();
+
             @Override
             public void onClick(View v) {
                 TimePickerDialog dialog = new TimePickerDialog(RegisterPlanActivity.this, new TimePickerDialog.OnTimeSetListener() {
@@ -139,7 +251,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         try {
                             Date date2 = format.parse("" + hourOfDay + ":" + minute);
                             endTime.setText(new SimpleDateFormat("hh:mm a").format(date2.getTime()));
-                        }catch(Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }

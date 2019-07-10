@@ -75,13 +75,14 @@ public class BoardActivity extends AppCompatActivity implements NavigationView.O
         //리사이클링뷰(팀원멤버)
         ArrayList<String> teamlist = new ArrayList<>();
         for(int i=0; i<5; i++){
-            teamlist.add(String.format("박성준ddddddddd", i));
+            teamlist.add("박성준ddddddddd"+i);
         }
 
         //리사이클링뷰가 보더레이아웃이 아니라 컨텐츠보더에 있으니까 인플레이터 이용해서 부른다
         View inflatedView = getLayoutInflater().inflate(R.layout.activity_boardheader, null);
         RecyclerView memberrecyclerview = inflatedView.findViewById(R.id.teammemberRecyclerview);
         //레이아웃 매니져가 null값을 받는다 이유는?
+        memberrecyclerview.setHasFixedSize(true);
         TeammemberAdapter recycleadapter = new TeammemberAdapter(teamlist);
         memberrecyclerview.setAdapter(recycleadapter);
         memberrecyclerview.setLayoutManager(new LinearLayoutManager(inflatedView.getContext() ,LinearLayout.HORIZONTAL, true));
