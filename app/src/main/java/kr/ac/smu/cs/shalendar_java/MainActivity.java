@@ -1,9 +1,12 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,15 +16,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private TextView textViewTitle;
     private Button buttonToBoard;
     private Button buttonToRegisterPlan;
+
+    //js
+    private Context mContext = MainActivity.this;
+
+    private ViewGroup mainLayout;   //사이드 나왔을때 클릭방지할 영역
+    private ViewGroup viewLayout;   //전체 감싸는 영역
+    private ViewGroup sideLayout;   //사이드바만 감싸는 영역
+
+    private Boolean isMenuShow = false;
+    private Boolean isExitFlag = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +54,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
+        /*
         //플로팅액션버튼
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -46,8 +64,14 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+*/
 
-        //드로워
+        //JS
+        init();
+
+        addSideView();  //사이드바 add
+
+        /*//드로워
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -57,6 +81,8 @@ public class MainActivity extends AppCompatActivity
         //내비게이션뷰
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        */
+
 
         /*
           MainActivity에서 BoardActivity로 넘어간다.
@@ -85,17 +111,117 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void init(){
+
+        findViewById(R.id.btn_menu).setOnClickListener(this);
+
+        mainLayout = findViewById(R.id.id_main);
+        viewLayout = findViewById(R.id.fl_silde);
+        sideLayout = findViewById(R.id.view_sildebar);
+
+    }
+
+    private void addSideView(){
+
+        Sidebar sidebar = new Sidebar(mContext);
+        sideLayout.addView(sidebar);
+
+        viewLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        sidebar.setEventListener(new Sidebar.EventListener() {
+
+            @Override
+            public void btnCancel() {
+                closeMenu();
+            }
+
+            @Override
+            public void btnLevel1() {
+                closeMenu();
+            }
+
+            @Override
+            public void btnLevel2() {
+                closeMenu();
+            }
+
+        });
+    }
+
+    public void closeMenu(){
+
+        isMenuShow = false;
+        Animation slide = AnimationUtils.loadAnimation(mContext, R.anim.siderbar_hidden);
+        sideLayout.startAnimation(slide);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                viewLayout.setVisibility(View.GONE);
+                viewLayout.setEnabled(false);
+                mainLayout.setEnabled(true);
+            }
+        }, 450);
+    }
+
+    public void showMenu(){
+
+        isMenuShow = true;
+        Animation slide = AnimationUtils.loadAnimation(this, R.anim.sidebar_show);
+        sideLayout.startAnimation(slide);
+        viewLayout.setVisibility(View.VISIBLE);
+        viewLayout.setEnabled(true);
+        mainLayout.setEnabled(false);
+    }
+
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.btn_menu :
+                showMenu();
+                break;
         }
     }
 
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(isMenuShow){
+            closeMenu();
+        }else{
+
+            if(isExitFlag){
+                finish();
+            } else {
+
+                isExitFlag = true;
+                Toast.makeText(this, "뒤로가기를 한번더 누르시면 앱이 종료됩니다.",  Toast.LENGTH_SHORT).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isExitFlag = false;
+                    }
+                }, 2000);
+            }
+        }
+    }
+
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -152,5 +278,7 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
+    }*/
+
+
 }
