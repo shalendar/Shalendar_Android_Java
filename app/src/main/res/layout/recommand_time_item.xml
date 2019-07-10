@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--> 시간추천 화면의 recyclerview에 이용될 item들<-->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/recommandtime_number"
+        android:text="X번"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/recommandtime_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:layout_toRightOf="@id/recommandtime_number"
+        android:text="몇일 몇시" />
+
+
+    <RadioButton
+        android:id="@+id/recommand_radio_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        />
+
+</RelativeLayout>
