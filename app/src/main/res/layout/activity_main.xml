@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        //툴바 부분
+        <!-->툴바부분<-->
 
         <RelativeLayout
             android:id="@+id/rl_001"
@@ -32,6 +32,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_001">
+
+            <!-->내용 들어갈곳<-->
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -78,6 +80,8 @@
             android:alpha="0.75"
             android:background="#202735"/>
         <-->
+
+
         <FrameLayout
             android:id="@+id/view_sildebar"
             android:layout_width="280dp"

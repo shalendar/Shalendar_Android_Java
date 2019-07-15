@@ -23,7 +23,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView textViewTitle;
     private Button buttonToBoard;
@@ -46,15 +46,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textViewTitle = (TextView)findViewById(R.id.main_title_textView);
-        buttonToBoard = (Button)findViewById(R.id.main_toBoard_button);
-        buttonToRegisterPlan = (Button)findViewById(R.id.main_ToRegister_button);
+        textViewTitle = (TextView) findViewById(R.id.main_title_textView);
+        buttonToBoard = (Button) findViewById(R.id.main_toBoard_button);
+        buttonToRegisterPlan = (Button) findViewById(R.id.main_ToRegister_button);
 
+        //JS
+        init();
+
+        addSideView();  //사이드바 add
+
+
+        /*
         //툴바
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
-        /*
+
         //플로팅액션버튼
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -66,10 +73,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 */
 
-        //JS
-        init();
-
-        addSideView();  //사이드바 add
 
         /*//드로워
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -111,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void init(){
+    private void init() {
 
         findViewById(R.id.btn_menu).setOnClickListener(this);
 
@@ -121,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void addSideView(){
+    private void addSideView() {
 
         Sidebar sidebar = new Sidebar(mContext);
         sideLayout.addView(sidebar);
@@ -153,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    public void closeMenu(){
+    public void closeMenu() {
 
         isMenuShow = false;
         Animation slide = AnimationUtils.loadAnimation(mContext, R.anim.siderbar_hidden);
@@ -168,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }, 450);
     }
 
-    public void showMenu(){
+    public void showMenu() {
 
         isMenuShow = true;
         Animation slide = AnimationUtils.loadAnimation(this, R.anim.sidebar_show);
@@ -181,8 +184,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_menu :
+        switch (view.getId()) {
+            case R.id.btn_menu:
                 showMenu();
                 break;
         }
@@ -201,16 +204,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        if(isMenuShow){
+        if (isMenuShow) {
             closeMenu();
-        }else{
+        } else {
 
-            if(isExitFlag){
+            if (isExitFlag) {
                 finish();
             } else {
 
                 isExitFlag = true;
-                Toast.makeText(this, "뒤로가기를 한번더 누르시면 앱이 종료됩니다.",  Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "뒤로가기를 한번더 누르시면 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -220,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
-
+}
     /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -281,4 +284,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }*/
 
 
-}
+
