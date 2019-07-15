@@ -168,8 +168,11 @@ public class RegisterPlanActivity extends AppCompatActivity {
         buttonCompleteRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent();
+                intent.putExtra("start", strfirstDate);
+                intent.putExtra("last", strlastDate);
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
     }

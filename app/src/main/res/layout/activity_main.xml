@@ -40,26 +40,71 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/main_title_textView"
+                <!--<TextView-->
+                    <!--android:id="@+id/main_title_textView"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="MAIN화면입니다.(달력 구성필요)"-->
+                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Large" />-->
+
+                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/calendarView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="MAIN화면입니다.(달력 구성필요)"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    android:fadingEdge="none"
+                    app:mcv_selectionColor="#a9dbf0cb"
+                    app:mcv_showOtherDates="defaults" />
+                <TextView
+                    android:id="@+id/TextView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center" />
+
+
+
+                <!--<Button-->
+                    <!--android:id="@+id/main_toBoard_button"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="goTo BoardActivity"-->
+                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Large" />-->
+
+                <!--<Button-->
+                    <!--android:id="@+id/main_ToRegister_button"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="일정 작성화면이동"-->
+                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Large" />-->
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#FFFFFF"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/main_toBoard_button"
-                    android:layout_width="match_parent"
+
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="goTo BoardActivity"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    android:background="@drawable/tab_1_active" />
+
 
                 <Button
                     android:id="@+id/main_ToRegister_button"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="일정 작성화면이동"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    android:background="@drawable/tab_2" />
+
+                <Button
+                    android:id="@+id/main_toBoard_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tab_3_active" />
 
             </LinearLayout>
 
@@ -89,6 +134,7 @@
             android:background="#000000" />
 
     </FrameLayout>
+
 
 
 </RelativeLayout>
