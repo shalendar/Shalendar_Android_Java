@@ -45,4 +45,6 @@ dependencies {
     //add ExpandableTextView Library
     implementation 'com.ms-square:expandableTextView:0.1.4'
 
+    //materialCalendarView
+    implementation 'com.prolificinteractive:material-calendarview:1.4.3'
 }
