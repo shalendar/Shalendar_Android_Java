@@ -4,18 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.KeyEvent;
 import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -114,6 +106,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void init(){
 
         findViewById(R.id.btn_menu).setOnClickListener(this);
+        findViewById(R.id.btn_search).setOnClickListener(this);
 
         mainLayout = findViewById(R.id.id_main);
         viewLayout = findViewById(R.id.fl_silde);
@@ -142,13 +135,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void btnLevel1() {
-                closeMenu();
+                Intent intent2 = new Intent(getApplicationContext(), NoticeActivity.class);
+                startActivityForResult(intent2, CodeNumber.TO_NOTICE_ACTIVITY);
             }
 
             @Override
             public void btnLevel2() {
-                closeMenu();
+                Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
+                startActivityForResult(intent2, CodeNumber.TO_SETTING_ACTIVITY);
             }
+
+            @Override
+            public void btnLevel3() {
+                Intent intent2 = new Intent(getApplicationContext(), CreateCalendarActivity.class);
+                startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
+            }
+
 
         });
     }
@@ -184,6 +186,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()){
             case R.id.btn_menu :
                 showMenu();
+                break;
+            case R.id.btn_search :
+                Intent intent2 = new Intent(getApplicationContext(), SearchPlanActivity.class);
+                startActivityForResult(intent2, CodeNumber.TO_SEARCH_PLAN_ACTIVITY);
                 break;
         }
     }

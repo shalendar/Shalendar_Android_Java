@@ -229,6 +229,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false);
                 dialog.show();
+
             }
         });
 
