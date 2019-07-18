@@ -8,53 +8,7 @@
     tools:context=".PlanDetailActivity"
     tools:showIn="@layout/app_bar_plandetail">
 
-    <ListView
-        android:id="@+id/planDetail_listView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-    </ListView>
 
-    <LinearLayout
-        android:id="@+id/input_linear"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#ffffff"
-        android:gravity="center"
-        android:orientation="horizontal"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="12dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:background="@drawable/textbox_outline">
-
-            <EditText
-                android:id="@+id/replyInput"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_weight="9" />
-
-            <ImageButton
-                android:id="@+id/replysend_button"
-                android:layout_marginRight="5dp"
-                android:layout_width="0dp"
-                android:layout_height="24dp"
-                android:layout_weight="1"
-                android:adjustViewBounds="true"
-                android:background="@drawable/btn_send_active" />
-
-        </LinearLayout>
-
-    </LinearLayout>
 
 </RelativeLayout>
 
