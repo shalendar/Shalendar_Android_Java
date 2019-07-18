@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class Sidebar extends LinearLayout implements View.OnClickListener {
 
@@ -20,6 +21,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         void btnCancel();
         void btnLevel1();
         void btnLevel2();
+        void btnLevel3();
     }
 
 
@@ -38,8 +40,10 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
     private void init(){
         LayoutInflater.from(getContext()).inflate(R.layout.activity_sidebar, this, true);
         findViewById(R.id.btn_cancel).setOnClickListener(this);
-        findViewById(R.id.btn_side_level_1).setOnClickListener(this);
-        findViewById(R.id.btn_side_level_2).setOnClickListener(this);
+        findViewById(R.id.btn_info).setOnClickListener(this);
+        findViewById(R.id.btn_setting).setOnClickListener(this);
+        findViewById(R.id.btn_add_calender).setOnClickListener(this);
+
     }
 
 
@@ -49,11 +53,15 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
             case R.id.btn_cancel:
                 listener.btnCancel();
                 break;
-            case R.id.btn_side_level_1:
+            case R.id.btn_info :
                 listener.btnLevel1();
+
                 break;
-            case R.id.btn_side_level_2:
+            case R.id.btn_setting :
                 listener.btnLevel2();
+                break;
+            case R.id.btn_add_calender :
+                listener.btnLevel3();
                 break;
             default:
                 break;
