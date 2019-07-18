@@ -2,6 +2,9 @@ package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -15,7 +18,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.CalendarMode;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.Executors;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextView textViewTitle;
     private Button buttonToBoard;
@@ -31,6 +46,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Boolean isMenuShow = false;
     private Boolean isExitFlag = false;
 
+    //materialCalendar
+    String time, kcal,menu;
+    private final OneDayDecorator oneDayDecorator = new OneDayDecorator();
+    MaterialCalendarView materialCalendarView;
+    Cursor cursor;
+
+    //사용자 지정 날짜 가지는 자료구조.
+    HashMap<String, String> map = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +61,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textViewTitle = (TextView)findViewById(R.id.main_title_textView);
-        buttonToBoard = (Button)findViewById(R.id.main_toBoard_button);
-        buttonToRegisterPlan = (Button)findViewById(R.id.main_ToRegister_button);
+        textViewTitle = (TextView) findViewById(R.id.main_title_textView);
+        buttonToBoard = (Button) findViewById(R.id.main_toBoard_button);
+        final TextView selectedDate = (TextView)findViewById(R.id.TextView1);
+        buttonToRegisterPlan = (Button) findViewById(R.id.main_ToRegister_button);
 
+        //JS
+        init();
+
+        addSideView();  //사이드바 add
+
+
+        //materialCalendar
+        materialCalendarView = (MaterialCalendarView)findViewById(R.id.calendarView);
+        materialCalendarView.setArrowColor(Color.parseColor("#ff6067"));
+        materialCalendarView.state().edit()
+                .setFirstDayOfWeek(Calendar.SUNDAY)
+                .setMinimumDate(CalendarDay.from(2017,0,1))
+                .setMaximumDate(CalendarDay.from(2020,11,31))
+                .setCalendarDisplayMode(CalendarMode.MONTHS)
+                .commit();
+
+        materialCalendarView.addDecorators(
+                new SundayDecorator(),
+                new SaturdayDecorator(),
+                oneDayDecorator);
+
+
+        //dummy data test용
+//        String[] result = {"2019-07-01", "2019-07-31", "2019-07-22"};
+//        new ApiSimulator(result).executeOnExecutor(Executors.newSingleThreadExecutor());
+
+        materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                int Year = date.getYear();
+                int Month = date.getMonth() + 1;
+                int Day = date.getDay();
+
+                Log.i("Year test", Year + "");
+                Log.i("Month test", Month + "");
+                Log.i("Day test", Day + "");
+
+                String shot_Day = Year + "-" + Month + "-" + Day;
+
+                Log.i("shot_Day test", shot_Day + "");
+                materialCalendarView.clearSelection();
+
+                Toast.makeText(getApplicationContext(), shot_Day , Toast.LENGTH_SHORT).show();
+
+                //TextView에 삽입
+                selectedDate.setText(shot_Day);
+            }
+        });
+
+
+
+        /*
         //툴바
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
-        /*
+
         //플로팅액션버튼
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -58,10 +134,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 */
 
-        //JS
-        init();
-
-        addSideView();  //사이드바 add
 
         /*//드로워
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -93,17 +165,165 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         */
         buttonToRegisterPlan.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-
+            public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), RegisterPlanActivity.class);
                 startActivityForResult(intent, CodeNumber.TO_REGISTERPLAN_ACTIVITY);
-
             }
         });
 
     }
 
-    private void init(){
+    private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
+        //String[] Time_Result;
+        HashMap<String, String> Time_Result;
+        /*
+        ApiSimulator(String[] Time_Result) {
+            this.Time_Result = Time_Result;
+        }
+        */
+
+        ApiSimulator(HashMap<String, String> Time_Result) {
+            this.Time_Result = Time_Result;
+        }
+
+        @Override
+        protected List<CalendarDay> doInBackground(@NonNull Void... voids) {
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            //calendar에는 시스템의 현재 날짜가 저장되어있다.
+            Calendar calendar = Calendar.getInstance();
+            //ArrayList를 사용해야 한다.
+            ArrayList<CalendarDay> dates = new ArrayList<>();
+
+            /*
+            //dummy data Test용 for문
+            //특정날짜 달력에 점표시해주는곳
+            //월은 0이 1월 년,일은 그대로
+            //string 문자열인 Time_Result 을 받아와서 -를 기준으로짜르고 string을 int 로 변환
+            for (int i = 0; i < Time_Result.length; i++) {
+                String[] time = Time_Result[i].split("-");
+                int year = Integer.parseInt(time[0]);
+                int month = Integer.parseInt(time[1]);
+                int dayy = Integer.parseInt(time[2]);
+                calendar.set(year, month - 1, dayy);
+                CalendarDay day = CalendarDay.from(calendar);
+                dates.add(day);
+            }
+            */
+            //map에 있는 data 처리 for문
+            for(String key : map.keySet()) {
+                Log.d("시작날짜 key", key);
+                Log.d("종료날짜 value", map.get(key));
+                //시작 날짜, 종료날짜 같은 경우.
+                if(key.equals(map.get(key))) {
+                    String[] time = key.split("-");
+                    int year = Integer.parseInt(time[0]);
+                    int month = Integer.parseInt(time[1]);
+                    int dayy = Integer.parseInt(time[2]);
+                    Log.d("쪼갠 날짜", Integer.toString(year) + "," + Integer.toString(month) + "," + Integer.toString(dayy));
+                    calendar.set(year, month-1, dayy);
+                    CalendarDay day = CalendarDay.from(calendar);
+                    dates.add(day);
+                }
+
+                //시작 날짜, 종료날짜 다른 경우
+
+            }
+
+            //dates ArrayList에 사용자 지정 날짜들이 들어있다. 2019-7-8형식.
+            Log.d("들어있는 Date", dates.toString());
+            return dates;
+        }
+
+        protected void setEventList() {
+
+        }
+
+        @Override
+        protected void onPostExecute(@NonNull List<CalendarDay> calendarDays) {
+            super.onPostExecute(calendarDays);
+
+            if (isFinishing()) {
+                return;
+            }
+
+            HashMap<HashSet<CalendarDay>, Integer> eventMap = new HashMap<>();
+
+            //실질적으로 dot을 찍는 class의 Method를 호출한다.
+            EventDecorator event1 = new EventDecorator(1, Color.parseColor("#ff6067"),
+                    calendarDays, MainActivity.this);
+            EventDecorator event2 = new EventDecorator(2, Color.parseColor("#f8c930"),
+                    calendarDays, MainActivity.this);
+
+
+//            materialCalendarView.addDecorator(event1);
+            int[] eventCount = EventDecorator.eventCount;
+
+            Log.d("배열 길이", Integer.toString(eventCount.length));
+            for(int i = 0; i<3; i++) {
+                if(eventCount[i] == 0) {
+                    materialCalendarView.addDecorator(event1);
+                }
+
+                else if(eventCount[i] == 1) {
+                    materialCalendarView.addDecorator(event2);
+                }
+            }
+
+
+            HashSet<CalendarDay> dateSet = event1.getDates();
+
+
+//            materialCalendarView.addDecorator(new EventDecorator(1, Color.parseColor("#ff6067"), calendarDays, MainActivity.this));
+//            materialCalendarView.addDecorator(new EventDecorator(2, Color.parseColor("#f8c930"), calendarDays, MainActivity.this));
+//            materialCalendarView.addDecorator(new EventDecorator(3, Color.parseColor("#cdcdcd"), calendarDays, MainActivity.this));
+        }
+    }
+
+    //Test Code이다.
+    /*
+    private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
+
+        @Override
+        protected List<CalendarDay> doInBackground(@NonNull Void... voids) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.MONTH, -2);
+            ArrayList<CalendarDay> dates = new ArrayList<>();
+            for (int i = 0; i < 30; i++) {
+                CalendarDay day = CalendarDay.from(calendar);
+                dates.add(day);
+                calendar.add(Calendar.DATE, 5);
+            }
+
+            return dates;
+        }
+
+        @Override
+        protected void onPostExecute(@NonNull List<CalendarDay> calendarDays) {
+            super.onPostExecute(calendarDays);
+
+            if (isFinishing()) {
+                return;
+            }
+
+            materialCalendarView.addDecorator(new EventDecorator(1,Color.parseColor("#ff6067"), calendarDays, MainActivity.this));
+            materialCalendarView.addDecorator(new EventDecorator(2,Color.parseColor("#f8c930"), calendarDays, MainActivity.this));
+            materialCalendarView.addDecorator(new EventDecorator(3,Color.parseColor("#cdcdcd"), calendarDays, MainActivity.this));
+        }
+    }
+    */
+
+    private void init() {
 
         findViewById(R.id.btn_menu).setOnClickListener(this);
         findViewById(R.id.btn_search).setOnClickListener(this);
@@ -114,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void addSideView(){
+    private void addSideView() {
 
         Sidebar sidebar = new Sidebar(mContext);
         sideLayout.addView(sidebar);
@@ -155,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    public void closeMenu(){
+    public void closeMenu() {
 
         isMenuShow = false;
         Animation slide = AnimationUtils.loadAnimation(mContext, R.anim.siderbar_hidden);
@@ -170,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }, 450);
     }
 
-    public void showMenu(){
+    public void showMenu() {
 
         isMenuShow = true;
         Animation slide = AnimationUtils.loadAnimation(this, R.anim.sidebar_show);
@@ -183,8 +403,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_menu :
+        switch (view.getId()) {
+            case R.id.btn_menu:
                 showMenu();
                 break;
             case R.id.btn_search :
@@ -207,16 +427,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onBackPressed() {
-        if(isMenuShow){
+        if (isMenuShow) {
             closeMenu();
-        }else{
+        } else {
 
-            if(isExitFlag){
+            if (isExitFlag) {
                 finish();
             } else {
 
                 isExitFlag = true;
-                Toast.makeText(this, "뒤로가기를 한번더 누르시면 앱이 종료됩니다.",  Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "뒤로가기를 한번더 누르시면 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -227,6 +447,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+
+        if(requestCode == CodeNumber.TO_REGISTERPLAN_ACTIVITY) {
+            if(resultCode == RESULT_OK) {
+                String strfirstDate = data.getStringExtra("start");
+                String strlastDate = data.getStringExtra("last");
+                map.put(strfirstDate,strlastDate);
+                Log.d("시작날짜 key", strfirstDate);
+                Log.d("종료날짜 value", map.get(strfirstDate));
+                new ApiSimulator(map).executeOnExecutor(Executors.newSingleThreadExecutor());
+            }
+        }
+    }
+
+}
     /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -287,4 +525,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }*/
 
 
-}
+
