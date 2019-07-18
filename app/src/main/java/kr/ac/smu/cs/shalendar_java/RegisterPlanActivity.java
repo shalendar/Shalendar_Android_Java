@@ -92,6 +92,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
         t_adapter.notifyDataSetChanged();
 
+        //애니메이션
         translateUpAnim = AnimationUtils.loadAnimation(this, R.anim.translate_up);
         translateDownAnim = AnimationUtils.loadAnimation(this, R.anim.translate_down);
 
@@ -184,9 +185,11 @@ public class RegisterPlanActivity extends AppCompatActivity {
             if (isPageOpen) {
                 page.setVisibility(View.INVISIBLE);
 
+                buttonCompleteRegister.setEnabled(true);
                 reccomandtime_button.setText("Open");
                 isPageOpen = false;
             } else {
+                buttonCompleteRegister.setEnabled(false);
                 reccomandtime_button.setText("Close");
                 isPageOpen = true;
             }

@@ -3,7 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/main_relative"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <RelativeLayout
         android:id="@+id/id_main"
@@ -35,50 +39,76 @@
 
             <!-->내용 들어갈곳<-->
 
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/calendarFrame"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-                <!--<TextView-->
-                    <!--android:id="@+id/main_title_textView"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="MAIN화면입니다.(달력 구성필요)"-->
-                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Large" />-->
-
-                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/calendarView"
+                <LinearLayout
+                    android:id="@+id/calendarLinear"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fadingEdge="none"
-                    app:mcv_selectionColor="#a9dbf0cb"
-                    app:mcv_showOtherDates="defaults" />
-                <TextView
-                    android:id="@+id/TextView1"
+                    android:orientation="vertical">
+
+                    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/calendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fadingEdge="none"
+                        app:mcv_selectionColor="#a9dbf0cb"
+                        app:mcv_showOtherDates="defaults" />
+
+                    <TextView
+                        android:id="@+id/TextView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        />
+
+                    <!-->
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/mainRecyclerview">
+
+                    </android.support.v7.widget.RecyclerView>
+                    <-->
+
+
+                </LinearLayout>
+
+                <!-->애니메이션 부분<-->
+                <LinearLayout
+                    android:id="@+id/main_anipage"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center" />
+                    android:layout_height="400dp"
+                    android:orientation="vertical"
+                    android:layout_gravity="bottom"
+                    android:background="#ffffff"
+                    android:visibility="gone"
+                    android:clickable="true">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="일정Hi"/>
 
 
+                    <!-->
+                    <android.support.v7.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/recotime_Recycler">
 
-                <!--<Button-->
-                    <!--android:id="@+id/main_toBoard_button"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="goTo BoardActivity"-->
-                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Large" />-->
+                    </android.support.v7.widget.RecyclerView>
+                    <-->
 
-                <!--<Button-->
-                    <!--android:id="@+id/main_ToRegister_button"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="일정 작성화면이동"-->
-                    <!--android:textAppearance="@style/TextAppearance.AppCompat.Large" />-->
+                </LinearLayout>
 
-            </LinearLayout>
+            </FrameLayout>
 
+            //아래버튼
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -134,7 +164,5 @@
             android:background="#000000" />
 
     </FrameLayout>
-
-
 
 </RelativeLayout>
