@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
 
     <RelativeLayout
@@ -19,16 +19,42 @@
         <RelativeLayout
             android:id="@+id/rl_001"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#2478FF">
+            android:layout_height="50dp"
+            android:background="#FFFFFF">
 
-            <ImageButton
-                android:id="@+id/btn_menu"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:background="@mipmap/ic_launcher_round" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_menu"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:adjustViewBounds="false"
+                    android:background="#FFFFFF"
+                    android:src="@drawable/btn_sidemenu" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:text="게시판"
+                    android:textColor="#4a4a4a"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+
+
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -108,12 +134,6 @@
             android:background="#000000" />
 
     </FrameLayout>
-
-
-
-
-
-
 </RelativeLayout>
 
 

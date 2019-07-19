@@ -133,18 +133,22 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
 
             @Override
             public void btnLevel1() {
-                closeMenu();
+                Intent intent2 = new Intent(getApplicationContext(), NoticeActivity.class);
+                startActivityForResult(intent2, CodeNumber.TO_NOTICE_ACTIVITY);
             }
 
             @Override
             public void btnLevel2() {
-                closeMenu();
+                Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
+                startActivityForResult(intent2, CodeNumber.TO_SETTING_ACTIVITY);
             }
 
             @Override
             public void btnLevel3() {
-                closeMenu();
+                Intent intent2 = new Intent(getApplicationContext(), CreateCalendarActivity.class);
+                startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
+
 
         });
     }
@@ -183,8 +187,7 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
     }
-
-
+    
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
