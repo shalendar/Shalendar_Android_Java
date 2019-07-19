@@ -134,6 +134,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                 startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
+
         });
     }
 

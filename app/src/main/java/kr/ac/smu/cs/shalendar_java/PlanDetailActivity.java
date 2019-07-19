@@ -149,6 +149,7 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
                 startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
+
         });
     }
 
@@ -186,8 +187,7 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
     }
-
-
+    
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 

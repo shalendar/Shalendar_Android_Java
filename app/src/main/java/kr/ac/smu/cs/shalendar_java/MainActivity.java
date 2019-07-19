@@ -11,8 +11,10 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +22,9 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +45,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView textViewTitle;
     private Button buttonToBoard;
     private Button buttonToRegisterPlan;
+
+    //7-17
+
+    boolean isPageOpen = false;
+
+    Animation translateUpAnim;
+    Animation translateDownAnim;
+
+    LinearLayout main_animation;
+    LinearLayout calendarLinear;
+    FrameLayout calendarFrame;
+    RelativeLayout calendarRelative;
 
     //js
     private Context mContext = MainActivity.this;
@@ -66,10 +83,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textViewTitle = (TextView) findViewById(R.id.main_title_textView);
+       // textViewTitle = (TextView) findViewById(R.id.main_title_textView);
         buttonToBoard = (Button) findViewById(R.id.main_toBoard_button);
         final TextView selectedDate = (TextView)findViewById(R.id.TextView1);
         buttonToRegisterPlan = (Button) findViewById(R.id.main_ToRegister_button);
+
+        //07-17
+        main_animation = findViewById(R.id.main_anipage);
+        calendarFrame = findViewById(R.id.calendarFrame);
+        calendarRelative = findViewById(R.id.main_relative);
+
+        //애니메이션
+        translateUpAnim = AnimationUtils.loadAnimation(this, R.anim.maintranslate_up);
+        translateDownAnim = AnimationUtils.loadAnimation(this, R.anim.maintranslate_down);
+
+        MainActivity.SlidingPageAnimationListner animListener = new MainActivity.SlidingPageAnimationListner();
+        translateUpAnim.setAnimationListener(animListener);
+        translateDownAnim.setAnimationListener(animListener);
+
+
+
+        //전송버튼 눌릴때
+        /*
+        sndbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //t_adapter.sendServer();
+                //recommandedTime.setText(t_adapter.sendRecommandTime());
+
+
+            }
+        });
+
+        //추천시간 눌릴때
+
+        reccomandtime_button = findViewById(R.id.register_getTime_Button);
+        reccomandtime_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPageOpen) {
+                    main_animation.startAnimation(translateDownAnim);
+                } else {
+                    main_animation.setVisibility(View.VISIBLE);
+                    main_animation.startAnimation(translateUpAnim);
+                }
+            }
+        });
+        */
 
         //JS
         init();
@@ -112,6 +172,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 Log.i("shot_Day test", shot_Day + "");
                 materialCalendarView.clearSelection();
+
+
+                ///////애니메이션 구현
+                if (isPageOpen) {
+                    calendarRelative.setClickable(false);
+                    main_animation.startAnimation(translateDownAnim);
+
+                } else {
+                    main_animation.setVisibility(View.VISIBLE);
+                    main_animation.startAnimation(translateUpAnim);
+                }
 
                 Toast.makeText(getApplicationContext(), shot_Day , Toast.LENGTH_SHORT).show();
 
@@ -177,6 +248,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
+
+    //7.17 추가부분
+    private class SlidingPageAnimationListner implements Animation.AnimationListener {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            if (isPageOpen) {
+                main_animation.setVisibility(View.INVISIBLE);
+
+                isPageOpen = false;
+            } else {
+                isPageOpen = true;
+            }
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+    }
+
 
     private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
         //String[] Time_Result;
@@ -462,8 +558,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String strfirstDate = data.getStringExtra("start");
                 String strlastDate = data.getStringExtra("last");
                 map.put(strfirstDate,strlastDate);
-                Log.d("시작날짜 key", strfirstDate);
-                Log.d("종료날짜 value", map.get(strfirstDate));
+               // Log.d("시작날짜 key", strfirstDate);
+                //Log.d("종료날짜 value", map.get(strfirstDate));
                 new ApiSimulator(map).executeOnExecutor(Executors.newSingleThreadExecutor());
             }
         }
