@@ -78,9 +78,6 @@
                 android:id="@+id/calendarFrame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <!-->
-
-                <-->
 
                 <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/calendarView"
@@ -105,12 +102,11 @@
                 </android.support.v7.widget.RecyclerView>
                 <-->
 
-
                 <!-->애니메이션 부분<-->
                 <LinearLayout
                     android:id="@+id/main_anipage"
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
+                    android:layout_height="400dp"
                     android:layout_gravity="bottom"
                     android:background="#ffffff"
                     android:clickable="true"
@@ -122,17 +118,8 @@
                         android:layout_height="wrap_content"
                         android:text="일정Hi" />
 
-
-                    <!-->
-                    <android.support.v7.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/recotime_Recycler">
-
-                    </android.support.v7.widget.RecyclerView>
-                    <-->
-
                 </LinearLayout>
+
             </FrameLayout>
 
             //아래버튼
