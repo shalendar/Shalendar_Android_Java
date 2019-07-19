@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_relative"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main_relative"
     android:clickable="true"
     android:focusable="true"
     android:focusableInTouchMode="true">
@@ -19,16 +19,51 @@
         <RelativeLayout
             android:id="@+id/rl_001"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="#2478FF">
+            android:layout_height="50dp"
+            android:background="#FFFFFF">
 
-            <ImageButton
-                android:id="@+id/btn_menu"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="15dp"
-                android:background="@mipmap/ic_launcher_round" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/btn_menu"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:adjustViewBounds="false"
+                    android:background="#FFFFFF"
+                    android:src="@drawable/btn_sidemenu" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:text="달력이름"
+                    android:textColor="#4a4a4a"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+
+                <ImageButton
+                    android:id="@+id/btn_search"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center|right|center_vertical"
+                    android:layout_marginRight="15dp"
+                    android:adjustViewBounds="false"
+                    android:background="#FFFFFF"
+                    app:srcCompat="@drawable/btn_search" />
+
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -43,56 +78,49 @@
                 android:id="@+id/calendarFrame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <!-->
 
-                <LinearLayout
-                    android:id="@+id/calendarLinear"
+                <-->
+
+                <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/calendarView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:fadingEdge="none"
+                    app:mcv_selectionColor="#a9dbf0cb"
+                    app:mcv_showOtherDates="defaults" />
 
-                    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/calendarView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fadingEdge="none"
-                        app:mcv_selectionColor="#a9dbf0cb"
-                        app:mcv_showOtherDates="defaults" />
+                <TextView
+                    android:id="@+id/TextView1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center" />
 
-                    <TextView
-                        android:id="@+id/TextView1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        />
+                <!-->
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/mainRecyclerview">
 
-                    <!-->
-                    <android.support.v7.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/mainRecyclerview">
+                </android.support.v7.widget.RecyclerView>
+                <-->
 
-                    </android.support.v7.widget.RecyclerView>
-                    <-->
-
-
-                </LinearLayout>
 
                 <!-->애니메이션 부분<-->
                 <LinearLayout
                     android:id="@+id/main_anipage"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp"
-                    android:orientation="vertical"
+                    android:layout_height="500dp"
                     android:layout_gravity="bottom"
                     android:background="#ffffff"
-                    android:visibility="gone"
-                    android:clickable="true">
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="일정Hi"/>
+                        android:text="일정Hi" />
 
 
                     <!-->
@@ -105,10 +133,10 @@
                     <-->
 
                 </LinearLayout>
-
             </FrameLayout>
 
             //아래버튼
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -146,6 +174,7 @@
         android:id="@+id/fl_silde"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#80202735"
         android:visibility="gone">
 
         <!-->
@@ -159,9 +188,8 @@
 
         <FrameLayout
             android:id="@+id/view_sildebar"
-            android:layout_width="280dp"
-            android:layout_height="match_parent"
-            android:background="#000000" />
+            android:layout_width="305dp"
+            android:layout_height="match_parent" />
 
     </FrameLayout>
 

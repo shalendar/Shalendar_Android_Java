@@ -126,6 +126,11 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                 closeMenu();
             }
 
+            @Override
+            public void btnLevel3() {
+                closeMenu();
+            }
+
         });
     }
 

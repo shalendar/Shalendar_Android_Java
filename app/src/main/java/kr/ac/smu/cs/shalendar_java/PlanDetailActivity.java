@@ -141,6 +141,11 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
                 closeMenu();
             }
 
+            @Override
+            public void btnLevel3() {
+                closeMenu();
+            }
+
         });
     }
 
