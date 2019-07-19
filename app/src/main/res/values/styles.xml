@@ -10,6 +10,7 @@
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
+        <item name="colorPrimaryDark">@color/colorStatusBar</item>
         <item name="windowNoTitle">true</item>
     </style>
 
@@ -22,5 +23,4 @@
         <item name="android:textColorPrimary">#000000</item>
         <item name="android:textColorSecondary">#000000</item>
     </style>
-
 </resources>

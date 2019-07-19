@@ -47,4 +47,10 @@ dependencies {
 
     //materialCalendarView
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'
+
+    //JSON
+    implementation files('libs/json-simple-1.1.1.jar')
+
+    //OkHttp3
+    implementation 'com.squareup.okhttp3:okhttp:3.4.1'
 }
