@@ -13,6 +13,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -26,6 +36,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 /*
     Login하는 Activity
@@ -55,6 +67,9 @@ public class LoginActivity extends AppCompatActivity {
 
     //서버로 부터 로그인 실패 시 오는 응답 변수
     private String responseFromServer;
+
+    //Volley를 사용한 통신
+    private static RequestQueue requestQueue;
 
 
     @Override
@@ -88,9 +103,11 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("맞아?", Boolean.toString(userEmail.equals("jacob456@hanmail.net")));
 
 
-                //입력하는 e-mail주소 형식 예외처리
-                //사용자 이메일 & 비밀번호 dummy data
-
+                /*
+                  입력하는 e-mail주소 형식 예외처리
+                  사용자 이메일 & 비밀번호 dummy data
+                  서버 닫혀 있을 때 서버 코드 주석처리 하고 아래  if else if else문 수행.
+                */
                 if(userEmail.equals("jacob") && userPassword.equals("456")) {
 
                     Toast.makeText(getApplicationContext(), "사용자정보 일치 메인화면으로이동", Toast.LENGTH_SHORT).show();
@@ -109,10 +126,19 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
 
-                //서버 통신코드
+                //서버 통신코드 1 AsnychTask사용
                 //new LoginTask(LoginActivity.this).execute(url.getServerUrl() + "/signin");
+
+                //서버 통신코드 2 Volley사용
+                //makeRequest();
             }
         });
+
+        //Volley 방식 통신을 위한 시작부분
+        if(requestQueue == null) {
+            //RequestQue객체 생성.
+            requestQueue = Volley.newRequestQueue(getApplicationContext());
+        }
 
 
         //이메일로 회원가입 버튼 클릭 경우
@@ -125,9 +151,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    /*
-      로그인 통신 코드.
-     */
+
+    //로그인 통신 코드 1. AsynchTask사용.
+
     public class LoginTask extends AsyncTask<String, String, String> {
 
         ProgressDialog progressDialog;
@@ -285,5 +311,74 @@ public class LoginActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    //로그인 통신 코드 2 Volley 사용.
+    public void makeRequest() {
+
+        String urlToServer = url.getServerUrl() + "/singin";
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, urlToServer, null,
+                new Response.Listener<org.json.JSONObject>() {
+            @Override
+            public void onResponse(org.json.JSONObject response) {
+
+                try {
+                    responseFromServer = response.getString("message");
+                    userToken = response.getInt("token");
+
+                    if(responseFromServer.equals("login success")) {
+
+                        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putInt("userToken", userToken);
+                        editor.apply();
+
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
+                    }
+                    else if(responseFromServer.equals("wrong password")) {
+                        Toast.makeText(getApplicationContext(), "비밀번호가 일치 하지 않습니다", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "서버 연결 실패", Toast.LENGTH_LONG).show();
+                    }
+
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.i("서버 연결 오류", error.toString());
+            }
+        })
+
+        {
+
+            //RequestBody
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+              Map<String, String> params = new HashMap<>();
+              params.put("id", userEmail);
+              params.put("pw", userPassword);
+              return params;
+          }
+
+            //RequestHeader
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json");
+                return params;
+            }
+        };
+
+        request.setShouldCache(false);
+        requestQueue.add(request);
+
     }
 }

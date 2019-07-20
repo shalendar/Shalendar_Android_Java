@@ -2,6 +2,7 @@ package kr.ac.smu.cs.shalendar_java;
 
 public class CodeNumber {
 
+    public static final int PICK_IMAGE_REQUEST = 1;
     public static int TO_MAIN_ACTIVITY = 1000;
     public static int TO_LOGIN_ACTIVITY = 1001;
     public static int TO_CREATE_MEMBER1 = 1002;
