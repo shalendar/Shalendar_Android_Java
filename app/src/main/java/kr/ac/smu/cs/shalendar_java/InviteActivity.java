@@ -42,7 +42,6 @@ public class InviteActivity extends AppCompatActivity {
 
 //        recyclerView.setAdapter(adapter);
 
-
         /*
           '추가' TextView리스너 구현
          */
