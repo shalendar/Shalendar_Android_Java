@@ -68,7 +68,7 @@
             android:textSize="27sp" />
 
         <EditText
-            android:id="@+id/create_member2_editText1"
+            android:id="@+id/create_mem2_userName_editText1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -76,7 +76,7 @@
             android:inputType="textPersonName" />
 
         <EditText
-            android:id="@+id/create_member2_editText2"
+            android:id="@+id/create_mem2_password_editText2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -85,7 +85,7 @@
 
 
         <EditText
-            android:id="@+id/create_member2_editText3"
+            android:id="@+id/create_mem2_checkPassword_editText3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
