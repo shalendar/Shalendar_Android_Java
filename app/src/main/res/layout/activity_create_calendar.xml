@@ -1,51 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:weightSum="1"
     tools:context=".CreateCalendarActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
+    <!--<ImageView-->
+        <!--android:id="@+id/imageView_createCal"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:srcCompat="@drawable/tempboardpic" />-->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.35"
+        android:orientation="vertical">
+
+
+    <ImageView
+        android:id="@+id/imageView_createCal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical|center_horizontal|center"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/tempboardpic" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
         android:orientation="vertical"
         android:padding="20dp">
 
         <TextView
-            android:id="@+id/Calendar_name"
+            android:id="@+id/Calendar_name_createCal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
             android:text="캘린더 이름"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             tools:textColor="@android:color/black" />
 
         <EditText
-            android:id="@+id/register_title_EditText"
+            android:id="@+id/calTitle_EditText_createCal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="0dp"
             android:background="@drawable/createborderline"
+            android:minLines="2"
             android:ems="10"
-            android:hint="일정제목을 입력해주세요"
+            android:hint="공유 달력 제목을 입력해주세요"
             android:inputType="textPersonName"
             android:padding="10dp"
-            android:textColor="#cdcdcd" />
+            android:textColorHint="#cdcdcd"
+            android:textColor="@android:color/black" />
 
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
         android:orientation="vertical"
         android:padding="20dp">
 
@@ -54,33 +80,43 @@
             android:id="@+id/Calendar_context"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
             android:text="캘린더 설명"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             tools:textColor="@android:color/black" />
 
         <EditText
-            android:id="@+id/registerc_context_EditText"
+            android:id="@+id/aboutCal_EditText_createCal"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_margin="0dp"
             android:background="@drawable/createborderline"
             android:ems="10"
-
-            android:hint="설명을 00자내로 적어주세요"
-            android:inputType="textPersonName"
+            android:hint="설명을 20자내로 적어주세요"
+            android:inputType="textMultiLine"
+            android:lines="3"
+            android:maxLines="2"
             android:padding="10dp"
-            android:textColor="#cdcdcd" />
+            android:textColor="@android:color/black"
+            android:textColorHint="#cdcdcd" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/register_complete"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="10dp"
-        android:background="@drawable/round_button"
-        android:text="등록완료"
-        android:textColor="@android:color/white" />
+        android:layout_height="0dp"
+        android:layout_weight="0.15"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:weightSum="1">
+
+        <Button
+            android:id="@+id/register_complete"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
+            android:background="@drawable/round_button"
+            android:text="등록완료"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
 
 </LinearLayout>

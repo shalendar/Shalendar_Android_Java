@@ -2,22 +2,19 @@ package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -27,12 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -40,14 +35,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    //
+    ArrayList<MainPlanItem> mainRecyclerList;
 
     private TextView textViewTitle;
     private Button buttonToBoard;
     private Button buttonToRegisterPlan;
 
-    //7-17
+    //SharedPreferences 변수
+    //private SharedPreferences pref;
 
+    //UserToken
+    private String userToken;
+
+    //7-17
     boolean isPageOpen = false;
 
     Animation translateUpAnim;
@@ -83,6 +87,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //SharedPreference에 저장된 userToken가져오기.
+        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+        //값이 없으면 default로 0
+        userToken = pref.getString("userToken", "NO_TOKEN");
+        Log.i("넘겨받은 토큰", userToken);
+
+
        // textViewTitle = (TextView) findViewById(R.id.main_title_textView);
         buttonToBoard = (Button) findViewById(R.id.main_toBoard_button);
         final TextView selectedDate = (TextView)findViewById(R.id.TextView1);
@@ -101,35 +112,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         translateUpAnim.setAnimationListener(animListener);
         translateDownAnim.setAnimationListener(animListener);
 
+        //리사이클러 부분
 
+        mainRecyclerList=new ArrayList<>();
 
-        //전송버튼 눌릴때
-        /*
-        sndbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //t_adapter.sendServer();
-                //recommandedTime.setText(t_adapter.sendRecommandTime());
+        insertData();
 
-
-            }
-        });
-
-        //추천시간 눌릴때
-
-        reccomandtime_button = findViewById(R.id.register_getTime_Button);
-        reccomandtime_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isPageOpen) {
-                    main_animation.startAnimation(translateDownAnim);
-                } else {
-                    main_animation.setVisibility(View.VISIBLE);
-                    main_animation.startAnimation(translateUpAnim);
-                }
-            }
-        });
-        */
+        RecyclerView mainRecyclerView = (RecyclerView)findViewById(R.id.mainRecyclerview);
+        mainRecyclerView.setHasFixedSize(true);
+        MainPlanAdapter m_adapter = new MainPlanAdapter(mainRecyclerList,this);
+        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
+        mainRecyclerView.setAdapter(m_adapter);
 
         //JS
         init();
@@ -192,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 
-
         /*
         //툴바
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -248,6 +240,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
+
+
+    public void insertData(){
+        for(int i=0; i<=10; i++) {
+            MainPlanItem mitem = new MainPlanItem();
+            mitem.setMainPlanname("프로젝트"+(i+1));
+            mitem.setMainPlantime("2014-02-01");
+
+            ArrayList<MainPlanTeamIteam> mtItem = new ArrayList<>();
+            for(int j=0; j<6; j++){
+                mtItem.add(new MainPlanTeamIteam(R.drawable.face));
+            }
+            mitem.setTeamPicList(mtItem);
+            mainRecyclerList.add(mitem);
+        }
+    };
+
 
     //7.17 추가부분
     private class SlidingPageAnimationListner implements Animation.AnimationListener {
@@ -375,7 +384,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     materialCalendarView.addDecorator(event2);
                 }
             }
-
 
             HashSet<CalendarDay> dateSet = event1.getDates();
 

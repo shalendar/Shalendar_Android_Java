@@ -1,18 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="#f8f8f8"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="main_planname"
-        android:textSize="16sp"/>
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="main_plantime"/>
+        <LinearLayout
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorAccent"
+            />
 
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#ffffff">
+
+            <TextView
+                android:id="@+id/main_planname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="10dp"
+                android:paddingTop="20dp"
+                android:text="main_planname"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/main_plantime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/main_planname"
+                android:paddingLeft="10dp"
+                android:paddingTop="20dp"
+                android:text="main_plantime"
+                android:textSize="14sp" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/mainteam_recyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:paddingTop="100dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp">
+
+            </android.support.v7.widget.RecyclerView>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -70,7 +70,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rl_001">
+            android:layout_below="@id/rl_001"
+            android:layout_above="@id/bottom_bar">
 
             <!-->내용 들어갈곳<-->
 
@@ -78,9 +79,6 @@
                 android:id="@+id/calendarFrame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <!-->
-
-                <-->
 
                 <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/calendarView"
@@ -96,77 +94,62 @@
                     android:layout_height="wrap_content"
                     android:textAlignment="center" />
 
-                <!-->
-                <android.support.v7.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/mainRecyclerview">
-
-                </android.support.v7.widget.RecyclerView>
-                <-->
-
 
                 <!-->애니메이션 부분<-->
                 <LinearLayout
                     android:id="@+id/main_anipage"
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
+                    android:layout_height="400dp"
                     android:layout_gravity="bottom"
-                    android:background="#ffffff"
                     android:clickable="true"
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="일정Hi" />
-
-
-                    <!-->
                     <android.support.v7.widget.RecyclerView
+                        android:id="@+id/mainRecyclerview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/recotime_Recycler">
+                        android:layout_height="wrap_content">
 
                     </android.support.v7.widget.RecyclerView>
-                    <-->
 
                 </LinearLayout>
+
             </FrameLayout>
 
             //아래버튼
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="#FFFFFF"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <Button
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/tab_1_active" />
-
-
-                <Button
-                    android:id="@+id/main_ToRegister_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/tab_2" />
-
-                <Button
-                    android:id="@+id/main_toBoard_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/tab_3_active" />
-
-            </LinearLayout>
 
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/bottom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="#FFFFFF"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tab_1_active" />
+
+
+            <Button
+                android:id="@+id/main_ToRegister_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tab_2" />
+
+            <Button
+                android:id="@+id/main_toBoard_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tab_3_active" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 
