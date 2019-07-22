@@ -1,10 +1,16 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +21,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import java.io.File;
 
 import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 
@@ -29,6 +41,11 @@ public class CreateCalendarActivity extends AppCompatActivity {
     private CreateCalendarActivityDialog dialog;
     private ImageView imageView;
 
+    //UserToken
+    private String userToken;
+
+    //통신 위한 url가져오기
+    NetWorkUrl url = new NetWorkUrl();
 
     //이미지 절대 경로
     private String imageURL;
@@ -42,6 +59,21 @@ public class CreateCalendarActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_calendar);
+
+
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            checkPermissions();
+//        }
+
+
+
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(this).getConscryptMiddleware().enable(false);
+
+        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+        //값이 없으면 default로 0
+        userToken = pref.getString("userToken", "NO_TOKEN");
+        Log.i("Sharepref에 저장된 토큰", userToken);
 
         imageView = findViewById(R.id.imageView_createCal);
         calendarName = findViewById(R.id.calTitle_EditText_createCal);
@@ -66,7 +98,43 @@ public class CreateCalendarActivity extends AppCompatActivity {
                 calName = calendarName.getText().toString().trim();
                 aboutCal = aboutCalendar.getText().toString().trim();
 
-                Dialog();
+                //File file = new File(imageURL);
+                //서버 통신.
+
+                JsonObject json = new JsonObject();
+
+                //RequestBody 설정 JSONObjedt를 보내기 위한 준비
+                //json에 담는다.
+                json.addProperty("calName", calName);
+                json.addProperty("calContent", aboutCal);
+                json.addProperty("img_url", "");
+
+                Ion.with(getApplicationContext())
+                        .load("POST", url.getServerUrl() + "/createCal")
+                        //요청 헤더 지정
+                        .setHeader("Content-Type","application/json;charset=UTF-8")
+                        .setHeader("Authorization", userToken)
+                        .setJsonObjectBody(json)
+
+                        //.setMultipartParameter("img_url", imageURL)
+
+                        //응답은 JsonObject로 받겠다.
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+
+                                if(e != null) { //서버 연결 오류
+                                    Toast.makeText(getApplicationContext(), "SEver Error", Toast.LENGTH_LONG).show();
+                                }
+
+                                else {// 서버 연결 성공 시
+                                    Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
+                                    Dialog();
+                                }
+                            }
+                        });
+                //Dialog();
             }
         });
     }
@@ -144,6 +212,40 @@ public class CreateCalendarActivity extends AppCompatActivity {
         }
     }
 
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED||
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    },
+                    1052);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1052: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted.
+                } else {
+                    // Permission denied - Show a message to inform the user that this app only works
+                    // with these permissions granted
+                }
+                return;
+            }
+        }
+    }
 }
 
 
