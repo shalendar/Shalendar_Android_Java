@@ -105,12 +105,13 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/sideCalInfo"
             android:layout_width="match_parent"
             android:layout_height="45dp">
 
@@ -135,15 +136,17 @@
 
         </RelativeLayout>
 
-
         <android.support.v7.widget.RecyclerView
+            android:layout_below="@id/sideCalInfo"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btn_add_calender"
             android:id="@+id/sideBarRecyclerView">
 
         </android.support.v7.widget.RecyclerView>
 
         <Button
+            android:layout_alignParentBottom="true"
             android:id="@+id/btn_add_calender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -153,7 +156,7 @@
             android:text="캘린더추가"
             android:textSize="14sp" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 

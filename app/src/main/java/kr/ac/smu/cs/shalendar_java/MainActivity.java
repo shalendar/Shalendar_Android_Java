@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Boolean isMenuShow = false;
     private Boolean isExitFlag = false;
 
-
-
     //materialCalendar
     String time, kcal,menu;
     private final OneDayDecorator oneDayDecorator = new OneDayDecorator();
@@ -185,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 selectedDate.setText(shot_Day);
             }
         });
-
 
 
         /*
