@@ -187,7 +187,7 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
                 break;
         }
     }
-    
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
