@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //private SharedPreferences pref;
 
     //UserToken
-    private int userToken;
+    private String userToken;
 
     //7-17
     boolean isPageOpen = false;
@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //SharedPreference에 저장된 userToken가져오기.
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         //값이 없으면 default로 0
-        userToken = pref.getInt("userToken", 0);
-        Log.i("넘겨받은 토큰", Integer.toString(userToken));
+        userToken = pref.getString("userToken", "NO_TOKEN");
+        Log.i("넘겨받은 토큰", userToken);
 
 
        // textViewTitle = (TextView) findViewById(R.id.main_title_textView);
@@ -387,7 +387,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     materialCalendarView.addDecorator(event2);
                 }
             }
-
 
             HashSet<CalendarDay> dateSet = event1.getDates();
 

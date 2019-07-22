@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     private NetWorkUrl url = new NetWorkUrl();
 
     //서버로 부터 로그인 성공 시 오는 응답 Token 변수
-    private int userToken;
+    private String userToken;
 
     //서버로 부터 로그인 실패 시 오는 응답 변수
     private String responseFromServer;
@@ -108,26 +108,26 @@ public class LoginActivity extends AppCompatActivity {
                   사용자 이메일 & 비밀번호 dummy data
                   서버 닫혀 있을 때 서버 코드 주석처리 하고 아래  if else if else문 수행.
                 */
-                if(userEmail.equals("jacob") && userPassword.equals("456")) {
-
-                    Toast.makeText(getApplicationContext(), "사용자정보 일치 메인화면으로이동", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-                }
-
-                else if(userEmail.equals("") || userPassword.equals("")) {
-                    Toast.makeText(getApplicationContext(), "아이디 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
-                }
-
-                else {
-                    Log.d("입력한 ID", userEmail);
-                    Log.d("입력한 비밀번호", userPassword);
-                    Toast.makeText(getApplicationContext(), "아이디/비밀번호가 잘못되었습니다", Toast.LENGTH_SHORT).show();
-                }
+//                if(userEmail.equals("jacob") && userPassword.equals("456")) {
+////
+////                    Toast.makeText(getApplicationContext(), "사용자정보 일치 메인화면으로이동", Toast.LENGTH_SHORT).show();
+////                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+////                    startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
+////                }
+////
+////                else if(userEmail.equals("") || userPassword.equals("")) {
+////                    Toast.makeText(getApplicationContext(), "아이디 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+////                }
+////
+////                else {
+////                    Log.d("입력한 ID", userEmail);
+////                    Log.d("입력한 비밀번호", userPassword);
+////                    Toast.makeText(getApplicationContext(), "아이디/비밀번호가 잘못되었습니다", Toast.LENGTH_SHORT).show();
+////                }
 
 
                 //서버 통신코드 1 AsnychTask사용
-                //new LoginTask(LoginActivity.this).execute(url.getServerUrl() + "/signin");
+                new LoginTask(LoginActivity.this).execute(url.getServerUrl() + "/signin");
 
                 //서버 통신코드 2 Volley사용
                 //makeRequest();
@@ -282,7 +282,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 responseFromServer = (String)jsonObject.get("message");
-                userToken = (int)jsonObject.get("token");
+                userToken = (String)jsonObject.get("token");
 
 
                 Log.d("서버응답", responseFromServer);
@@ -294,7 +294,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = pref.edit();
-                    editor.putInt("userToken", userToken);
+                    editor.putString("userToken", userToken);
                     editor.apply();
 
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -317,7 +317,7 @@ public class LoginActivity extends AppCompatActivity {
     //로그인 통신 코드 2 Volley 사용.
     public void makeRequest() {
 
-        String urlToServer = url.getServerUrl() + "/singin";
+        String urlToServer = url.getServerUrl() + "/signin";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, urlToServer, null,
                 new Response.Listener<org.json.JSONObject>() {
@@ -326,13 +326,13 @@ public class LoginActivity extends AppCompatActivity {
 
                 try {
                     responseFromServer = response.getString("message");
-                    userToken = response.getInt("token");
+                    userToken = response.getString("token");
 
                     if(responseFromServer.equals("login success")) {
 
                         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = pref.edit();
-                        editor.putInt("userToken", userToken);
+                        editor.putString("userToken", userToken);
                         editor.apply();
 
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
