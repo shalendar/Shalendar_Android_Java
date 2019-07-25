@@ -84,9 +84,6 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         b_adapter.notifyDataSetChanged();
     }
 
-
-
-
     private void init(){
 
         findViewById(R.id.btn_menu).setOnClickListener(this);
