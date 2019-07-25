@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
     private NetWorkUrl url = new NetWorkUrl();
 
     //서버로 부터 로그인 성공 시 오는 응답 Token 변수
-    private int userToken;
+    private String userToken;
 
     //서버로 부터 로그인 실패 시 오는 응답 변수
     private String responseFromServer;
@@ -282,7 +282,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
                 responseFromServer = (String)jsonObject.get("message");
-                userToken = (int)jsonObject.get("token");
+                userToken = (String)jsonObject.get("token");
 
 
                 Log.d("서버응답", responseFromServer);
@@ -294,7 +294,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = pref.edit();
-                    editor.putInt("userToken", userToken);
+                    editor.putString("userToken", userToken);
                     editor.apply();
 
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -317,7 +317,7 @@ public class LoginActivity extends AppCompatActivity {
     //로그인 통신 코드 2 Volley 사용.
     public void makeRequest() {
 
-        String urlToServer = url.getServerUrl() + "/singin";
+        String urlToServer = url.getServerUrl() + "/signin";
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, urlToServer, null,
                 new Response.Listener<org.json.JSONObject>() {
@@ -326,13 +326,13 @@ public class LoginActivity extends AppCompatActivity {
 
                 try {
                     responseFromServer = response.getString("message");
-                    userToken = response.getInt("token");
+                    userToken = response.getString("token");
 
                     if(responseFromServer.equals("login success")) {
 
                         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = pref.edit();
-                        editor.putInt("userToken", userToken);
+                        editor.putString("userToken", userToken);
                         editor.apply();
 
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
