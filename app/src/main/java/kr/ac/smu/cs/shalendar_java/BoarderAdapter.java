@@ -1,14 +1,20 @@
 package kr.ac.smu.cs.shalendar_java;
 
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +77,39 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         else {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.onBind(boardList.get(position - 1), position);
+
+
+//            //각 ITem마다 Long Click Listener 구현 -->실패
+//            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View view) {
+//
+//                    AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
+//                    dialog.setTitle("해당 일정 수정/삭제");
+//                    dialog.setMessage("해당 일정  수정, 삭제하십니까?")
+//                            .setPositiveButton("수정", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    //UpdatePlanActivity로 이동.
+//
+//                                    Intent intent = new Intent(context, UpdatePlanActivity.class);
+//                                    context.startActivity(intent);
+//                                    //dialog.cancel();
+//                                }
+//                            })
+//
+//                            .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.cancel();
+//                                }
+//                            });
+//
+//                    AlertDialog alertDialog = dialog.create();
+//                    alertDialog.show();
+//                    return false;
+//                }
+//            });
         }
     }
 
@@ -111,7 +150,41 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 }
             });
 
+
+//            //각 ITem마다 Long Click Listener 구현
+//            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//                @Override
+//                public boolean onLongClick(View view) {
+//
+//                    AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
+//                    dialog.setTitle("해당 일정 수정/삭제");
+//                    dialog.setMessage("해당 일정  수정, 삭제하십니까?")
+//                            .setPositiveButton("수정", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    //UpdatePlanActivity로 이동.
+//
+//                                    Intent intent = new Intent(context, UpdatePlanActivity.class);
+//                                    context.startActivity(intent);
+//                                    //dialog.cancel();
+//                                }
+//                            })
+//
+//                            .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.cancel();
+//                                }
+//                            });
+//
+//                    AlertDialog alertDialog = dialog.create();
+//                    alertDialog.show();
+//                    return false;
+//                }
+//            });
         }
+
+
 
         void onBind(BoardPlanItem data, int position) {
             this.data = data;
@@ -152,4 +225,31 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         else
             return TYPE_ITEM;
     }
+
+
+//    public class CustomDialog extends Dialog implements View.OnClickListener {
+//
+//        Button okButton, cancelButton;
+//        Activity mActivity;
+//
+//        public CustomDialog(Activity activity) {
+//            super(activity);
+//            mActivity = activity;
+//            setContentView(R.layout.custom_dialog);
+//            okButton = (Button) findViewById(R.id.button_ok);
+//            okButton.setOnClickListener(this);
+//            cancelButton = (Button) findViewById(R.id.button_cancel);
+//            cancelButton.setOnClickListener(this);
+//        }
+//
+//        @Override
+//        public void onClick(View v) {
+//            if (v == cancelButton)
+//                dismiss();
+//            else {
+//                Intent intent = new Intent(mActivity, UpdatePlanActivity.class);
+//                mActivity.startActivity(intent);
+//            }
+//        }
+//    }
 }
