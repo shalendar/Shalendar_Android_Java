@@ -563,9 +563,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if(requestCode == CodeNumber.TO_REGISTERPLAN_ACTIVITY) {
             if(resultCode == RESULT_OK) {
-                String strfirstDate = data.getStringExtra("start");
-                String strlastDate = data.getStringExtra("last");
-                map.put(strfirstDate,strlastDate);
+                //String strfirstDate = data.getStringExtra("start");
+                //String strlastDate = data.getStringExtra("last");
+                //map.put(strfirstDate,strlastDate);
                // Log.d("시작날짜 key", strfirstDate);
                 //Log.d("종료날짜 value", map.get(strfirstDate));
                 new ApiSimulator(map).executeOnExecutor(Executors.newSingleThreadExecutor());

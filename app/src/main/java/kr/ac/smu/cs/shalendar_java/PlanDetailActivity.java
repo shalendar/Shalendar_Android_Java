@@ -44,6 +44,7 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
     private Boolean isMenuShow = false;
     private Boolean isExitFlag = false;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -87,12 +88,14 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
                                 dialog.cancel();
                             }
                         })
+
                         .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.cancel();
                             }
                         });
+
                 AlertDialog alertDialog = dialog.create();
                 alertDialog.show();
 
