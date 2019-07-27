@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:textColor="#444444"
-        android:text="졸업 프로젝트 교수님 미팅"
+        android:text="일정 제목 :: "
         />
 
     <LinearLayout
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="#9b9b9b"
+            android:textColor="#265570"
             android:text="장소  | "/>
 
         <TextView
@@ -66,12 +66,23 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/plandetail_header_aboutScheduleTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        android:textColor="#265570"
+        android:text="일정 설명"
+        />
+
+    <TextView
+        android:id="@+id/plandetail_header_aboutSchedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:textSize="14sp"
         android:textColor="#444444"
-        android:text="해당 일정에 대한 자세한 설명입니다."
+        android:text="DEFAULT"
         />
 
     <TextView
@@ -84,6 +95,7 @@
         />
 
     <TextView
+        android:id="@+id/plandetail_header_startToEndTime"
         android:layout_width="340dp"
         android:layout_height="40dp"
         android:textSize="14sp"
