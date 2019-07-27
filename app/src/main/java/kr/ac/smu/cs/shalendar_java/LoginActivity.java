@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                 //서버 통신코드 1 AsnychTask사용
                 new LoginTask(LoginActivity.this).execute(url.getServerUrl() + "/signin");
 
-                //서버 통신코드 2 Volley사용
+                //서버 통신코드 2 Volley사용(사용 X)
                 //makeRequest();
             }
         });

@@ -1,24 +1,277 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".UpdatePlanActivity">
+    android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/updatePlan_title_textView"
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="UpdatePlanActivity(일정 수정 화면)"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/updatePlan_toMain_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="goTo MainActivity"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context=".RegisterPlanActivity">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/register_title_TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="일정 제목"
+                    android:textColor="@color/mainTextColor"
+                    android:textStyle="bold" />
+
+
+                <EditText
+                    android:id="@+id/update_title_EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="0dp"
+                    android:background="@drawable/createborderline"
+                    android:ems="10"
+                    android:hint="일정제목을 입력해주세요"
+                    android:inputType="textPersonName"
+                    android:padding="10dp"
+                    android:textColorHint="#cdcdcd"
+                    android:textColor="#000000" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/update_ChooseDateTime_TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="날짜 및 시간 선택"
+                    android:textColor="@color/mainTextColor"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="5">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/update_startDate_TextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:background="@drawable/roundborderline"
+                            android:padding="10dp"
+                            android:text="startDate"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                        <TextView
+                            android:id="@+id/update_startTime_TextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/roundborderline"
+                            android:padding="10dp"
+                            android:text="startTime"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"></LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/update_endDate_TextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:background="@drawable/roundborderline"
+                            android:padding="10dp"
+                            android:text="endDate"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                        <TextView
+                            android:id="@+id/update_endTime_TextView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/roundborderline"
+                            android:padding="10dp"
+                            android:text="endTime"
+                            android:textAlignment="center"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/update_aboutPlan_TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="내용"
+                    android:textColor="@color/mainTextColor"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/update_aboutPlan_EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:background="@drawable/createborderline"
+                    android:ems="10"
+                    android:hint="일정에 대한 설명을 써주세요"
+                    android:inputType="textMultiLine"
+                    android:padding="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/update_recommandTime_TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="추천시간"
+                    android:textColor="@color/mainTextColor"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/update_getTime_Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="추천시간받기" />
+
+                <TextView
+                    android:id="@+id/update_getTime_TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/createborderline"
+                    android:hint="추천시간이 입력됩니다."
+                    android:padding="10dp"
+                    android:textColor="@color/mainTextColor" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="장소"
+                    android:textColor="@color/mainTextColor"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/update_location_EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/createborderline"
+                    android:ems="10"
+                    android:hint="장소를 입력해주세요"
+                    android:inputType="textPersonName"
+                    android:padding="10dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/update_registerPlan_Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/round_button"
+                    android:text="작성 완료"
+                    android:textColor="@color/buttonTextColor"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-->7.10수정부분
+        Scrollview->Framelayout
+        <-->
+
+        <LinearLayout
+            android:id="@+id/page"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:orientation="vertical"
+            android:layout_gravity="bottom"
+            android:background="#ffffff"
+            android:visibility="gone"
+            android:clickable="true">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="일정을 추천해드립니다."/>
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/recotime_Recycler">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <Button
+                android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="전송"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+</ScrollView>

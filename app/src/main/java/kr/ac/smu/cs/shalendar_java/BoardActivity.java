@@ -1,12 +1,14 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -82,6 +84,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트9", "G207", "2"));
 
         b_adapter.notifyDataSetChanged();
+
     }
 
 
