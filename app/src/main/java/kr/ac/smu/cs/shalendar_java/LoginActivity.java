@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
                   입력하는 e-mail주소 형식 예외처리
                   사용자 이메일 & 비밀번호 dummy data
                   서버 닫혀 있을 때 서버 코드 주석처리 하고 아래  if else if else문 수행.
-                */
+
                 if(userEmail.equals("jacob") && userPassword.equals("456")) {
 
                     Toast.makeText(getApplicationContext(), "사용자정보 일치 메인화면으로이동", Toast.LENGTH_SHORT).show();
@@ -124,10 +124,10 @@ public class LoginActivity extends AppCompatActivity {
                     Log.d("입력한 비밀번호", userPassword);
                     Toast.makeText(getApplicationContext(), "아이디/비밀번호가 잘못되었습니다", Toast.LENGTH_SHORT).show();
                 }
-
+*/
 
                 //서버 통신코드 1 AsnychTask사용
-                //new LoginTask(LoginActivity.this).execute(url.getServerUrl() + "/signin");
+                new LoginTask(LoginActivity.this).execute(url.getServerUrl() + "/signin");
 
                 //서버 통신코드 2 Volley사용
                 //makeRequest();
