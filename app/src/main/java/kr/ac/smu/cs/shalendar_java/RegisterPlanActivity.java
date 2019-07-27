@@ -1,8 +1,10 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +20,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.async.http.body.JSONArrayBody;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.ProgressCallback;
+
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,8 +71,23 @@ public class RegisterPlanActivity extends AppCompatActivity {
     Button sndbutton;
     //
 
+    //userToken
+    private String userToken;
 
-    private String strfirstDate, strlastDate; //시작 날짜, 마지막 날짜
+    //서버 Url가져오기
+    private NetWorkUrl url = new NetWorkUrl();
+
+    //서버로 보낼 data
+    private String scheTitle;
+    private String strStartDate;
+    private String strStartTime;
+    private String strEndDate;
+    private String strEndTime;
+    private String aboutSched;
+    private String strLocation;
+
+
+    //시작 날짜, 종료 날짜 비교
     int intFirstday, intLastday, intFirstmon, intLastmon;
     int startHour, startMinute, endHour, endMinute;
 
@@ -70,6 +97,12 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_plan);
+
+
+        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+        //값이 없으면 default로 0
+        userToken = pref.getString("userToken", "NO_TOKEN");
+        Log.i("Sharepref에 저장된 토큰", userToken);
 
         //7.10추가 부분
 
@@ -96,7 +129,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
         translateUpAnim = AnimationUtils.loadAnimation(this, R.anim.translate_up);
         translateDownAnim = AnimationUtils.loadAnimation(this, R.anim.translate_down);
 
-        SlidingPageAnimationListner animListener = new SlidingPageAnimationListner();
+        SlidingPageAnimationListener animListener = new SlidingPageAnimationListener();
         translateUpAnim.setAnimationListener(animListener);
         translateDownAnim.setAnimationListener(animListener);
 
@@ -129,8 +162,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 }
             }
         });
-
-
 
         //
 
@@ -166,20 +197,83 @@ public class RegisterPlanActivity extends AppCompatActivity {
             }
         });
         */
+
+
+        //Ion방식의 통신 준비
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(this).getConscryptMiddleware().enable(false);
+
+
+        //여기서 전송버튼 누르면 서버 통신
         buttonCompleteRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.putExtra("start", strfirstDate);
-                intent.putExtra("last", strlastDate);
-                setResult(RESULT_OK, intent);
-                finish();
+//                Intent intent = new Intent();
+//                intent.putExtra("start", strfirstDate);
+//                intent.putExtra("last", strlastDate);
+//                setResult(RESULT_OK, intent);
+//                finish();
+
+                scheTitle = planTitle.getText().toString().trim();
+                aboutSched = aboutPlan.getText().toString().trim();
+                //startDate
+                //startTime
+                //strEndDate
+                //startEndTime
+                strLocation = planTitle.getText().toString().trim();
+
+
+                JsonObject json = new JsonObject();
+
+                json.addProperty("cid", 1);
+                json.addProperty("title", scheTitle);
+                json.addProperty("sContent", aboutSched);
+                json.addProperty("startDate", strStartDate);
+                json.addProperty("startTime",strStartTime);
+                json.addProperty("endDate",strEndDate);
+                json.addProperty("endTime",strEndTime);
+                json.addProperty("area",strLocation);
+
+                //서버 응답 받을 동안 로딩 창 실행.
+                final ProgressDialog progressDialog = new ProgressDialog(RegisterPlanActivity.this);
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                progressDialog.setMessage("잠시만 기다려주세요. 해당 일정 등록 중 입니다~");
+                progressDialog.show();
+
+                //일정 추가에 관한 정보 서버 전송
+                Ion.with(getApplicationContext())
+                        .load("POST", url.getServerUrl() + "/createSche")
+                        .progressDialog(progressDialog)
+                        //요청 헤더 지정
+                        .setHeader("Content-Type","application/json")
+                        .setHeader("Authorization", userToken)
+                        .setJsonObjectBody(json)
+
+                        //응답은 JsonObject로 받겠다.
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+
+                                if(e != null) { //서버 연결 오류
+                                    Toast.makeText(getApplicationContext(), "Problom in Server Connection", Toast.LENGTH_LONG).show();
+                                }
+
+                                else {// 서버 연결 성공 시
+                                    //프로그래스 dialog종료
+                                    progressDialog.cancel();
+                                    Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
+                                    setResult(RESULT_OK);
+                                    finish();
+                                }
+                            }
+                        });
             }
         });
     }
 
     //7.10 추가부분
-    private class SlidingPageAnimationListner implements Animation.AnimationListener {
+    private class SlidingPageAnimationListener implements Animation.AnimationListener {
         @Override
         public void onAnimationStart(Animation animation) {
             if (isPageOpen) {
@@ -207,6 +301,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
     }
 
 
+
     //시간 설정
     private void initTime() {
         final Calendar cal = Calendar.getInstance();
@@ -222,20 +317,23 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
                         Log.d("시작시간", Integer.toString(hourOfDay));
                         Log.d("시작 분", Integer.toString(minute));
+
                         /*
-                          시간 형식 08:12 오후
+                          뷰에 보여주는 시간 형식 08:12 오후
                          */
-                        SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+                        SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
+                        //SimpleDateFormat format2 = new SimpleDateFormat("HH-mm-ss");
                         try {
-                            Date date1 = format.parse("" + hourOfDay + ":" + minute);
+                            Date date1 = format1.parse("" + hourOfDay + ":" + minute);
                             startTime.setText(new SimpleDateFormat("hh:mm a").format(date1.getTime()));
+                            strStartTime = new SimpleDateFormat("HH-mm-ss").format(date1.getTime());
+                            Log.i("시작 시간",strStartTime);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false);
                 dialog.show();
-
             }
         });
 
@@ -258,6 +356,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         try {
                             Date date2 = format.parse("" + hourOfDay + ":" + minute);
                             endTime.setText(new SimpleDateFormat("hh:mm a").format(date2.getTime()));
+                            strEndTime = new SimpleDateFormat("HH-mm-ss").format(date2.getTime());
+                            Log.i("종료시간", strEndTime);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -280,7 +380,11 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         //month = 0부터 시작한다.
                         intFirstmon = month;
                         intFirstday = dayOfMonth;
-                        strfirstDate = dateFormatByUserCase(1, year, month, dayOfMonth);
+                        strStartDate = dateFormatByUserCase(1, year, month, dayOfMonth);
+
+                        Log.i("시작 날짜",strStartDate);
+
+
                     }
                 }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE));
                 //dialog.getDatePicker().setMaxDate(new Date().getTime());//입력한 날짜 이후로 클릭 안되게 옵션
@@ -311,7 +415,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
     private void checkDate(int firstMon, int lastMon, int firstDay, int lastDay, int lastYear) {
 
         if (firstMon < lastMon) {
-            strlastDate = dateFormatByUserCase(2, lastYear, lastMon, lastDay);
+            strEndDate = dateFormatByUserCase(2, lastYear, lastMon, lastDay);
 
         } else if (firstMon > lastMon) {
             Toast.makeText(RegisterPlanActivity.this, "다시 입력해주세요.", Toast.LENGTH_LONG).show();
@@ -321,7 +425,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 Toast.makeText(RegisterPlanActivity.this, "다시 입력해주세요.", Toast.LENGTH_LONG).show();
 
             } else {
-                strlastDate = dateFormatByUserCase(2, lastYear, lastMon, lastDay);
+                strEndDate = dateFormatByUserCase(2, lastYear, lastMon, lastDay);
+                Log.i("종료 날짜", strEndDate);
             }
         }
     }
@@ -332,11 +437,10 @@ public class RegisterPlanActivity extends AppCompatActivity {
       selectLast에 setText할지 구분해주는 메소드.
      */
     private void setSelectFirstOrSelectLast(int flag, String txtmsg) {
-        if (flag == 1) {
+        if (flag == 1)
             startDate.setText(txtmsg);
-        } else if (flag == 2) {
+        else if (flag == 2)
             endDate.setText(txtmsg);
-        }
     }
 
     /*
@@ -344,6 +448,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
        return 타입 : String
        이 함수를 이용하여 strFirstDate, strLastDate에 만들어진 형식을 저장할 수 있다.
      */
+
     private String dateFormatByUserCase(int flag, int year, int month, int dayOfMonth) {
 
         String format = null;
@@ -390,5 +495,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
         }
         return format;
     }
+
 }
 

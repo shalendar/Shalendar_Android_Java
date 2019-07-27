@@ -101,22 +101,24 @@ public class CreateCalendarActivity extends AppCompatActivity {
                 //File file = new File(imageURL);
                 //서버 통신.
 
-                JsonObject json = new JsonObject();
+                //JsonObject json = new JsonObject();
 
                 //RequestBody 설정 JSONObjedt를 보내기 위한 준비
                 //json에 담는다.
-                json.addProperty("calName", calName);
-                json.addProperty("calContent", aboutCal);
-                json.addProperty("img_url", "");
+                //json.addProperty("calName", calName);
+                //json.addProperty("calContent", aboutCal);
+                //json.addProperty("img_url", "");
 
                 Ion.with(getApplicationContext())
                         .load("POST", url.getServerUrl() + "/createCal")
                         //요청 헤더 지정
-                        .setHeader("Content-Type","application/json;charset=UTF-8")
+                        .setHeader("Content-Type","application/json")
                         .setHeader("Authorization", userToken)
-                        .setJsonObjectBody(json)
+                        //.setJsonObjectBody(json)
+                        //.setMultipartFile("file", file)
+                        .setMultipartParameter("dto", calName)
+                        .setMultipartParameter("dto", aboutCal)
 
-                        //.setMultipartParameter("img_url", imageURL)
 
                         //응답은 JsonObject로 받겠다.
                         .asJsonObject()

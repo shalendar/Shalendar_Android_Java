@@ -47,6 +47,16 @@
                     android:textColor="#4a4a4a"
                     android:textSize="20sp" />
 
+                <ImageButton
+                    android:id="@+id/btn_menu2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:adjustViewBounds="false"
+                    android:background="#FFFFFF"
+                    android:src="@drawable/btn_sidemenu" />
+
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
