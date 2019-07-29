@@ -27,12 +27,14 @@
             android:background="@drawable/searchbox">
 
             <EditText
+                android:id="@+id/search_Keyword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="80dp"
                 android:hint="검색어 입력" />
 
             <ImageButton
+                android:id="@+id/search_Schedule"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
