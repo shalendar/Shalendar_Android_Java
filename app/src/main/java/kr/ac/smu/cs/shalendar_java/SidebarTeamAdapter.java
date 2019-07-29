@@ -13,6 +13,7 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
     private ArrayList<SidebarTeamItem> teamPicList;
     private Context mContext;
 
+
     public SidebarTeamAdapter(ArrayList<SidebarTeamItem> teamPicList, Context mContext) {
         this.teamPicList = teamPicList;
         this.mContext = mContext;
@@ -29,6 +30,8 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
     public void onBindViewHolder(TeamItemHolder holder, int position) {
         SidebarTeamItem teamIteam = teamPicList.get(position);
         holder.sideteammatePic.setImageResource(teamIteam.getTeammatePic());
+
+
     }
 
     @Override

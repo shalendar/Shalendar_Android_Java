@@ -36,6 +36,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int TYPE_FOOTER = 2;
     private BoardHeaderAdapter h_adapter;
 
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

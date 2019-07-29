@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,32 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 /*
     Login하는 Activity
@@ -65,11 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     //서버로 부터 로그인 성공 시 오는 응답 Token 변수
     private String userToken;
 
-    //서버로 부터 로그인 실패 시 오는 응답 변수
-    private String responseFromServer;
-
-    //Volley를 사용한 통신
-    private static RequestQueue requestQueue;
 
 
     @Override
@@ -90,6 +62,9 @@ public class LoginActivity extends AppCompatActivity {
            - 나중에 CreateMemberActivity로 넘어가는 코드 짜야 한다.
         */
 
+        //통신 준비.
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(this).getConscryptMiddleware().enable(false);
 
         //로그인 버튼
         buttonToMain.setOnClickListener(new View.OnClickListener() {
@@ -126,19 +101,45 @@ public class LoginActivity extends AppCompatActivity {
 //                }
 
 
-                //서버 통신코드 1 AsnychTask사용
-                new LoginTask(LoginActivity.this).execute(url.getServerUrl() + "/signin");
 
-                //서버 통신코드 2 Volley사용(사용 X)
-                //makeRequest();
+                //서버 통신코드 Ion 롸이브뤄리 사용
+                final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+                progressDialog.setMessage("로그인 중 입니다~");
+                progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+                progressDialog.show();
+
+                //응답 바디 설정.
+                JsonObject json = new JsonObject();
+
+                //응답 바디 서버에 보낼 data 넣음
+                json.addProperty("id", userEmail);
+                json.addProperty("pw", userPassword);
+
+
+                Ion.with(getApplicationContext())
+                        .load("POST", url.getServerUrl() + "/signin")
+                        .setHeader("Content-Type", "application/json")
+                        .progressDialog(progressDialog)
+                        .setJsonObjectBody(json)
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+
+                                if( e!= null) {
+                                    Toast.makeText(getApplicationContext(), "Connection Error", Toast.LENGTH_LONG).show();
+                                }
+
+                                else {
+                                    progressDialog.dismiss();
+                                    String message = result.get("message").getAsString();
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                    parseFromServer(message, result);
+                                }
+                            }
+                        });
             }
         });
-
-        //Volley 방식 통신을 위한 시작부분
-        if(requestQueue == null) {
-            //RequestQue객체 생성.
-            requestQueue = Volley.newRequestQueue(getApplicationContext());
-        }
 
 
         //이메일로 회원가입 버튼 클릭 경우
@@ -152,233 +153,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    //로그인 통신 코드 1. AsynchTask사용.
+    //서버 응답 처리
+    //응답으로 받은 userToken, getSharedPreference에 저장.
+    public void parseFromServer(String message, JsonObject result) {
+        if(message.equals("login success")) {
+            userToken = result.get("token").getAsString();
+            SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("userToken", userToken);
+            editor.putString("userEmail", userEmail);
+            editor.apply();
 
-    public class LoginTask extends AsyncTask<String, String, String> {
-
-        ProgressDialog progressDialog;
-
-        public LoginTask(Context context){
-            progressDialog = new ProgressDialog(context);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("userEmail", userEmail);
+            startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
         }
 
-        @Override
-        protected void onPreExecute(){
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.setMessage("잠시만 기다려주세요. 로그 인 중 입니다~");
-            progressDialog.show();
-
-            super.onPreExecute();
-
+        else if(message.equals("wrong password")) {
+            Toast.makeText(getApplicationContext(), "사용자 정보가 일치 하지 않습니다", Toast.LENGTH_LONG).show();
         }
-
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                Log.d("doInBackground 확인", "doIn");
-                //JSONObject를 만들고 key value 형식으로 값을 저장해준다.
-
-
-//                for (int i = 0; i < 5; i++) {
-//                    progressDialog.setProgress(i * 30);
-//                    Thread.sleep(500);
-//
-//                }
-
-
-                JSONObject jsonObject = new JSONObject();
-
-                jsonObject.put("id", userEmail);
-                jsonObject.put("pw", userPassword);
-
-
-                Log.d("들어갔는지 확인", "jsonOk??");
-
-
-                HttpURLConnection con = null;
-                BufferedReader reader = null;
-
-
-                try{
-                    URL url = new URL(urls[0]);
-                    //연결을 함
-                    con = (HttpURLConnection) url.openConnection();
-
-                    //요청 방식 선택(POST or GET)
-                    con.setRequestMethod("POST");
-                    //Request Header값 Setting(data를 key, value형식으로 보낼 수 있음)
-//                    con.setRequestProperty("Autorization", Integer.toString(userToken));
-                    con.setRequestProperty("Cache-Control", "no-cache");
-                    //RequestBody전달 시 application/json형식으로 서버에 전달.
-                    con.setRequestProperty("Content-Type", "application/json");
-
-                    //OutputStream으로 POST data를 넘겨주겠다는 옵현
-                    con.setDoOutput(true);
-                    //InputStrean으로 서버로 부터 응답을 받겠다는 옵션
-                    con.setDoInput(true);
-
-                    con.connect();
-
-                    Log.d("con 연결1", "");
-
-                    //서버로 보내기위해서 스트림 만듬
-                    OutputStream outStream = con.getOutputStream();
-                    //버퍼를 생성하고 넣음
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outStream));
-                    writer.write(jsonObject.toString());
-                    writer.flush();
-                    writer.close();//버퍼를 받아줌
-
-                    Log.d("con 연결2", "");
-
-                    //서버로 부터 데이터를 InputStream으로 받겠다!
-                    InputStream stream = con.getInputStream();
-
-                    Log.d("con연결3 데이터받음", "");
-
-                    reader = new BufferedReader(new InputStreamReader(stream));
-
-                    StringBuffer buffer = new StringBuffer();
-                    String line = "";
-                    while((line = reader.readLine()) != null){
-                        buffer.append(line);
-                    }
-
-                    return buffer.toString();
-
-                } catch (MalformedURLException e){
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    if(con != null){
-                        con.disconnect();
-                    }
-                    try {
-                        if(reader != null){
-                            reader.close();//버퍼를 닫아줌
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return "";
+        else {
+            Toast.makeText(getApplicationContext(), "서버 연결 실패", Toast.LENGTH_LONG).show();
         }
-
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            //Log.d("들어오는 pid", result);//서버로 부터 받은 값을 출력해주는 부분
-            //dialog창 닫기
-            progressDialog.dismiss();
-            try {
-
-                JSONParser jsonParser = new JSONParser();
-                JSONObject jsonObject = (JSONObject) jsonParser.parse(result);
-
-
-                responseFromServer = (String)jsonObject.get("message");
-                userToken = (String)jsonObject.get("token");
-
-
-                Log.d("서버응답", responseFromServer);
-                Toast.makeText(getApplicationContext(), responseFromServer, Toast.LENGTH_LONG).show();
-
-
-                //서버로 부터 success 응답 받으면 메인 화면으로 넘어간다.
-                if(responseFromServer.equals("login success")) {
-
-                    SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = pref.edit();
-                    editor.putString("userToken", userToken);
-                    editor.apply();
-
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-                }
-                else if(responseFromServer.equals("wrong password")) {
-                    Toast.makeText(getApplicationContext(), "비밀번호가 일치 하지 않습니다", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "서버 연결 실패", Toast.LENGTH_LONG).show();
-                }
-
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-    //로그인 통신 코드 2 Volley 사용.
-    public void makeRequest() {
-
-        String urlToServer = url.getServerUrl() + "/signin";
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, urlToServer, null,
-                new Response.Listener<org.json.JSONObject>() {
-            @Override
-            public void onResponse(org.json.JSONObject response) {
-
-                try {
-                    responseFromServer = response.getString("message");
-                    userToken = response.getString("token");
-
-                    if(responseFromServer.equals("login success")) {
-
-                        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = pref.edit();
-                        editor.putString("userToken", userToken);
-                        editor.apply();
-
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-                    }
-                    else if(responseFromServer.equals("wrong password")) {
-                        Toast.makeText(getApplicationContext(), "비밀번호가 일치 하지 않습니다", Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(), "서버 연결 실패", Toast.LENGTH_LONG).show();
-                    }
-
-                }catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.i("서버 연결 오류", error.toString());
-            }
-        })
-
-        {
-
-            //RequestBody
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-              Map<String, String> params = new HashMap<>();
-              params.put("id", userEmail);
-              params.put("pw", userPassword);
-              return params;
-          }
-
-            //RequestHeader
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/json");
-                return params;
-            }
-        };
-
-        request.setShouldCache(false);
-        requestQueue.add(request);
-
     }
 }
