@@ -34,6 +34,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
 import org.json.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -91,7 +96,11 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         //통신코드
         //서버 통신코드 1 AsnychTask사용
-        new initBoardTask(BoardActivity.this).execute(url.getServerUrl() + "/initBoard");
+        //new initBoardTask(BoardActivity.this).execute(url.getServerUrl() + "/initBoard");
+
+        //통신 준비
+        Ion.getDefault(getApplicationContext()).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(getApplicationContext()).getConscryptMiddleware().enable(false);
 
 
         addSideView();  //사이드바 add
@@ -100,6 +109,69 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         //레이아웃 매니져가 null값을 받는다 이유는?
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         boardRecyclerView.setLayoutManager(linearLayoutManager);
+
+        //통신코드 시작(initBoard)
+
+        final JsonObject json = new JsonObject();
+
+        json.addProperty("cid", 1);
+
+//        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
+//        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//        progressDialog.setMessage("잠시만 기다려주세요. 게시판화면 불러오는중~");
+//        progressDialog.show();
+
+        Ion.with(getApplicationContext())
+                .load("POST", url.getServerUrl() + "/initBoard")
+                .setHeader("Content-Type", "application/json")
+                //.progressDialog(progressDialog)
+                .setJsonObjectBody(json)
+                .asJsonObject() //응답
+                .setCallback(new FutureCallback<JsonObject>(){
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        //받을 변수
+                        String datetime, planname, location, replynum;
+                        String id, pw, userName, img_url;
+
+                        if(e != null) {
+                            Toast.makeText(getApplicationContext(), "Server Connection Error!", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
+                            //data: 다음에 나오는 것들도 JsonObject형식.
+                            //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
+                            //JSONArray가 아님. 얘는 [,]로 묶여 있어야 함.
+
+                            String message = result.get("message").getAsString();
+                            int sharePeopleNum =result.get("sharePeopleNum").getAsInt();
+                            //서버로 부터 응답 메세지가 success이면...
+
+                            if(message.equals("success")) {
+                                //서버 응답 오면 로딩 창 해제
+                                //progressDialog.dismiss();
+
+                                //data: {} 에서 {}안에 있는 것들도 JsonObject
+                                JsonArray sharedUserData = result.get("shareUserData").getAsJsonArray();
+
+                                for(int i=0; i<sharePeopleNum; i++) {
+                                    JsonObject jsonArr = sharedUserData.get(i).getAsJsonObject();
+                                    id=jsonArr.get("id").getAsString();
+                                    Log.i("공유 넘버", Integer.toString(sharePeopleNum));
+                                    Log.i("id는 이거다잉",id);
+                                }
+
+
+
+                            } else {
+
+                                Toast.makeText(getApplicationContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    }
+                });
+
 
         b_adapter = new BoarderAdapter();
 
@@ -121,7 +193,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
     //보더초기화 통신
     //로그인 통신 코드 1. AsynchTask사용.
-
+    /*
     public class initBoardTask extends AsyncTask<String, String, String> {
 
         ProgressDialog progressDialog;
@@ -283,7 +355,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
+    */
 
     private void init() {
 

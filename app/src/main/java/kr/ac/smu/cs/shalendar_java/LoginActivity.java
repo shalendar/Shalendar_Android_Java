@@ -103,7 +103,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("맞아?", Boolean.toString(userEmail.equals("jacob456@hanmail.net")));
 
 
-
 //                if(userEmail.equals("jacob") && userPassword.equals("456")) {
 //
 //                    Toast.makeText(getApplicationContext(), "사용자정보 일치 메인화면으로이동", Toast.LENGTH_SHORT).show();

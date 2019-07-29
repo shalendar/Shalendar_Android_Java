@@ -158,6 +158,39 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
               이 정보들을 intent로 저장 시킨 후
               PlanDetail로 남긴다.
              */
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition()-1).getPlanname()+"이거 수정한다잉",Toast.LENGTH_SHORT).show();
+
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
+                    dialog.setTitle("일정 수정/삭제");
+
+                    dialog.setMessage("일정 수정, 삭제하십니까?")
+                            .setPositiveButton("수정", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(context, UpdatePlanActivity.class);
+                                    context.startActivity(intent);
+                                    dialog.cancel();
+                                }
+                            })
+
+                            .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alertDialog = dialog.create();
+                    alertDialog.show();
+
+                    return false;
+                }
+            });
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -178,11 +211,11 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             .load("POST", url.getServerUrl() + "/showSche")
                             .setHeader("Content-Type", "application/json")
                             .setJsonObjectBody(json)
-                            .asJsonObject()
+                            .asJsonObject() //응답
                             .setCallback(new FutureCallback<JsonObject>() {
                                 @Override
                                 public void onCompleted(Exception e, JsonObject result) {
-
+                                    //응답 받을 변수
                                     String userName, schedTitle, aboutSched, schedLocation;
                                     String startDate, startTime, endDate, endTime, startToEnd;
 
