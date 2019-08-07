@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -29,6 +31,8 @@ import com.koushikdutta.ion.Ion;
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
+
+
 
 public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -39,8 +43,11 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int TYPE_FOOTER = 2;
     private BoardHeaderAdapter h_adapter;
     int sharedPeoplenum;
+    JsonArray shareUserData;
 
-    public BoarderAdapter() {
+    public BoarderAdapter(int sharedPeoplenum, JsonArray shareUserData) {
+        this.sharedPeoplenum = sharedPeoplenum;
+        this.shareUserData = shareUserData;
     }
 
     //사람을 받아옴
@@ -53,7 +60,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         context = parent.getContext();
         RecyclerView.ViewHolder holder;
         View view;
-        int sharedPeoplenum;
+       // int sharedPeoplenum;
 
         //왜 이게 0이지?
 
@@ -68,16 +75,33 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             h_adapter = new BoardHeaderAdapter();
             h_recyclerView.setAdapter(h_adapter);
 
+            /*
             //사람수 boarder액티비티에서 받아옴
             SharedPreferences sharedPnum = context.getSharedPreferences("Peoplenum", MODE_PRIVATE);
             sharedPeoplenum = sharedPnum.getInt("Peoplenum", 0);
+            */
 
-            Log.i("넘어온요기요", Integer.toString(sharedPeoplenum));
+            //BoardActivity bac = new BoardActivity();
+
+
+            Log.i("넘어온 명수", Integer.toString(sharedPeoplenum));
 
             for (int i = 0; i < sharedPeoplenum; i++) {
-                Log.i("안에 요기요", Integer.toString(sharedPeoplenum));
-                h_adapter.addItem(new BoardTeamItem("박성준", R.drawable.ic_launcher_foreground));
+                JsonObject jsonArr = shareUserData.get(i).getAsJsonObject();
+                //id = jsonArr.get("id").getAsString();
+                h_adapter.addItem(new BoardTeamItem(jsonArr.get("id").getAsString(), R.drawable.ic_launcher_foreground));
             }
+//                h_adapter.notifyDataSetChanged();
+//
+//                holder = new HeaderViewHolder(view);
+
+            Log.i("누가 먼저 실행되는 거임??11", Integer.toString(sharedPeoplenum));
+            //Log.i("DataClass의22222222222", Integer.toString(Data.sharedNumber));
+
+//            for (int i = 0; i < sharedPeoplenum; i++) {
+//                Log.i("포문 안에 명수", Integer.toString(sharedPeoplenum));
+//                h_adapter.addItem(new BoardTeamItem("박성준", R.drawable.ic_launcher_foreground));
+//            }
             h_adapter.notifyDataSetChanged();
 
             holder = new HeaderViewHolder(view);
