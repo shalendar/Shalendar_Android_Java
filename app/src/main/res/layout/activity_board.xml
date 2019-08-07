@@ -85,12 +85,14 @@
                 <android.support.v7.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/BoarderRecyclerView">
+                    android:id="@+id/BoarderRecyclerView"
+                    android:layout_above="@+id/downButtons">
 
                 </android.support.v7.widget.RecyclerView>
 
                 <!--밑에 버튼 세개 모인 리니어레이아웃-->
                 <LinearLayout
+                    android:id="@+id/downButtons"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"

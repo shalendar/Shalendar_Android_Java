@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,8 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<BoardPlanItem> boardList = new ArrayList<>();
@@ -35,6 +38,13 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int TYPE_ITEM = 1;
     private final int TYPE_FOOTER = 2;
     private BoardHeaderAdapter h_adapter;
+    int sharedPeoplenum;
+
+    public BoarderAdapter() {
+    }
+
+    //사람을 받아옴
+
 
     @NonNull
     @Override
@@ -43,6 +53,9 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         context = parent.getContext();
         RecyclerView.ViewHolder holder;
         View view;
+        int sharedPeoplenum;
+
+        //왜 이게 0이지?
 
         if (viewType == TYPE_HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_boardheader, parent, false);
@@ -55,16 +68,16 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             h_adapter = new BoardHeaderAdapter();
             h_recyclerView.setAdapter(h_adapter);
 
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
+            //사람수 boarder액티비티에서 받아옴
+            SharedPreferences sharedPnum = context.getSharedPreferences("Peoplenum", MODE_PRIVATE);
+            sharedPeoplenum = sharedPnum.getInt("Peoplenum", 0);
+
+            Log.i("넘어온요기요", Integer.toString(sharedPeoplenum));
+
+            for (int i = 0; i < sharedPeoplenum; i++) {
+                Log.i("안에 요기요", Integer.toString(sharedPeoplenum));
+                h_adapter.addItem(new BoardTeamItem("박성준", R.drawable.ic_launcher_foreground));
+            }
             h_adapter.notifyDataSetChanged();
 
             holder = new HeaderViewHolder(view);
@@ -79,8 +92,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderViewHolder) {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-        }
-        else {
+        } else {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.onBind(boardList.get(position - 1), position);
 
@@ -162,7 +174,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition()-1).getPlanname()+"이거 수정한다잉",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname() + "이거 수정한다잉", Toast.LENGTH_SHORT).show();
 
                     AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                     dialog.setTitle("일정 수정/삭제");
@@ -194,7 +206,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition()-1).getPlanname(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname(), Toast.LENGTH_SHORT).show();
 
 
                     JsonObject json = new JsonObject();
@@ -219,11 +231,9 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     String userName, schedTitle, aboutSched, schedLocation;
                                     String startDate, startTime, endDate, endTime, startToEnd;
 
-                                    if(e != null) {
+                                    if (e != null) {
                                         Toast.makeText(itemView.getContext(), "Server Connection Error!", Toast.LENGTH_LONG).show();
-                                    }
-
-                                    else {
+                                    } else {
                                         //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
                                         //data: 다음에 나오는 것들도 JsonObject형식.
                                         //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
@@ -232,7 +242,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                         String message = result.get("message").getAsString();
                                         //서버로 부터 응답 메세지가 success이면...
 
-                                        if(message.equals("success")) {
+                                        if (message.equals("success")) {
                                             //서버 응답 오면 로딩 창 해제
                                             progressDialog.dismiss();
 
@@ -259,7 +269,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                                             context.startActivity(intent);
 
-                                            Log.i("result",data.get("id").getAsString());
+                                            Log.i("result", data.get("id").getAsString());
                                         } else {
 
                                             Toast.makeText(itemView.getContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
@@ -309,7 +319,6 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 //                }
 //            });
         }
-
 
 
         void onBind(BoardPlanItem data, int position) {

@@ -82,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //사용자 지정 날짜 가지는 자료구조.
     HashMap<String, String> map = new HashMap<>();
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -459,6 +461,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Sidebar sidebar = new Sidebar(mContext);
         sideLayout.addView(sidebar);
+        //sidebar.setUserID(userName);
 
         viewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
