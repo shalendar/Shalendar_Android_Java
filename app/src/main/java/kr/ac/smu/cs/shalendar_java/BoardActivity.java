@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -60,6 +61,7 @@ import java.util.ArrayList;
   게시판 형식으로 보여주는 Activity.
   일정 item을 누르면 PlanDetailActivity로 넘어간다.
  */
+
 public class BoardActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button buttonToPlanDtail;
@@ -87,6 +89,14 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
     private Boolean isMenuShow = false;
     private Boolean isExitFlag = false;
 
+    public int getSharePeopleNum() {
+        return sharePeopleNum;
+    }
+
+    public void setSharePeopleNum(int sharePeopleNum) {
+        this.sharePeopleNum = sharePeopleNum;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -98,17 +108,13 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         //통신코드
 
-
         addSideView();  //사이드바 add
 
-        RecyclerView boardRecyclerView = findViewById(R.id.BoarderRecyclerView);
+        final RecyclerView boardRecyclerView = findViewById(R.id.BoarderRecyclerView);
         //레이아웃 매니져가 null값을 받는다 이유는?
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         boardRecyclerView.setLayoutManager(linearLayoutManager);
 
-        b_adapter = new BoarderAdapter();
-
-        boardRecyclerView.setAdapter(b_adapter);
         //통신코드 시작(initBoard)
 
         //통신 준비
@@ -139,8 +145,10 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                         int cid, sid, numOfComments, userCount;
                         String title, sContent, startDate, startTime, endDate, endTime, area;
 
+
                         if (e != null) {
-                            Toast.makeText(getApplicationContext(), "Server Connection Error!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
                         } else {
                             //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
                             //data: 다음에 나오는 것들도 JsonObject형식.
@@ -149,15 +157,21 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
                             String message = result.get("message").getAsString();
                             sharePeopleNum = result.get("sharePeopleNum").getAsInt();
+                            //setSharePeopleNum(sharePeopleNum);
 
+                            // Data.sharedNumber = sharePeopleNum;
+
+                            //Log.i("DataClass의", Integer.toString(Data.sharedNumber));
+                            /*
                             //여기서부터 SharedPreference써본다잉
                             SharedPreferences sharedPnum = getSharedPreferences("Peoplenum", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPnum.edit();
                             editor.putInt("Peoplenum",sharePeopleNum);
                             editor.apply();
-
+                            */
 
                             Log.i("요기요1", Integer.toString(sharePeopleNum));
+
                             //b_adapter.setSharedNumber(sharePeopleNum);
 
                             //서버로 부터 응답 메세지가 success이면...
@@ -169,14 +183,15 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                 //shareuserdata: {} 에서 {}안에 있는 것들도 JsonObject
                                 JsonArray sharedUserData = result.get("shareUserData").getAsJsonArray();
 
-
-
                                 for (int i = 0; i < sharePeopleNum; i++) {
                                     JsonObject jsonArr = sharedUserData.get(i).getAsJsonObject();
                                     id = jsonArr.get("id").getAsString();
                                     //pw=jsonArr.get("pw").getAsString();
 
                                 }
+
+                                b_adapter = new BoarderAdapter(sharePeopleNum, sharedUserData);
+                                boardRecyclerView.setAdapter(b_adapter);
 
                                 //calendardata: {} 에서 {}안에 있는 것들도 JsonObject
                                 JsonObject calendarData = result.get("calendarData").getAsJsonObject();
@@ -207,17 +222,24 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
 
                                     b_adapter.addItem(new BoardPlanItem(startDate, title, area, numOfCommentsstring));
+
                                 }
 
                                 b_adapter.notifyDataSetChanged();
+                                // boardRecyclerView.setAdapter(b_adapter);
                             } else {
                                 Toast.makeText(getApplicationContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
                             }
                         }
                     }
                 });
-    }
 
+//        b_adapter = new BoarderAdapter(sharePeopleNum);
+//
+//        boardRecyclerView.setAdapter(b_adapter);
+
+        Log.i("누가 먼저 실행되는 거임??333", "BoardActivity Ion 통신 끝");
+    }
 
     private void init() {
 
@@ -294,7 +316,6 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         viewLayout.setEnabled(true);
         mainLayout.setEnabled(false);
     }
-
 
     @Override
     public void onClick(View view) {
