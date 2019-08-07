@@ -44,10 +44,16 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private BoardHeaderAdapter h_adapter;
     int sharedPeoplenum;
     JsonArray shareUserData;
+    JsonObject calendarData;
+    String calName;
+    String calContent;
+    TextView boardHeadertitle;
+    TextView boardHeaderContent;
 
-    public BoarderAdapter(int sharedPeoplenum, JsonArray shareUserData) {
+    public BoarderAdapter(int sharedPeoplenum, JsonArray shareUserData, JsonObject calendarData) {
         this.sharedPeoplenum = sharedPeoplenum;
         this.shareUserData = shareUserData;
+        this.calendarData = calendarData;
     }
 
     //사람을 받아옴
@@ -60,29 +66,26 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         context = parent.getContext();
         RecyclerView.ViewHolder holder;
         View view;
-       // int sharedPeoplenum;
-
-        //왜 이게 0이지?
 
         if (viewType == TYPE_HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_boardheader, parent, false);
             //추가
-
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayout.HORIZONTAL, false);
             RecyclerView h_recyclerView = view.findViewById(R.id.header_recycler);
             h_recyclerView.setLayoutManager(linearLayoutManager);
 
+            //보더헤더 이름과 설명 설정하는 부분
+            boardHeadertitle=(TextView) view.findViewById(R.id.boardHeadertitle);
+            boardHeaderContent=(TextView) view.findViewById(R.id.boardHeaderContent);
+
+            calName = calendarData.get("calName").getAsString();
+            calContent = calendarData.get("calContent").getAsString();
+
+            boardHeadertitle.setText(calName);
+            boardHeaderContent.setText(calContent);
+
             h_adapter = new BoardHeaderAdapter();
             h_recyclerView.setAdapter(h_adapter);
-
-            /*
-            //사람수 boarder액티비티에서 받아옴
-            SharedPreferences sharedPnum = context.getSharedPreferences("Peoplenum", MODE_PRIVATE);
-            sharedPeoplenum = sharedPnum.getInt("Peoplenum", 0);
-            */
-
-            //BoardActivity bac = new BoardActivity();
-
 
             Log.i("넘어온 명수", Integer.toString(sharedPeoplenum));
 
@@ -91,18 +94,10 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 //id = jsonArr.get("id").getAsString();
                 h_adapter.addItem(new BoardTeamItem(jsonArr.get("id").getAsString(), R.drawable.ic_launcher_foreground));
             }
-//                h_adapter.notifyDataSetChanged();
-//
-//                holder = new HeaderViewHolder(view);
 
             Log.i("누가 먼저 실행되는 거임??11", Integer.toString(sharedPeoplenum));
-            //Log.i("DataClass의22222222222", Integer.toString(Data.sharedNumber));
 
-//            for (int i = 0; i < sharedPeoplenum; i++) {
-//                Log.i("포문 안에 명수", Integer.toString(sharedPeoplenum));
-//                h_adapter.addItem(new BoardTeamItem("박성준", R.drawable.ic_launcher_foreground));
-//            }
-            h_adapter.notifyDataSetChanged();
+        h_adapter.notifyDataSetChanged();
 
             holder = new HeaderViewHolder(view);
         } else {
@@ -119,39 +114,6 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } else {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.onBind(boardList.get(position - 1), position);
-
-
-//            //각 ITem마다 Long Click Listener 구현 -->실패
-//            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View view) {
-//
-//                    AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
-//                    dialog.setTitle("해당 일정 수정/삭제");
-//                    dialog.setMessage("해당 일정  수정, 삭제하십니까?")
-//                            .setPositiveButton("수정", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    //UpdatePlanActivity로 이동.
-//
-//                                    Intent intent = new Intent(context, UpdatePlanActivity.class);
-//                                    context.startActivity(intent);
-//                                    //dialog.cancel();
-//                                }
-//                            })
-//
-//                            .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//
-//                    AlertDialog alertDialog = dialog.create();
-//                    alertDialog.show();
-//                    return false;
-//                }
-//            });
         }
     }
 
@@ -303,45 +265,9 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 }
                             });
 
-//                    Intent intent = new Intent(context, PlanDetailActivity.class);
-//                    //어댑터에서는 이렇게 해줘야함
-//                    //해당 plandetail로 이동
-//                    context.startActivity(intent);
                 }
             });
 
-
-//            //각 ITem마다 Long Click Listener 구현
-//            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View view) {
-//
-//                    AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
-//                    dialog.setTitle("해당 일정 수정/삭제");
-//                    dialog.setMessage("해당 일정  수정, 삭제하십니까?")
-//                            .setPositiveButton("수정", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    //UpdatePlanActivity로 이동.
-//
-//                                    Intent intent = new Intent(context, UpdatePlanActivity.class);
-//                                    context.startActivity(intent);
-//                                    //dialog.cancel();
-//                                }
-//                            })
-//
-//                            .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//
-//                    AlertDialog alertDialog = dialog.create();
-//                    alertDialog.show();
-//                    return false;
-//                }
-//            });
         }
 
 
@@ -385,30 +311,4 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return TYPE_ITEM;
     }
 
-
-//    public class CustomDialog extends Dialog implements View.OnClickListener {
-//
-//        Button okButton, cancelButton;
-//        Activity mActivity;
-//
-//        public CustomDialog(Activity activity) {
-//            super(activity);
-//            mActivity = activity;
-//            setContentView(R.layout.custom_dialog);
-//            okButton = (Button) findViewById(R.id.button_ok);
-//            okButton.setOnClickListener(this);
-//            cancelButton = (Button) findViewById(R.id.button_cancel);
-//            cancelButton.setOnClickListener(this);
-//        }
-//
-//        @Override
-//        public void onClick(View v) {
-//            if (v == cancelButton)
-//                dismiss();
-//            else {
-//                Intent intent = new Intent(mActivity, UpdatePlanActivity.class);
-//                mActivity.startActivity(intent);
-//            }
-//        }
-//    }
 }
