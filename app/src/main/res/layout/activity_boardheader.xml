@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <ImageView
+        android:id="@+id/boardHeaderImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
@@ -23,6 +24,7 @@
         //달력 이름
 
         <TextView
+            android:id="@+id/boardHeadertitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="졸업프로젝트"
@@ -34,6 +36,7 @@
         //내용인데 보더값
 
         <TextView
+            android:id="@+id/boardHeaderContent"
             android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

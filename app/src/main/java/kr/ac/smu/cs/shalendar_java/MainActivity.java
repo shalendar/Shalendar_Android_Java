@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewGroup mainLayout;   //사이드 나왔을때 클릭방지할 영역
     private ViewGroup viewLayout;   //전체 감싸는 영역
     private ViewGroup sideLayout;   //사이드바만 감싸는 영역
+    private ViewGroup calendarLayout; //달력레이아웃 부분
 
     private Boolean isMenuShow = false;
     private Boolean isExitFlag = false;
@@ -171,10 +172,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 ///////애니메이션 구현
                 if (isPageOpen) {
-                    calendarRelative.setClickable(false);
+                    //calendarRelative.setClickable(false);
+                    main_animation.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getApplicationContext(),"열림",Toast.LENGTH_SHORT).show();
                     main_animation.startAnimation(translateDownAnim);
+                    /*
+                    calendarLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            main_animation.startAnimation(translateDownAnim);
+                        }
+                    });*/
+                }
 
-                } else {
+                else {
                     main_animation.setVisibility(View.VISIBLE);
                     main_animation.startAnimation(translateUpAnim);
                 }
@@ -266,9 +277,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onAnimationStart(Animation animation) {
             if (isPageOpen) {
                 main_animation.setVisibility(View.INVISIBLE);
-
                 isPageOpen = false;
             } else {
+
                 isPageOpen = true;
             }
         }
@@ -327,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dates.add(day);
             }
             */
+
             //map에 있는 data 처리 for문
             for(String key : map.keySet()) {
                 Log.d("시작날짜 key", key);
@@ -442,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainLayout = findViewById(R.id.id_main);
         viewLayout = findViewById(R.id.fl_silde);
         sideLayout = findViewById(R.id.view_sildebar);
-
+        calendarLayout = findViewById(R.id.calendarFrame);
     }
 
     private void addSideView() {
