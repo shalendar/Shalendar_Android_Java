@@ -89,14 +89,6 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
     private Boolean isMenuShow = false;
     private Boolean isExitFlag = false;
 
-    public int getSharePeopleNum() {
-        return sharePeopleNum;
-    }
-
-    public void setSharePeopleNum(int sharePeopleNum) {
-        this.sharePeopleNum = sharePeopleNum;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -143,7 +135,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                         String datetime, planname, location, replynum;
                         String id, pw, userName, img_url, calName, calContent;
                         int cid, sid, numOfComments, userCount;
-                        String title, sContent, startDate, startTime, endDate, endTime, area;
+                        String title, sContent, startDate, endDate, area, planDate;
 
 
                         if (e != null) {
@@ -157,11 +149,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
                             String message = result.get("message").getAsString();
                             sharePeopleNum = result.get("sharePeopleNum").getAsInt();
-                            //setSharePeopleNum(sharePeopleNum);
 
-                            // Data.sharedNumber = sharePeopleNum;
-
-                            //Log.i("DataClass의", Integer.toString(Data.sharedNumber));
                             /*
                             //여기서부터 SharedPreference써본다잉
                             SharedPreferences sharedPnum = getSharedPreferences("Peoplenum", MODE_PRIVATE);
@@ -183,27 +171,27 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                 //shareuserdata: {} 에서 {}안에 있는 것들도 JsonObject
                                 JsonArray sharedUserData = result.get("shareUserData").getAsJsonArray();
 
+                                /*
                                 for (int i = 0; i < sharePeopleNum; i++) {
                                     JsonObject jsonArr = sharedUserData.get(i).getAsJsonObject();
                                     id = jsonArr.get("id").getAsString();
                                     //pw=jsonArr.get("pw").getAsString();
 
                                 }
-
-                                b_adapter = new BoarderAdapter(sharePeopleNum, sharedUserData);
-                                boardRecyclerView.setAdapter(b_adapter);
+                                */
 
                                 //calendardata: {} 에서 {}안에 있는 것들도 JsonObject
                                 JsonObject calendarData = result.get("calendarData").getAsJsonObject();
-                                calName = calendarData.get("calName").getAsString();
-                                calContent = calendarData.get("calContent").getAsString();
+                                //calName = calendarData.get("calName").getAsString();
+                                //calContent = calendarData.get("calContent").getAsString();
                                 //userCount=calendarData.get("userCount").getAsInt();
 
-                                Log.i("할로할로", calName);
+                                b_adapter = new BoarderAdapter(sharePeopleNum, sharedUserData, calendarData);
+                                boardRecyclerView.setAdapter(b_adapter);
+
 
                                 //scheduleData: {} 에서 {}안에 있는 것들도 JsonObject
                                 JsonArray scheduleData = result.get("scheduleData").getAsJsonArray();
-                                Log.i("할로할로22", Integer.toString(scheduleData.size()));
                                 //문제없음
 
                                 for (int i = 0; i < scheduleData.size(); i++) {
@@ -213,15 +201,17 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                     title = jsonArr1.get("title").getAsString();
                                     sContent = jsonArr1.get("sContent").getAsString();
                                     startDate = jsonArr1.get("startDate").getAsString();
-                                    startTime = jsonArr1.get("startTime").getAsString();
                                     endDate = jsonArr1.get("endDate").getAsString();
-                                    endTime = jsonArr1.get("endTime").getAsString();
                                     area = jsonArr1.get("area").getAsString();
                                     numOfComments = jsonArr1.get("numOfComments").getAsInt();
                                     String numOfCommentsstring = Integer.toString(numOfComments);
+                                    //date 형식에 맞춰 잘라내기
+                                    startDate = startDate.substring(0,16);
+                                    endDate = endDate.substring(0,16);
+                                    //plan의 일자
+                                    planDate = startDate+" ~ "+endDate;
 
-
-                                    b_adapter.addItem(new BoardPlanItem(startDate, title, area, numOfCommentsstring));
+                                    b_adapter.addItem(new BoardPlanItem(planDate, title, area, numOfCommentsstring));
 
                                 }
 
@@ -234,9 +224,6 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
 
-//        b_adapter = new BoarderAdapter(sharePeopleNum);
-//
-//        boardRecyclerView.setAdapter(b_adapter);
 
         Log.i("누가 먼저 실행되는 거임??333", "BoardActivity Ion 통신 끝");
     }
@@ -325,7 +312,6 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
