@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+
 public class BoardHeaderAdapter extends RecyclerView.Adapter<BoardHeaderAdapter.TeammateHolder> {
 
     private ArrayList<BoardTeamItem> teammateList= new ArrayList<>();
