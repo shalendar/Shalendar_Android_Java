@@ -164,7 +164,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
         });
 
         //
-
         planTitle = findViewById(R.id.register_title_EditText);
         aboutPlan = findViewById(R.id.register_aboutPlan_EditText);
         location = findViewById(R.id.register_location_EditText);
@@ -199,10 +198,15 @@ public class RegisterPlanActivity extends AppCompatActivity {
         */
 
 
+        /*
+         통신 새로운 방법 시도(통신 class만 따로 뺌)
+         */
+
+        //IonManager ionManager = new IonManager(this);
+
         //Ion방식의 통신 준비
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(this).getConscryptMiddleware().enable(false);
-
 
         //여기서 전송버튼 누르면 서버 통신
         buttonCompleteRegister.setOnClickListener(new View.OnClickListener() {
@@ -225,13 +229,13 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
                 JsonObject json = new JsonObject();
 
-                json.addProperty("cid", 1);
+                json.addProperty("cid", 20);
                 json.addProperty("title", scheTitle);
                 json.addProperty("sContent", aboutSched);
-                json.addProperty("startDate", strStartDate);
-                json.addProperty("startTime",strStartTime);
-                json.addProperty("endDate",strEndDate);
-                json.addProperty("endTime",strEndTime);
+                json.addProperty("startDate", strStartDate + " " + strStartTime);
+                //json.addProperty("startTime",strStartTime);
+                json.addProperty("endDate",strEndDate + " " + strEndTime);
+                //json.addProperty("endTime",strEndTime);
                 json.addProperty("area",strLocation);
 
                 //서버 응답 받을 동안 로딩 창 실행.
@@ -239,6 +243,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                 progressDialog.setMessage("잠시만 기다려주세요. 해당 일정 등록 중 입니다~");
                 progressDialog.show();
+
 
                 //일정 추가에 관한 정보 서버 전송
                 Ion.with(getApplicationContext())
@@ -301,7 +306,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
     }
 
 
-
     //시간 설정
     private void initTime() {
         final Calendar cal = Calendar.getInstance();
@@ -326,7 +330,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         try {
                             Date date1 = format1.parse("" + hourOfDay + ":" + minute);
                             startTime.setText(new SimpleDateFormat("hh:mm a").format(date1.getTime()));
-                            strStartTime = new SimpleDateFormat("HH-mm-ss").format(date1.getTime());
+                            strStartTime = new SimpleDateFormat("HH:mm:ss").format(date1.getTime());
                             Log.i("시작 시간",strStartTime);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -356,7 +360,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         try {
                             Date date2 = format.parse("" + hourOfDay + ":" + minute);
                             endTime.setText(new SimpleDateFormat("hh:mm a").format(date2.getTime()));
-                            strEndTime = new SimpleDateFormat("HH-mm-ss").format(date2.getTime());
+                            strEndTime = new SimpleDateFormat("HH:mm:ss").format(date2.getTime());
                             Log.i("종료시간", strEndTime);
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -495,6 +499,5 @@ public class RegisterPlanActivity extends AppCompatActivity {
         }
         return format;
     }
-
 }
 
