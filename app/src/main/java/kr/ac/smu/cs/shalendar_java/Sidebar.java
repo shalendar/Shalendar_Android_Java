@@ -125,7 +125,6 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                         }
                     }
                 });
-
     }
 
     //서버 응답 처리

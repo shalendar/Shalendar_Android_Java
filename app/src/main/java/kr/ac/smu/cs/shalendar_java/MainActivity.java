@@ -1,5 +1,6 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,12 +25,21 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -81,6 +91,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //사용자 지정 날짜 가지는 자료구조.
     HashMap<String, String> map = new HashMap<>();
 
+    //통신
+    NetWorkUrl url = new NetWorkUrl();
+
+    //서버로 받은 것.
+    ArrayList<ScheduleData> schedList = new ArrayList<>();
+
 
 
     @Override
@@ -95,6 +111,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         userToken = pref.getString("userToken", "NO_TOKEN");
         Log.i("넘겨받은 토큰", userToken);
 
+        //
+//        ionManager = new IonManager(this);
+//        ionManager.showAllSche();
+
+        showAllSche();
 
        // textViewTitle = (TextView) findViewById(R.id.main_title_textView);
         buttonToBoard = (Button) findViewById(R.id.main_toBoard_button);
@@ -118,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mainRecyclerList=new ArrayList<>();
 
-        insertData();
+        //insertData();
 
         RecyclerView mainRecyclerView = (RecyclerView)findViewById(R.id.mainRecyclerview);
         mainRecyclerView.setHasFixedSize(true);
@@ -152,6 +173,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        String[] result = {"2019-07-01", "2019-07-31", "2019-07-22"};
 //        new ApiSimulator(result).executeOnExecutor(Executors.newSingleThreadExecutor());
 
+        String[] resultDate = new String[schedList.size()];
+        Log.i("resultDate크기", Integer.toString(resultDate.length));
+
+
+        for(int i = 0; i< schedList.size(); i++) {
+            //시작 날짜, 끝 날짜 같은 경우
+            //if(schedList.get(i).startDate.equals(schedList.get(i).endDate))
+                resultDate[i] = schedList.get(i).startDate;
+                Log.i("resultDate에 들어있는 시작 날짜", resultDate[i]);
+        }
+
+
+        new ApiSimulator(resultDate).executeOnExecutor(Executors.newSingleThreadExecutor());
+
+
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
@@ -163,10 +199,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i("Month test", Month + "");
                 Log.i("Day test", Day + "");
 
+
+                //
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+
                 String shot_Day = Year + "-" + Month + "-" + Day;
+                //ParsePosition pos = new ParsePosition( 0 );
+                //Date initialDate = format.parse(shot_Day, pos);
+
+                //String parseDate = format.format(initialDate);
 
                 Log.i("shot_Day test", shot_Day + "");
                 materialCalendarView.clearSelection();
+
+
+//                insertData();
+
 
 
                 ///////애니메이션 구현
@@ -183,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //TextView에 삽입
                 selectedDate.setText(shot_Day);
+
             }
         });
 
@@ -245,10 +294,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void insertData(){
-        for(int i=0; i<=10; i++) {
+
+        Log.i("LIST 길이", Integer.toString(schedList.size()));
+        for(int i=0; i<schedList.size(); i++) {
             MainPlanItem mitem = new MainPlanItem();
-            mitem.setMainPlanname("프로젝트"+(i+1));
-            mitem.setMainPlantime("2014-02-01");
+            mitem.setMainPlanname(schedList.get(i).sche_title);
+            mitem.setMainPlantime(schedList.get(i).startDate + " ~ " + schedList.get(i).endDate);
 
             ArrayList<MainPlanTeamIteam> mtItem = new ArrayList<>();
             for(int j=0; j<6; j++){
@@ -257,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mitem.setTeamPicList(mtItem);
             mainRecyclerList.add(mitem);
         }
-    };
+    }
 
 
     //7.17 추가부분
@@ -286,15 +337,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
-        //String[] Time_Result;
-        HashMap<String, String> Time_Result;
-        /*
-        ApiSimulator(String[] Time_Result) {
-            this.Time_Result = Time_Result;
-        }
-        */
 
-        ApiSimulator(HashMap<String, String> Time_Result) {
+        String[] Time_Result;
+
+        ApiSimulator(String[] Time_Result) {
             this.Time_Result = Time_Result;
         }
 
@@ -312,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //ArrayList를 사용해야 한다.
             ArrayList<CalendarDay> dates = new ArrayList<>();
 
-            /*
+
             //dummy data Test용 for문
             //특정날짜 달력에 점표시해주는곳
             //월은 0이 1월 년,일은 그대로
@@ -326,35 +372,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 CalendarDay day = CalendarDay.from(calendar);
                 dates.add(day);
             }
-            */
+
             //map에 있는 data 처리 for문
-            for(String key : map.keySet()) {
-                Log.d("시작날짜 key", key);
-                Log.d("종료날짜 value", map.get(key));
-                //시작 날짜, 종료날짜 같은 경우.
-                if(key.equals(map.get(key))) {
-                    String[] time = key.split("-");
-                    int year = Integer.parseInt(time[0]);
-                    int month = Integer.parseInt(time[1]);
-                    int dayy = Integer.parseInt(time[2]);
-                    Log.d("쪼갠 날짜", Integer.toString(year) + "," + Integer.toString(month) + "," + Integer.toString(dayy));
-                    calendar.set(year, month-1, dayy);
-                    CalendarDay day = CalendarDay.from(calendar);
-                    dates.add(day);
-                }
+//            for(String key : map.keySet()) {
+//                Log.d("시작날짜 key", key);
+//                Log.d("종료날짜 value", map.get(key));
+//                //시작 날짜, 종료날짜 같은 경우.
+//                if(key.equals(map.get(key))) {
+//                    String[] time = key.split("-");
+//                    int year = Integer.parseInt(time[0]);
+//                    int month = Integer.parseInt(time[1]);
+//                    int dayy = Integer.parseInt(time[2]);
+//                    Log.d("쪼갠 날짜", Integer.toString(year) + "," + Integer.toString(month) + "," + Integer.toString(dayy));
+//                    calendar.set(year, month-1, dayy);
+//                    CalendarDay day = CalendarDay.from(calendar);
+//                    dates.add(day);
+//                }
 
                 //시작 날짜, 종료날짜 다른 경우
 
-            }
+//            }
 
             //dates ArrayList에 사용자 지정 날짜들이 들어있다. 2019-7-8형식.
             Log.d("들어있는 Date", dates.toString());
             return dates;
         }
 
-        protected void setEventList() {
 
-        }
 
         @Override
         protected void onPostExecute(@NonNull List<CalendarDay> calendarDays) {
@@ -364,7 +408,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
 
-            HashMap<HashSet<CalendarDay>, Integer> eventMap = new HashMap<>();
 
             //실질적으로 dot을 찍는 class의 Method를 호출한다.
             EventDecorator event1 = new EventDecorator(1, Color.parseColor("#ff6067"),
@@ -560,20 +603,121 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode,resultCode,data);
+//
+//        if(requestCode == CodeNumber.TO_REGISTERPLAN_ACTIVITY) {
+//            if(resultCode == RESULT_OK) {
+//                //String strfirstDate = data.getStringExtra("start");
+//                //String strlastDate = data.getStringExtra("last");
+//                //map.put(strfirstDate,strlastDate);
+//               // Log.d("시작날짜 key", strfirstDate);
+//                //Log.d("종료날짜 value", map.get(strfirstDate));
+//                new ApiSimulator(map).executeOnExecutor(Executors.newSingleThreadExecutor());
+//            }
+//        }
+//    }
 
-        if(requestCode == CodeNumber.TO_REGISTERPLAN_ACTIVITY) {
-            if(resultCode == RESULT_OK) {
-                //String strfirstDate = data.getStringExtra("start");
-                //String strlastDate = data.getStringExtra("last");
-                //map.put(strfirstDate,strlastDate);
-               // Log.d("시작날짜 key", strfirstDate);
-                //Log.d("종료날짜 value", map.get(strfirstDate));
-                new ApiSimulator(map).executeOnExecutor(Executors.newSingleThreadExecutor());
-            }
-        }
+
+    public void showAllSche() {
+
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(this).getConscryptMiddleware().enable(false);
+
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMessage("잠시만 기다려주세요. 해당 일정을 가져오는 중 입니다~");
+        progressDialog.show();
+
+        JsonObject json = new JsonObject();
+        json.addProperty("cid", 20);
+
+
+        Ion.with(this)
+                .load("POST", url.getServerUrl() + "/showAllSche")
+                .setHeader("Content-Type", "application/json")
+                .setJsonObjectBody(json)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+
+
+                        if( e!= null) {
+                            Toast.makeText(getApplicationContext(), "Server Connection Error", Toast.LENGTH_LONG).show();
+                        }
+
+                        else {
+                            progressDialog.dismiss();
+
+                            String message = result.get("message").getAsString();
+                            if(message.equals("success")) {
+                                JsonArray data = result.get("data").getAsJsonArray();
+                                //scheduleData = new ScheduleData[data.size()];
+                                //schedList = new ArrayList<>();
+
+                                Log.i("들어있는 일정 개수", Integer.toString(data.size()));
+
+                                String[] dateTime;
+                                for(int i = 0; i< data.size(); i++) {
+                                    JsonObject sched_data = data.get(i).getAsJsonObject();
+
+                                    ScheduleData scheduleData = new ScheduleData();
+
+                                    scheduleData.sche_title = sched_data.get("title").getAsString();
+                                    scheduleData.cid = sched_data.get("cid").getAsInt();
+                                    scheduleData.sid = sched_data.get("sid").getAsInt();
+                                    scheduleData.sche_content = sched_data.get("sContent").getAsString();
+
+                                    String startDateTime = sched_data.get("startDate").getAsString();
+                                    dateTime = parseDateAndTime(startDateTime);
+                                    scheduleData.startDate = dateTime[0];
+                                    scheduleData.startTime = dateTime[1];
+
+                                    String endDateTime = sched_data.get("endDate").getAsString();
+                                    dateTime = parseDateAndTime(endDateTime);
+                                    scheduleData.endDate = dateTime[0];
+                                    scheduleData.endTime = dateTime[1];
+
+                                    scheduleData.area = sched_data.get("area").getAsString();
+                                    scheduleData.numberofComment = sched_data.get("numOfComments").getAsInt();
+
+                                    schedList.add(scheduleData);
+
+//                                    Log.i("title", sche_title);
+//                                    Log.i("cid", Integer.toString(cid));
+//                                    Log.i("sid", Integer.toString(sid));
+//                                    Log.i("sche_content", sche_content);
+//                                    Log.i("startDate", startDate);
+//                                    Log.i("endDate", endDate);
+//                                    Log.i("area", area);
+//                                    Log.i("# of comments", Integer.toString(numberofComment));
+
+                                }
+
+                            }
+
+                            else {
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    public String[] parseDateAndTime(String date) {
+
+                        String[] parseData = date.split(" ");
+                        String[] result = new String[parseData.length];
+
+                        for(int i = 0; i<parseData.length; i++) {
+                            Log.i("들어있는 값", parseData[i]);
+                        }
+                        result[0] = parseData[0].trim();
+                        result[1] = parseData[1].substring(0, 5).trim();
+
+                        return result;
+                    }
+                });
     }
 
 }

@@ -167,7 +167,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                     JsonObject json = new JsonObject();
 
-                    json.addProperty("sid", 10);
+                    json.addProperty("sid", 12);
 
                     final ProgressDialog progressDialog = new ProgressDialog(itemView.getContext());
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
