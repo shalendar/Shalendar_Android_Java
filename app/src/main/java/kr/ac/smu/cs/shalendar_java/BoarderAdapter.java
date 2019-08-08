@@ -7,6 +7,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,11 +23,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
+
+
 
 public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -35,6 +42,21 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int TYPE_ITEM = 1;
     private final int TYPE_FOOTER = 2;
     private BoardHeaderAdapter h_adapter;
+    int sharedPeoplenum;
+    JsonArray shareUserData;
+    JsonObject calendarData;
+    String calName;
+    String calContent;
+    TextView boardHeadertitle;
+    TextView boardHeaderContent;
+
+    public BoarderAdapter(int sharedPeoplenum, JsonArray shareUserData, JsonObject calendarData) {
+        this.sharedPeoplenum = sharedPeoplenum;
+        this.shareUserData = shareUserData;
+        this.calendarData = calendarData;
+    }
+
+    //사람을 받아옴
 
 
     @NonNull
@@ -48,25 +70,34 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewType == TYPE_HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_boardheader, parent, false);
             //추가
-
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayout.HORIZONTAL, false);
             RecyclerView h_recyclerView = view.findViewById(R.id.header_recycler);
             h_recyclerView.setLayoutManager(linearLayoutManager);
 
+            //보더헤더 이름과 설명 설정하는 부분
+            boardHeadertitle=(TextView) view.findViewById(R.id.boardHeadertitle);
+            boardHeaderContent=(TextView) view.findViewById(R.id.boardHeaderContent);
+
+            calName = calendarData.get("calName").getAsString();
+            calContent = calendarData.get("calContent").getAsString();
+
+            boardHeadertitle.setText(calName);
+            boardHeaderContent.setText(calContent);
+
             h_adapter = new BoardHeaderAdapter();
             h_recyclerView.setAdapter(h_adapter);
 
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.addItem(new BoardTeamItem("박성준",R.drawable.ic_launcher_foreground));
-            h_adapter.notifyDataSetChanged();
+            Log.i("넘어온 명수", Integer.toString(sharedPeoplenum));
+
+            for (int i = 0; i < sharedPeoplenum; i++) {
+                JsonObject jsonArr = shareUserData.get(i).getAsJsonObject();
+                //id = jsonArr.get("id").getAsString();
+                h_adapter.addItem(new BoardTeamItem(jsonArr.get("id").getAsString(), R.drawable.ic_launcher_foreground));
+            }
+
+            Log.i("누가 먼저 실행되는 거임??11", Integer.toString(sharedPeoplenum));
+
+        h_adapter.notifyDataSetChanged();
 
             holder = new HeaderViewHolder(view);
         } else {
@@ -80,43 +111,9 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof HeaderViewHolder) {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-        }
-        else {
+        } else {
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
             itemViewHolder.onBind(boardList.get(position - 1), position);
-
-
-//            //각 ITem마다 Long Click Listener 구현 -->실패
-//            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View view) {
-//
-//                    AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
-//                    dialog.setTitle("해당 일정 수정/삭제");
-//                    dialog.setMessage("해당 일정  수정, 삭제하십니까?")
-//                            .setPositiveButton("수정", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    //UpdatePlanActivity로 이동.
-//
-//                                    Intent intent = new Intent(context, UpdatePlanActivity.class);
-//                                    context.startActivity(intent);
-//                                    //dialog.cancel();
-//                                }
-//                            })
-//
-//                            .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//
-//                    AlertDialog alertDialog = dialog.create();
-//                    alertDialog.show();
-//                    return false;
-//                }
-//            });
         }
     }
 
@@ -159,10 +156,43 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
               이 정보들을 intent로 저장 시킨 후
               PlanDetail로 남긴다.
              */
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname() + "이거 수정한다잉", Toast.LENGTH_SHORT).show();
+
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
+                    dialog.setTitle("일정 수정/삭제");
+
+                    dialog.setMessage("일정 수정, 삭제하십니까?")
+                            .setPositiveButton("수정", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(context, UpdatePlanActivity.class);
+                                    context.startActivity(intent);
+                                    dialog.cancel();
+                                }
+                            })
+
+                            .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alertDialog = dialog.create();
+                    alertDialog.show();
+
+                    return false;
+                }
+            });
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition()-1).getPlanname(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname(), Toast.LENGTH_SHORT).show();
 
 
                     JsonObject json = new JsonObject();
@@ -179,19 +209,17 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             .load("POST", url.getServerUrl() + "/showSche")
                             .setHeader("Content-Type", "application/json")
                             .setJsonObjectBody(json)
-                            .asJsonObject()
+                            .asJsonObject() //응답
                             .setCallback(new FutureCallback<JsonObject>() {
                                 @Override
                                 public void onCompleted(Exception e, JsonObject result) {
-
+                                    //응답 받을 변수
                                     String userName, schedTitle, aboutSched, schedLocation;
                                     String startDate, startTime, endDate, endTime, startToEnd;
 
-                                    if(e != null) {
+                                    if (e != null) {
                                         Toast.makeText(itemView.getContext(), "Server Connection Error!", Toast.LENGTH_LONG).show();
-                                    }
-
-                                    else {
+                                    } else {
                                         //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
                                         //data: 다음에 나오는 것들도 JsonObject형식.
                                         //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
@@ -200,7 +228,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                         String message = result.get("message").getAsString();
                                         //서버로 부터 응답 메세지가 success이면...
 
-                                        if(message.equals("success")) {
+                                        if (message.equals("success")) {
                                             //서버 응답 오면 로딩 창 해제
                                             progressDialog.dismiss();
 
@@ -227,7 +255,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                                             context.startActivity(intent);
 
-                                            Log.i("result",data.get("id").getAsString());
+                                            Log.i("result", data.get("id").getAsString());
                                         } else {
 
                                             Toast.makeText(itemView.getContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
@@ -237,47 +265,10 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 }
                             });
 
-//                    Intent intent = new Intent(context, PlanDetailActivity.class);
-//                    //어댑터에서는 이렇게 해줘야함
-//                    //해당 plandetail로 이동
-//                    context.startActivity(intent);
                 }
             });
 
-
-//            //각 ITem마다 Long Click Listener 구현
-//            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View view) {
-//
-//                    AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
-//                    dialog.setTitle("해당 일정 수정/삭제");
-//                    dialog.setMessage("해당 일정  수정, 삭제하십니까?")
-//                            .setPositiveButton("수정", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    //UpdatePlanActivity로 이동.
-//
-//                                    Intent intent = new Intent(context, UpdatePlanActivity.class);
-//                                    context.startActivity(intent);
-//                                    //dialog.cancel();
-//                                }
-//                            })
-//
-//                            .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//                                    dialog.cancel();
-//                                }
-//                            });
-//
-//                    AlertDialog alertDialog = dialog.create();
-//                    alertDialog.show();
-//                    return false;
-//                }
-//            });
         }
-
 
 
         void onBind(BoardPlanItem data, int position) {
@@ -320,30 +311,4 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             return TYPE_ITEM;
     }
 
-
-//    public class CustomDialog extends Dialog implements View.OnClickListener {
-//
-//        Button okButton, cancelButton;
-//        Activity mActivity;
-//
-//        public CustomDialog(Activity activity) {
-//            super(activity);
-//            mActivity = activity;
-//            setContentView(R.layout.custom_dialog);
-//            okButton = (Button) findViewById(R.id.button_ok);
-//            okButton.setOnClickListener(this);
-//            cancelButton = (Button) findViewById(R.id.button_cancel);
-//            cancelButton.setOnClickListener(this);
-//        }
-//
-//        @Override
-//        public void onClick(View v) {
-//            if (v == cancelButton)
-//                dismiss();
-//            else {
-//                Intent intent = new Intent(mActivity, UpdatePlanActivity.class);
-//                mActivity.startActivity(intent);
-//            }
-//        }
-//    }
 }

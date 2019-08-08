@@ -1,8 +1,12 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +18,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +35,25 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /*
@@ -37,11 +61,23 @@ import java.util.ArrayList;
   게시판 형식으로 보여주는 Activity.
   일정 item을 누르면 PlanDetailActivity로 넘어간다.
  */
-public class BoardActivity extends AppCompatActivity implements View.OnClickListener{
+
+public class BoardActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button buttonToPlanDtail;
     private ScrollView scrollView;
     private BoarderAdapter b_adapter;
+
+    //서버 통신 위한 url 객체 생성  여기서는 /signin
+    private NetWorkUrl url = new NetWorkUrl();
+
+    //서버로 부터 로그인 성공 시 오는 응답 Token 변수
+    private String userToken;
+
+    //서버로 부터 로그인 실패 시 오는 응답 변수
+    private String responseFromServer;
+
+    int sharePeopleNum;
 
     //js
     private Context mContext = BoardActivity.this;
@@ -62,35 +98,137 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         //JS
         init();
 
+        //통신코드
+
         addSideView();  //사이드바 add
 
-        RecyclerView boardRecyclerView = findViewById(R.id.BoarderRecyclerView);
+        final RecyclerView boardRecyclerView = findViewById(R.id.BoarderRecyclerView);
         //레이아웃 매니져가 null값을 받는다 이유는?
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         boardRecyclerView.setLayoutManager(linearLayoutManager);
 
-        b_adapter = new BoarderAdapter();
+        //통신코드 시작(initBoard)
 
-        boardRecyclerView.setAdapter(b_adapter);
+        //통신 준비
+        Ion.getDefault(getApplicationContext()).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(getApplicationContext()).getConscryptMiddleware().enable(false);
 
-        b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트1", "G207", "2"));
-        b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트2", "G207", "2"));
-        b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트3", "G207", "2"));
-        b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트4", "G207", "2"));
-        b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트5", "G207", "2"));
-        b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트6", "G207", "2"));
-        b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트7", "G207", "2"));
-        b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트8", "G207", "2"));
-        b_adapter.addItem(new BoardPlanItem("2019년", "졸업프로젝트9", "G207", "2"));
+        final JsonObject json = new JsonObject();
 
-        b_adapter.notifyDataSetChanged();
+        json.addProperty("cid", 20);
 
+//        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
+//        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//        progressDialog.setMessage("잠시만 기다려주세요. 게시판화면 불러오는중~");
+//        progressDialog.show();
+
+        Ion.with(getApplicationContext())
+                .load("POST", url.getServerUrl() + "/initBoard")
+                .setHeader("Content-Type", "application/json")
+                //.progressDialog(progressDialog)
+                .setJsonObjectBody(json)
+                .asJsonObject() //응답
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        //받을 변수
+                        String datetime, planname, location, replynum;
+                        String id, pw, userName, img_url, calName, calContent;
+                        int cid, sid, numOfComments, userCount;
+                        String title, sContent, startDate, endDate, area, planDate;
+
+
+                        if (e != null) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
+                        } else {
+                            //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
+                            //data: 다음에 나오는 것들도 JsonObject형식.
+                            //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
+                            //JSONArray가 아님. 얘는 [,]로 묶여 있어야 함.
+
+                            String message = result.get("message").getAsString();
+                            sharePeopleNum = result.get("sharePeopleNum").getAsInt();
+
+                            /*
+                            //여기서부터 SharedPreference써본다잉
+                            SharedPreferences sharedPnum = getSharedPreferences("Peoplenum", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPnum.edit();
+                            editor.putInt("Peoplenum",sharePeopleNum);
+                            editor.apply();
+                            */
+
+                            Log.i("요기요1", Integer.toString(sharePeopleNum));
+
+                            //b_adapter.setSharedNumber(sharePeopleNum);
+
+                            //서버로 부터 응답 메세지가 success이면...
+
+                            if (message.equals("success")) {
+                                //서버 응답 오면 로딩 창 해제
+                                //progressDialog.dismiss();
+
+                                //shareuserdata: {} 에서 {}안에 있는 것들도 JsonObject
+                                JsonArray sharedUserData = result.get("shareUserData").getAsJsonArray();
+
+                                /*
+                                for (int i = 0; i < sharePeopleNum; i++) {
+                                    JsonObject jsonArr = sharedUserData.get(i).getAsJsonObject();
+                                    id = jsonArr.get("id").getAsString();
+                                    //pw=jsonArr.get("pw").getAsString();
+
+                                }
+                                */
+
+                                //calendardata: {} 에서 {}안에 있는 것들도 JsonObject
+                                JsonObject calendarData = result.get("calendarData").getAsJsonObject();
+                                //calName = calendarData.get("calName").getAsString();
+                                //calContent = calendarData.get("calContent").getAsString();
+                                //userCount=calendarData.get("userCount").getAsInt();
+
+                                b_adapter = new BoarderAdapter(sharePeopleNum, sharedUserData, calendarData);
+                                boardRecyclerView.setAdapter(b_adapter);
+
+
+                                //scheduleData: {} 에서 {}안에 있는 것들도 JsonObject
+                                JsonArray scheduleData = result.get("scheduleData").getAsJsonArray();
+                                //문제없음
+
+                                for (int i = 0; i < scheduleData.size(); i++) {
+                                    JsonObject jsonArr1 = scheduleData.get(i).getAsJsonObject();
+                                    cid = jsonArr1.get("cid").getAsInt();
+                                    sid = jsonArr1.get("sid").getAsInt();
+                                    title = jsonArr1.get("title").getAsString();
+                                    sContent = jsonArr1.get("sContent").getAsString();
+                                    startDate = jsonArr1.get("startDate").getAsString();
+                                    endDate = jsonArr1.get("endDate").getAsString();
+                                    area = jsonArr1.get("area").getAsString();
+                                    numOfComments = jsonArr1.get("numOfComments").getAsInt();
+                                    String numOfCommentsstring = Integer.toString(numOfComments);
+                                    //date 형식에 맞춰 잘라내기
+                                    startDate = startDate.substring(0,16);
+                                    endDate = endDate.substring(0,16);
+                                    //plan의 일자
+                                    planDate = startDate+" ~ "+endDate;
+
+                                    b_adapter.addItem(new BoardPlanItem(planDate, title, area, numOfCommentsstring));
+
+                                }
+
+                                b_adapter.notifyDataSetChanged();
+                                // boardRecyclerView.setAdapter(b_adapter);
+                            } else {
+                                Toast.makeText(getApplicationContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
+
+
+        Log.i("누가 먼저 실행되는 거임??333", "BoardActivity Ion 통신 끝");
     }
 
-
-
-
-    private void init(){
+    private void init() {
 
         findViewById(R.id.btn_menu).setOnClickListener(this);
 
@@ -100,7 +238,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void addSideView(){
+    private void addSideView() {
 
         Sidebar sidebar = new Sidebar(mContext);
         sideLayout.addView(sidebar);
@@ -141,7 +279,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    public void closeMenu(){
+    public void closeMenu() {
 
         isMenuShow = false;
         Animation slide = AnimationUtils.loadAnimation(mContext, R.anim.siderbar_hidden);
@@ -156,7 +294,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         }, 450);
     }
 
-    public void showMenu(){
+    public void showMenu() {
 
         isMenuShow = true;
         Animation slide = AnimationUtils.loadAnimation(this, R.anim.sidebar_show);
@@ -166,16 +304,14 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         mainLayout.setEnabled(false);
     }
 
-
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btn_menu :
+        switch (view.getId()) {
+            case R.id.btn_menu:
                 showMenu();
                 break;
         }
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -189,11 +325,11 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onBackPressed() {
-        if(isMenuShow){
+        if (isMenuShow) {
             closeMenu();
-        }else{
+        } else {
 
-            if(isExitFlag){
+            if (isExitFlag) {
                 finish();
             } else {
 
@@ -210,68 +346,3 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
     }
 }
 
-
-
-
-        /*
-        //앱바(툴바)
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        //드로워
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        //내비게이션뷰
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        buttonToPlanDtail = (Button)findViewById(R.id.board_toPlanDetail_button);
-
-
-          버튼 누르면 'PlanDetailActivity로 넘어간다.
-
-        buttonToPlanDtail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(getApplicationContext(), PlanDetailActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_PLANDETAIL_ACTIVITY);
-            }
-        });
-        */
-
-        /*
-        //리사이클링뷰가 보더레이아웃이 아니라 컨텐츠보더에 있으니까 인플레이터 이용해서 부른다
-        View inflatedView = getLayoutInflater().inflate(R.layout.activity_boardheader, null);
-        RecyclerView memberrecyclerview = inflatedView.findViewById(R.id.teammemberRecyclerview);
-        */
-
-          /*
-        //리스트뷰
-        ListView boardListview =(ListView) findViewById(R.id.boardListView);
-        //헤더 삽입
-        View header = getLayoutInflater().inflate(R.layout.activity_boardheader, null, false);
-        boardListview.addHeaderView(header);
-
-        final BoardPlanAdapter planAdapter = new BoardPlanAdapter();
-        planAdapter.addItem(new BoardPlanItem("5월 1일 12시 - 5월 1일 14시","치킨먹기","소대공학관","3"));
-        planAdapter.addItem(new BoardPlanItem("5월 2일 14시 - 5월 2일 17시","짜장면먹기","소대공학관","33"));
-        planAdapter.addItem(new BoardPlanItem("5월 2일 18시 - 5월 2일 21시","봉구스먹기","소대공학관","23"));
-
-        boardListview.setAdapter(planAdapter);
-
-        boardListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                BoardPlanItem item = (BoardPlanItem) planAdapter.getItem(position-1);
-                Toast.makeText(getApplicationContext(), "선택된것 : "+item.getPlanname(), Toast.LENGTH_SHORT).show();
-
-                Intent intent = new Intent(getApplicationContext(), PlanDetailActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_PLANDETAIL_ACTIVITY);
-            }
-        });
-        */

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,20 @@ import android.widget.Toast;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 /*
@@ -82,24 +97,24 @@ public class LoginActivity extends AppCompatActivity {
                   입력하는 e-mail주소 형식 예외처리
                   사용자 이메일 & 비밀번호 dummy data
                   서버 닫혀 있을 때 서버 코드 주석처리 하고 아래  if else if else문 수행.
-                */
-//                if(userEmail.equals("jacob") && userPassword.equals("456")) {
-//
-//                    Toast.makeText(getApplicationContext(), "사용자정보 일치 메인화면으로이동", Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                    startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-//                }
-//
-//                else if(userEmail.equals("") || userPassword.equals("")) {
-//                    Toast.makeText(getApplicationContext(), "아이디 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
-//                }
-//
-//                else {
-//                    Log.d("입력한 ID", userEmail);
-//                    Log.d("입력한 비밀번호", userPassword);
-//                    Toast.makeText(getApplicationContext(), "아이디/비밀번호가 잘못되었습니다", Toast.LENGTH_SHORT).show();
-//                }
 
+                if(userEmail.equals("jacob") && userPassword.equals("456")) {
+
+                    Toast.makeText(getApplicationContext(), "사용자정보 일치 메인화면으로이동", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
+                }
+
+                else if(userEmail.equals("") || userPassword.equals("")) {
+                    Toast.makeText(getApplicationContext(), "아이디 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+                }
+
+                else {
+                    Log.d("입력한 ID", userEmail);
+                    Log.d("입력한 비밀번호", userPassword);
+                    Toast.makeText(getApplicationContext(), "아이디/비밀번호가 잘못되었습니다", Toast.LENGTH_SHORT).show();
+                }
+*/
 
 
                 //서버 통신코드 Ion 롸이브뤄리 사용

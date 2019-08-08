@@ -59,7 +59,6 @@ public class UpdatePlanActivity extends AppCompatActivity {
 
     private NetWorkUrl url = new NetWorkUrl();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,12 +83,13 @@ public class UpdatePlanActivity extends AppCompatActivity {
         //시간 선택
         initTime();
 
-        /*
-         일정 수정 화면으로 이동 서버 통신 준비.
-        */
+
+         //일정 수정 화면으로 이동 서버 통신 준비.
+
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(this).getConscryptMiddleware().enable(false);
 
+        /*
         buttonCompleteUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +148,7 @@ public class UpdatePlanActivity extends AppCompatActivity {
                             }
                         });
             }
-        });
+        });*/
     }
 
 
