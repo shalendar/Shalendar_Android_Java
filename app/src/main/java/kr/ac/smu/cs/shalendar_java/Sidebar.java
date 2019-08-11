@@ -125,7 +125,6 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                         }
                     }
                 });
-
     }
 
     //서버 응답 처리
@@ -151,6 +150,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
                 Log.i("전달 받은 cid", Integer.toString(cid_Array[i]));
                 Log.i("공유달력 내부의 사용자 명수 ", Integer.toString(innerData2.size()));
+//                Log.i("해당 달력에 있는 사용자이름", innerData2.get(i).getAsJsonObject().get("userName").getAsString());
 
                 SidebarItem sitem = new SidebarItem();
                 sitem.setCalendarName(innerData.get("calName").getAsString());
@@ -160,6 +160,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                 ArrayList<SidebarTeamItem> stItem = new ArrayList<>();
 
                 for(int j=0; j<innerData2.size(); j++){ //공유달력 내 사용자들 명수
+                    Log.i("해당 달력에 있는 사용자이름", innerData2.get(j).getAsJsonObject().get("id").getAsString());
                     stItem.add(new SidebarTeamItem(R.drawable.face));
                 }
 
