@@ -240,11 +240,14 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                             aboutSched = data.get("sContent").getAsString();
                                             schedLocation = data.get("area").getAsString();
                                             startDate = data.get("startDate").getAsString();
-                                            startTime = data.get("startTime").getAsString();
+                                            //startTime = data.get("startTime").getAsString();
                                             endDate = data.get("endDate").getAsString();
-                                            endTime = data.get("endTime").getAsString();
+                                            //endTime = data.get("endTime").getAsString();
 
-                                            startToEnd = startDate + " " + startTime + " ~ " + endDate + " " + endTime;
+                                            //뒤에 0.000 잘라내기
+                                            startDate = startDate.substring(0,16);
+                                            endDate = endDate.substring(0,16);
+                                            startToEnd = startDate + " ~ " + endDate;
 
                                             Intent intent = new Intent(context, PlanDetailActivity.class);
                                             intent.putExtra("userName", userName);
