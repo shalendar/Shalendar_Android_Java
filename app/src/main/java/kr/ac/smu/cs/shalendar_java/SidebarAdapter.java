@@ -102,6 +102,7 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
         ImageView toInviteMember;
 
         int calendar_ID;
+        String calendarName;
 
 
         public ItemRowHolder(final View itemView) {
@@ -119,10 +120,11 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                 public void onClick(View v) {
                     Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
                     intent.putExtra("cid", calendar_ID);
-                    intent.putExtra("calName", calendarSidebarName.toString());
+                    intent.putExtra("calName", calendarName);
                     itemView.getContext().startActivity(intent);
                 }
             });
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -166,10 +168,14 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             this.calendar_ID = calendar_ID;
         }
 
+        public void setCalName(String calName) {
+            this.calendarName = calName;
+        }
 
         public void setItem(SidebarItem item) {
             calendarSidebarName.setText(item.getCalendarName());
             setCid(item.getCalendar_ID());
+            setCalName(item.getCalendarName());
             Ion.with(calendarSidebarImage)
                 .centerCrop()
                 .placeholder(R.drawable.face)
