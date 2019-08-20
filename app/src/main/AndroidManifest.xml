@@ -22,6 +22,10 @@
         <activity android:name=".CreateCalendarActivityDialog" />
 
 
+        <activity android:name=".CreateCalendarActivity"
+            android:theme ="@style/AppTheme.NoActionBar"
+            />
+
         <activity
             android:name=".CreateMember3"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -31,6 +35,7 @@
         <activity
             android:name=".CreateMember1"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".LoginActivity"
             android:theme ="@style/AppTheme.NoActionBar">
@@ -40,34 +45,41 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity
             android:name=".BoardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".RegisterPlanActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity android:name=".RecommandTimeActivity" />
+
         <activity
             android:name=".PlanDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".UpdatePlanActivity" />
+
         <activity android:name=".DeletePlanActivity" />
+
         <activity android:name=".NoticeActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity android:name=".SettingActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".InviteActivity" />
-        <activity android:name=".CreateCalendarActivity" />
-        <activity android:name=".InviteByEmailActivity" />
-        <activity
+
+        <activity android:name=".InviteActivity" />0
             android:name=".SearchPlanActivity"
-            android:label="@string/title_activity_search__plan"/>
+            android:label="@string/title_activity_search__plan"
+            android:theme="@style/AppTheme.NoActionBar"/>
             <!--android:theme="@style/AppTheme.NoActionBar"/>-->
     </application>
 
