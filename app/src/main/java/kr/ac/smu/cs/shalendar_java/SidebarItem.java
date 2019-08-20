@@ -1,5 +1,6 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.net.Uri;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -7,24 +8,34 @@ import java.util.ArrayList;
 
 public class SidebarItem {
 
-    int calendarImage;
+    String calendarImage;
     String calendarName;
     //cid추가
     int calendar_ID;
     ArrayList<SidebarTeamItem> teamImageList;
 
+//    public SidebarItem(String calendarImage, String calendarName) {
+//        this.calendarImage = calendarImage;
+//        this.calendarName = calendarName;
+//    }
+
     public SidebarItem() {
+
     }
 
-    public int getCalendarImage() {
+    public String getCalendarImage() {
+
         return calendarImage;
     }
 
-    public void setCalendarImage(int calendarImage) {
+    public void setCalendarImage(String calendarImage) {
+
+
         this.calendarImage = calendarImage;
     }
 
     public String getCalendarName() {
+
         return calendarName;
     }
 

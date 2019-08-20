@@ -8,9 +8,15 @@ package kr.ac.smu.cs.shalendar_java;
 public class UserEmail {
 
     private String user_Email;
+    private Boolean is_checked;
 
     public UserEmail(String user_Email) {
         this.user_Email = user_Email;
+    }
+
+    public UserEmail(String user_Email, Boolean is_checked) {
+        this.user_Email = user_Email;
+        this.is_checked = is_checked;
     }
 
     public void setUserEmail(String user_Email) {
@@ -19,5 +25,13 @@ public class UserEmail {
 
     public String getUserEmail() {
         return this.user_Email;
+    }
+
+    public void setIs_checked(Boolean is_checked) {
+        this.is_checked = is_checked;
+    }
+
+    public Boolean getIs_checked() {
+        return this.is_checked;
     }
 }

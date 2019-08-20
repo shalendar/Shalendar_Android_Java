@@ -2,12 +2,14 @@ package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +22,7 @@ import com.koushikdutta.ion.Ion;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -37,6 +40,9 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
     //서버 통신
     NetWorkUrl url = new NetWorkUrl();
+
+    //
+    private SidebarAdapter s_adapter;
 
     public void setEventListener(EventListener l) {
         listener = l;
@@ -66,10 +72,16 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         findViewById(R.id.btn_setting).setOnClickListener(this);
         findViewById(R.id.btn_add_calender).setOnClickListener(this);
 
+
         //사용자 ID 프로필 set
-        TextView userID = findViewById(R.id.userID_textView2);
+        TextView userName = findViewById(R.id.userName_textView);
+        TextView userID = findViewById(R.id.userID_textView);
+
+
         SharedPreferences pref = getContext().getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
-        userID.setText(pref.getString("userEmail", "DEFAULT::MIND"));
+        userName.setText(pref.getString("userName", "DEFAULT :: USER"));
+        userID.setText(pref.getString("userEmail", "DEFAULT :: MIND@"));
+
 
         //리사이클러
         calendarRecyclerList = new ArrayList<>();
@@ -78,7 +90,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
         RecyclerView sidebarRecyclerView = (RecyclerView)findViewById(R.id.sideBarRecyclerView);
         sidebarRecyclerView.setHasFixedSize(true);
-        SidebarAdapter s_adapter = new SidebarAdapter(sidebarRecyclerView.getContext(), calendarRecyclerList);
+        s_adapter = new SidebarAdapter(sidebarRecyclerView.getContext(), calendarRecyclerList);
         sidebarRecyclerView.setLayoutManager(new LinearLayoutManager(sidebarRecyclerView.getContext(), LinearLayout.VERTICAL, false));
         sidebarRecyclerView.setAdapter(s_adapter);
 
@@ -153,16 +165,25 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 //                Log.i("해당 달력에 있는 사용자이름", innerData2.get(i).getAsJsonObject().get("userName").getAsString());
 
                 SidebarItem sitem = new SidebarItem();
+
                 sitem.setCalendarName(innerData.get("calName").getAsString());
-                sitem.setCalendarImage(R.drawable.ic_launcher_foreground);
+                sitem.setCalendarImage(innerData.get("img_url").getAsString());
                 sitem.setCalendar_ID(cid_Array[i]);
+
+//                String calName = innerData.get("calName").getAsString();
+//                String cal_img = innerData.get("img_url").getAsString();
+//                s_adapter.addItem(new SidebarItem(calName, cal_img));
+
 
                 ArrayList<SidebarTeamItem> stItem = new ArrayList<>();
 
                 for(int j=0; j<innerData2.size(); j++){ //공유달력 내 사용자들 명수
+
                     Log.i("해당 달력에 있는 사용자이름", innerData2.get(j).getAsJsonObject().get("id").getAsString());
                     stItem.add(new SidebarTeamItem(R.drawable.face));
+
                 }
+
 
                 sitem.setTeamImageList(stItem);
                 calendarRecyclerList.add(sitem);
@@ -172,7 +193,10 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         else {
             Toast.makeText(getContext(), "/readAllCal 공유하는 달력 없음", Toast.LENGTH_LONG).show();
         }
+
     }
+
+
 
     @Override
     public void onClick(View v) {
