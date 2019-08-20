@@ -78,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
-                android:drawableLeft="@drawable/ic_mail"
+                android:drawableLeft="@drawable/btn_add_people1"
                 android:gravity="center|left"
                 android:paddingLeft="15dp"
                 android:text="   초대 메세지함" />
