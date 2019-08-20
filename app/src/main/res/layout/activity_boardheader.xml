@@ -2,7 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <ImageView
@@ -27,9 +27,9 @@
             android:id="@+id/boardHeadertitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:text="졸업프로젝트"
             android:textColor="#1a1a1a"
-            android:layout_marginLeft="10dp"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -37,22 +37,36 @@
 
         <TextView
             android:id="@+id/boardHeaderContent"
-            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:background="#f8f8f8"
             android:padding="10dp"
             android:text="프로젝트에 대한 간단한 설명이 나옵니다 간단하게 적어주면 될 듯프로젝트에 대한 간단한 설명이 나옵니다 간단하게 적어주면 될 듯"
             android:textColor="#444444"
             android:textSize="14sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="공유하고 있는 사람"
-            android:layout_marginLeft="10dp"
-            android:textColor="#265570"
-            android:textSize="14sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="공유하고 있는 사람"
+                android:textColor="#265570"
+                android:textSize="14sp" />
+
+            <Button
+                android:layout_gravity="right"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="공유인원 추가" />
+
+        </LinearLayout>
+
 
         //공유멤버사진 및 오른쪽 공유버튼
 
@@ -64,16 +78,10 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/header_recycler"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
 
             //공유버튼
 
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="공유" />
         </LinearLayout>
 
         <TextView
