@@ -131,6 +131,7 @@
         android:id="@+id/fl_silde"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#80202735"
         android:visibility="gone">
 
         <!-->

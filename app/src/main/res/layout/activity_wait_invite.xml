@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    tools:context=".WaitInvite">
 
     <RelativeLayout
         android:id="@+id/id_main"
@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="15dp"
-                    android:text="게시판"
+                    android:text="달력이름"
                     android:textColor="#4a4a4a"
                     android:textSize="20sp" />
 
@@ -53,6 +53,15 @@
                     android:layout_weight="1" />
 
 
+                <ImageButton
+                    android:id="@+id/btn_search"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center|right|center_vertical"
+                    android:layout_marginRight="15dp"
+                    android:adjustViewBounds="false"
+                    android:background="#FFFFFF"
+                    app:srcCompat="@drawable/btn_search" />
 
             </LinearLayout>
 
@@ -61,54 +70,19 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rl_001">
+            android:layout_below="@id/rl_001"
+            android:layout_above="@id/bottom_bar">
 
             <!-->내용 들어갈곳<-->
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                >
+                android:id="@+id/waitListRecycler">
 
-                <!--리사이클러뷰-->
+            </android.support.v7.widget.RecyclerView>
 
-                <android.support.v7.widget.RecyclerView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/BoarderRecyclerView"
-                    android:layout_above="@+id/downButtons">
-
-                </android.support.v7.widget.RecyclerView>
-
-                <!--밑에 버튼 세개 모인 리니어레이아웃-->
-                <LinearLayout
-                    android:id="@+id/downButtons"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:background="#FFFFFF"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/tab_1_active" />
-
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/tab_2" />
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/tab_3_active" />
-
-                </LinearLayout>
-
-            </RelativeLayout>
+            //아래버튼
 
         </RelativeLayout>
 
@@ -132,11 +106,10 @@
 
         <FrameLayout
             android:id="@+id/view_sildebar"
-            android:layout_width="280dp"
-            android:layout_height="match_parent"
-            android:background="#000000" />
+            android:layout_width="305dp"
+            android:layout_height="match_parent" />
 
     </FrameLayout>
+
+
 </RelativeLayout>
-
-
