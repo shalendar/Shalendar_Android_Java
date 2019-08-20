@@ -104,10 +104,10 @@ public class CreateMember2 extends AppCompatActivity {
                 }
                 else {
                     //안드 Test용, 서버 통신이 없어도 되는 코드임.
-//                    Intent intent = new Intent(getApplicationContext(), CreateMember3.class);
-//                    intent.putExtra("userEmail", userEmail);
-//                    intent.putExtra("userName", userName);
-//                    intent.putExtra("userPassword", userPassword);
+                    Intent intent = new Intent(getApplicationContext(), CreateMember3.class);
+                    intent.putExtra("userEmail", userEmail);
+                    intent.putExtra("userName", userName);
+                    intent.putExtra("userPassword", userPassword);
 
                     //여기서 서버와 통신.
                     //new CreateMemberTask(CreateMember2.this).execute(url.getServerUrl() + "/signup");
@@ -117,7 +117,6 @@ public class CreateMember2 extends AppCompatActivity {
             }
         });
     }
-
 
     public void serverNetwork() {
 

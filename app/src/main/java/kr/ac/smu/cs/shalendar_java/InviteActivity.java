@@ -158,13 +158,16 @@ public class InviteActivity extends AppCompatActivity {
                 cid = intent.getIntExtra("cid", -1);
                 calName = intent.getStringExtra("calName");
 
+                Log.i("초대 달력", calName);
+                Log.i("초대 cid", Integer.toString(cid));
                 Log.i("초대 할 사람", jsonArray.toString());
 
                 JsonObject json = new JsonObject();
                 json.addProperty("sender", inputEmail);
                 json.add("receiver", jsonArray);
-                json.addProperty("sender_img", "a.jpg");
-                json.addProperty("senderName", cid);
+                json.addProperty("senderName", "고진권");
+                json.addProperty("sender_img", "https://shalendarmind.s3.ap-northeast-2.amazonaws.com/calendarImage/2019/08/21/a8398e0e-cf21-4d7e-8b4f-0429fc1bbd2d_20190817_150910.jpg");
+                json.addProperty("cid", cid);
                 json.addProperty("cName", calName);
 
 
@@ -179,7 +182,7 @@ public class InviteActivity extends AppCompatActivity {
                             public void onCompleted(Exception e, JsonObject result) {
 
                                 if(e != null) {
-                                    Toast.makeText(getApplicationContext(), "Server Connection Error", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
 
                                 else {
@@ -207,6 +210,7 @@ public class InviteActivity extends AppCompatActivity {
             adapter.addItem(new UserEmail(inputEmail, false));
             recyclerView.setAdapter(adapter);
         }
+
         else {
             Toast.makeText(getApplicationContext(), message + "해당 사용자는 없습니다.", Toast.LENGTH_LONG).show();
         }

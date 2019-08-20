@@ -146,7 +146,8 @@ public class CreateCalendarActivity extends AppCompatActivity {
                             }
                         });
             }
-        }); ImageButton backButton;
+        });
+        ImageButton backButton;
 
         backButton = findViewById(R.id.btn_back);
         backButton.setOnClickListener(new View.OnClickListener() {

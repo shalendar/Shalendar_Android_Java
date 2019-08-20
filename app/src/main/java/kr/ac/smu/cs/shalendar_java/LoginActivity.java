@@ -126,7 +126,6 @@ public class LoginActivity extends AppCompatActivity {
                 }
 */
 
-
                 //서버 통신코드 Ion 롸이브뤄리 사용
                 final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setMessage("로그인 중 입니다~");
