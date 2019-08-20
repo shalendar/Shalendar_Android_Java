@@ -12,36 +12,54 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.koushikdutta.ion.Ion;
+
 import java.util.ArrayList;
 
 public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowHolder> {
 
+
     private Context mContext;
     private ArrayList<SidebarItem> calendarList;
+
 
     public SidebarAdapter(Context mContext, ArrayList<SidebarItem> calendarList) {
         this.mContext = mContext;
         this.calendarList = calendarList;
     }
 
+
     @Override
     public ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.sidebaritem, null);
-        SidebarAdapter.ItemRowHolder mh = new SidebarAdapter.ItemRowHolder(v);
-        return mh;
+//        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.sidebaritem, null);
+//        SidebarAdapter.ItemRowHolder mh = new SidebarAdapter.ItemRowHolder(v);
+//        return mh;
+
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View itemView = inflater.inflate(R.layout.sidebaritem, parent, false);
+
+        return new ItemRowHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(ItemRowHolder holder, int position) {
-        String calendarName = calendarList.get(position).getCalendarName();
-        //int calendar_ID = calendarList.get(position).getCalendar_ID();
-        int calendarImage = calendarList.get(position).getCalendarImage();
+//        String calendarName = calendarList.get(position).getCalendarName();
+//        String calendarImage = calendarList.get(position).getCalendarImage();
         ArrayList teampicList = calendarList.get(position).getTeamImageList();
+//
+//        holder.calendarSidebarName.setText(calendarName);
+//        holder.calendarSidebarImage.setImageURI(calendarImage);
 
-        holder.calendarSidebarName.setText(calendarName);
-        holder.calendarSidebarImage.setImageResource(calendarImage);
+//        Ion.with(holder.calendarSidebarImage)
+//                .centerCrop()
+//                .placeholder(R.drawable.face)
+//                .load(calendarImage);
 
-        SidebarTeamAdapter st_adapter = new SidebarTeamAdapter(teampicList,mContext);
+        SidebarItem item = calendarList.get(position);
+        holder.setItem(item);
+
+        SidebarTeamAdapter st_adapter = new SidebarTeamAdapter(teampicList, mContext);
 
         holder.sideteam_recyclerView.setHasFixedSize(true);
         holder.sideteam_recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayout.HORIZONTAL, false));
@@ -49,20 +67,38 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
     }
 
+
     @Override
     public int getItemCount() {
         return (null != calendarList ? calendarList.size() : 0);
     }
 
-    public class ItemRowHolder extends RecyclerView.ViewHolder {
+    public void addItem(SidebarItem item) {
+        calendarList.add(item);
+    }
 
-        protected TextView calendarSidebarName;
-        protected ImageView calendarSidebarImage;
-        protected RecyclerView sideteam_recyclerView;
-        //
-        protected ImageView toInviteMember;
-        //
-        protected int cid;
+    public void setItems(ArrayList<SidebarItem> items) {
+        this.calendarList = items;
+    }
+
+    public SidebarItem getItem(int position) {
+        return calendarList.get(position);
+    }
+
+    public void setItem(int position, SidebarItem item) {
+        calendarList.set(position, item);
+    }
+
+
+    public static class ItemRowHolder extends RecyclerView.ViewHolder {
+
+        TextView calendarSidebarName;
+        ImageView calendarSidebarImage;
+        RecyclerView sideteam_recyclerView;
+        ImageView toInviteMember;
+
+        int calendar_ID;
+
 
         public ItemRowHolder(final View itemView) {
             super(itemView);
@@ -70,26 +106,41 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             this.sideteam_recyclerView = (RecyclerView) itemView.findViewById(R.id.sideBarTeamRecycler);
             this.calendarSidebarName = (TextView) itemView.findViewById(R.id.calendarSidebarName);
             this.calendarSidebarImage = (ImageView) itemView.findViewById(R.id.calendarSidebarImage);
-            //
             this.toInviteMember = itemView.findViewById(R.id.sidebarList_invite_member);
 
-            //멤버 초대화면으로 이동.
+
+//            멤버 초대화면으로 이동.
             toInviteMember.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
+                    intent.putExtra("cid", calendar_ID);
+                    intent.putExtra("calName", calendarSidebarName.toString());
                     itemView.getContext().startActivity(intent);
-
                 }
             });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), calendarSidebarName.getText(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), calendarSidebarName.getText() + Integer.toString(calendar_ID), Toast.LENGTH_SHORT).show();
                 }
             });
 
+        }
+
+        public void setCid(int calendar_ID) {
+            this.calendar_ID = calendar_ID;
+        }
+
+
+        public void setItem(SidebarItem item) {
+            calendarSidebarName.setText(item.getCalendarName());
+            setCid(item.getCalendar_ID());
+            Ion.with(calendarSidebarImage)
+                .centerCrop()
+                .placeholder(R.drawable.face)
+                .load(item.getCalendarImage());
         }
     }
 

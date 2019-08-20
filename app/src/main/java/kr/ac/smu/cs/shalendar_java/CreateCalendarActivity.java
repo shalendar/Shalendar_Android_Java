@@ -1,6 +1,7 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -66,14 +68,13 @@ public class CreateCalendarActivity extends AppCompatActivity {
 //        }
 
 
-
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(this).getConscryptMiddleware().enable(false);
 
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         //값이 없으면 default로 0
         userToken = pref.getString("userToken", "NO_TOKEN");
-        Log.i("Sharepref에 저장된 토큰", userToken);
+        Log.i("C::Sharepref에 저장된 토큰", userToken);
 
         imageView = findViewById(R.id.imageView_createCal);
         calendarName = findViewById(R.id.calTitle_EditText_createCal);
@@ -89,7 +90,6 @@ public class CreateCalendarActivity extends AppCompatActivity {
         });
 
 
-
         registerCal = (Button) findViewById(R.id.register_complete);
         registerCal.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,45 +98,61 @@ public class CreateCalendarActivity extends AppCompatActivity {
                 calName = calendarName.getText().toString().trim();
                 aboutCal = aboutCalendar.getText().toString().trim();
 
-                //File file = new File(imageURL);
+                File file = new File(imageURL);
                 //서버 통신.
 
                 //JsonObject json = new JsonObject();
 
-                //RequestBody 설정 JSONObjedt를 보내기 위한 준비
-                //json에 담는다.
+                //RequestBody 설정 JSONObjedt를 보내기 위한 준비json에 담는다.
                 //json.addProperty("calName", calName);
                 //json.addProperty("calContent", aboutCal);
                 //json.addProperty("img_url", "");
 
+                final ProgressDialog progressDialog = new ProgressDialog(CreateCalendarActivity.this);
+                progressDialog.setMessage("공유 달력을 등록중입니다~");
+                progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+                progressDialog.show();
+
                 Ion.with(getApplicationContext())
                         .load("POST", url.getServerUrl() + "/createCal")
                         //요청 헤더 지정
-                        .setHeader("Content-Type","application/json")
+                        //.setHeader("Content-Type","application/json")
                         .setHeader("Authorization", userToken)
-                        //.setJsonObjectBody(json)
-                        //.setMultipartFile("file", file)
-                        .setMultipartParameter("dto", calName)
-                        .setMultipartParameter("dto", aboutCal)
-
-
-                        //응답은 JsonObject로 받겠다.
+                        .setTimeout(60000)
+                        .setMultipartParameter("calName", calName)
+                        .setMultipartParameter("calContent", aboutCal)
+                        .setMultipartFile("file", file)
+                        //응답형식
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
                             public void onCompleted(Exception e, JsonObject result) {
 
                                 if(e != null) { //서버 연결 오류
-                                    Toast.makeText(getApplicationContext(), "SEver Error", Toast.LENGTH_LONG).show();
+                                    Log.i("달력 생성 에러코드", e.getMessage());
+                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
 
                                 else {// 서버 연결 성공 시
-                                    Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
-                                    Dialog();
+                                    dialog.dismiss();
+                                    String message = result.get("message").getAsString();
+                                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+
+                                    if(message.equals("success"))
+                                        Dialog();
+                                    else
+                                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
-                //Dialog();
+            }
+        }); ImageButton backButton;
+
+        backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }

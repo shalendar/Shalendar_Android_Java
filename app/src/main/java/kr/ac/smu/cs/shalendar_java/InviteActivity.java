@@ -15,9 +15,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
+import org.json.JSONArray;
+
+import java.util.ArrayList;
 
 /*
     공유캘린더 멤버 초대 Actvity
@@ -26,7 +36,7 @@ import com.koushikdutta.ion.Ion;
 
 public class InviteActivity extends AppCompatActivity {
 
-    private EditText userEamil;
+    private EditText userEmail;
     private TextView addEmail;
     private Button toEmailInviteButton;
 
@@ -39,6 +49,13 @@ public class InviteActivity extends AppCompatActivity {
     //서버로 넘길 값
     private String inputEmail;
 
+    private RecyclerView recyclerView;
+
+    private UserEmailAdapter adapter;
+
+    //sideBar의 공유달력 intent로 넘긴 값.
+    private String calName;
+    private int cid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,27 +63,23 @@ public class InviteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_invite);
 
 
-        final RecyclerView recyclerView = findViewById(R.id.invite_email_RecycleView);
+        recyclerView = findViewById(R.id.invite_email_RecycleView);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-        final UserEmailAdapter adapter = new UserEmailAdapter();
 
-        //dummy Data
-//        adapter.addItem(new UserEmail("jacob456@hanmail.net"));
-//        adapter.addItem(new UserEmail("novojoon@naver.net"));
-//        adapter.addItem(new UserEmail("esp5538@naver.com"));
-//        recyclerView.setAdapter(adapter);
+        adapter = new UserEmailAdapter();
 
         /*
           '추가' TextView리스너 구현
          */
-        userEamil = findViewById(R.id.register_title_EditText);
+        userEmail = findViewById(R.id.register_title_EditText);
         addEmail = findViewById(R.id.invite_addEamil_TextView);
 
-        if(userEamil != null) {
+        if(userEmail != null) {
             addEmail.setTextColor(Color.parseColor("#ef7172"));
         }
+
 
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         userToken = pref.getString("userToken", "NO_TOKEN");
@@ -77,20 +90,96 @@ public class InviteActivity extends AppCompatActivity {
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(this).getConscryptMiddleware().enable(false);
 
+
         addEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputEmail = userEamil.getText().toString().trim();
+                inputEmail = userEmail.getText().toString().trim();
 
                 JsonObject json = new JsonObject();
                 json.addProperty("id", inputEmail);
-                json.addProperty("cid", 20);
+
+
+                Future ion = Ion.with(getApplicationContext())
+                        .load("POST", url.getServerUrl() + "/emailCheck")
+                        .setHeader("Content-Type", "application/json")
+                        .setJsonObjectBody(json)
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+
+                                if(e != null) {
+                                    Toast.makeText(getApplicationContext(), "Server Connection Error", Toast.LENGTH_LONG).show();
+                                }
+
+                                else {
+//                                    String message = result.get("message").getAsString();
+                                    parseFromServer(result);
+//                                    if(message.equals("please check email")) {
+//                                        adapter.addItem(new UserEmail(inputEmail));
+//                                        recyclerView.setAdapter(adapter);
+//                                    }
+//                                    else {
+//                                        Toast.makeText(getApplicationContext(), message + "추가 실패", Toast.LENGTH_LONG).show();
+//                                    }
+                                }
+                            }
+                        });
+
+                //응답 받을 때까지 대기.
+                try {
+                    ion.get();
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+                //adapter.addItem(new UserEmail(input_Email));
+                //recyclerView.setAdapter(adapter);
+            }
+        });
+
+
+
+         /*
+           버튼 클릭시 초대장 보낼 이메일 입력하는 액티비티로 이동
+           이메일 입력 액티비티->InviteByEmailActivity
+         */
+         toEmailInviteButton = findViewById(R.id.invite_email_button);
+         toEmailInviteButton.setOnClickListener(new View.OnClickListener() {
+
+             @Override
+            public void onClick(View v) {
+
+                 JsonArray jsonArray = new JsonArray();
+                 JsonParser parser = new JsonParser();
+
+                for(int i = 0; i<adapter.getItemCount(); i++) {
+
+                    if(adapter.getItem(i).getIs_checked()) {
+
+                        JsonPrimitive element = new JsonPrimitive(adapter.getItem(i).getUserEmail());
+                        jsonArray.add(element);
+                    }
+                }
+
+                Intent intent = getIntent();
+                cid = intent.getIntExtra("cid", -1);
+                calName = intent.getStringExtra("calName");
+
+                Log.i("초대 할 사람", jsonArray.toString());
+
+                JsonObject json = new JsonObject();
+                json.addProperty("sender", inputEmail);
+                json.add("receiver", jsonArray);
+                json.addProperty("sender_img", "a.jpg");
+                json.addProperty("senderName", cid);
+                json.addProperty("cName", calName);
+
 
                 Ion.with(getApplicationContext())
-
-                        .load("POST", url.getServerUrl() + "/addUserCal")
+                        .load("POST", url.getServerUrl() + "/pushInvitation")
                         .setHeader("Content-Type", "application/json")
-                        .setHeader("Authorization", userToken)
                         .setJsonObjectBody(json)
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
@@ -104,12 +193,12 @@ public class InviteActivity extends AppCompatActivity {
 
                                 else {
                                     String message = result.get("message").getAsString();
+
                                     if(message.equals("success")) {
-                                        adapter.addItem(new UserEmail(inputEmail));
-                                        recyclerView.setAdapter(adapter);
+                                        Toast.makeText(getApplicationContext(), "초대 알림이 발송되었습니다.", Toast.LENGTH_LONG).show();
                                     }
                                     else {
-                                        Toast.makeText(getApplicationContext(), message + "해당 유저 없음", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), message + "초대 실패", Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }
@@ -118,23 +207,18 @@ public class InviteActivity extends AppCompatActivity {
                 //recyclerView.setAdapter(adapter);
             }
         });
+    }
 
+    public void parseFromServer(JsonObject result) {
 
-         /*
-           버튼 클릭시 초대장 보낼 이메일 입력하는 액티비티로 이동
-           이메일 입력 액티비티->InviteByEmailActivity
-         */
-                toEmailInviteButton = findViewById(R.id.invite_email_button);
-        toEmailInviteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*
-                Intent intent = new Intent(getApplicationContext(), InviteByEmailActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-                */
-
-            }
-        });
+        String message = result.get("message").getAsString();
+        if(message.equals("please check email")) {
+            adapter.addItem(new UserEmail(inputEmail, false));
+            recyclerView.setAdapter(adapter);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), message + "해당 사용자는 없습니다.", Toast.LENGTH_LONG).show();
+        }
     }
 }
 

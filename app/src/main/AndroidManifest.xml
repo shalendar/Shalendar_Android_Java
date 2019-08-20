@@ -3,22 +3,58 @@
     package="kr.ac.smu.cs.shalendar_java">
 
     <!-- 통신 허용 -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- 사진 추가 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/face"/>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent"/>
+
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id1"
+            android:value="@string/default_notification_channel_id"/>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id2"
+            android:value="@string/default_datapayload_channel_id"/>
+
         <activity android:name=".CreateCalendarActivityDialog" />
+
+        <activity android:name=".CreateCalendarActivity"
+            android:theme ="@style/AppTheme.NoActionBar"
+            />
+        <service
+            android:name=".MyFireBaseMessagingService"
+            android:exported="true"
+            android:enabled="true"
+            android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+
+
         <activity
             android:name=".CreateMember3"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -28,47 +64,52 @@
         <activity
             android:name=".CreateMember1"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme ="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity
             android:name=".BoardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".RegisterPlanActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
         <activity android:name=".RecommandTimeActivity" />
+
         <activity
             android:name=".PlanDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".UpdatePlanActivity" />
+
         <activity android:name=".DeletePlanActivity" />
-        <activity
-            android:name=".NoticeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".SettingActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".InviteActivity" />
-        <activity android:name=".CreateCalendarActivity" />
-        <activity android:name=".InviteByEmailActivity" />
-        <activity
-            android:name=".SearchPlanActivity"
-            android:label="@string/title_activity_search__plan" />
-        <!-- android:theme="@style/AppTheme.NoActionBar"/> -->
-        <activity android:name=".WaitInvite"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <activity android:name=".NoticeActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".SettingActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".InviteActivity" />0
+        android:name=".SearchPlanActivity"
+        android:label="@string/title_activity_search__plan"
+        android:theme="@style/AppTheme.NoActionBar"/>
+        <!--android:theme="@style/AppTheme.NoActionBar"/>-->
     </application>
 
 </manifest>

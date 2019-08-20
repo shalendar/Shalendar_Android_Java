@@ -43,7 +43,7 @@
             android:paddingLeft="10dp">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/userName_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -52,7 +52,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/userID_textView2"
+                android:id="@+id/userID_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -74,6 +74,25 @@
 
 
             <Button
+                android:id="@+id/btn_invite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:drawableLeft="@drawable/ic_mail"
+                android:gravity="center|left"
+                android:paddingLeft="15dp"
+                android:text="   초대 메세지함" />
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+
+
+            <Button
                 android:id="@+id/btn_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,7 +100,7 @@
                 android:drawableLeft="@drawable/ic_info"
                 android:gravity="center|left"
                 android:paddingLeft="15dp"
-                android:text="  공지사항" />
+                android:text="   공지사항" />
 
         </RelativeLayout>
 
@@ -98,7 +117,7 @@
                 android:drawableLeft="@drawable/ic_setting"
                 android:gravity="center|left"
                 android:paddingLeft="15dp"
-                android:text="  설정" />
+                android:text="   설정" />
 
         </RelativeLayout>
 
