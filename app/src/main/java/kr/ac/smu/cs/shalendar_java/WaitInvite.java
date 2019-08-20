@@ -91,6 +91,12 @@ public class WaitInvite extends AppCompatActivity implements View.OnClickListene
                 startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
+            @Override
+            public void btnInvited() {
+                Intent intent3 = new Intent(getApplicationContext(), WaitInvite.class);
+                startActivityForResult(intent3, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
+            }
+
 
         });
     }
