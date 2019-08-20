@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -76,6 +78,14 @@ public class LoginActivity extends AppCompatActivity {
            우선 버튼 클릭시 MainActivity로 넘어간다.
            - 나중에 CreateMemberActivity로 넘어가는 코드 짜야 한다.
         */
+        //device TOken값
+        try {
+            String token = FirebaseInstanceId.getInstance().getToken();
+            Log.i("Device Token", token);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         //통신 준비.
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
@@ -173,9 +183,15 @@ public class LoginActivity extends AppCompatActivity {
     public void parseFromServer(String message, JsonObject result) {
         if(message.equals("login success")) {
             userToken = result.get("token").getAsString();
+//            CreateMember2 member2 = new CreateMember2();
+//            String userName = member2.getUserName();
+
+            //Log.i("로그인 화면", userName);
+
             SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
             editor.putString("userToken", userToken);
+//            editor.putString("userName", userName);
             editor.putString("userEmail", userEmail);
             editor.apply();
 

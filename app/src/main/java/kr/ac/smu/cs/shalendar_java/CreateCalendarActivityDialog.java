@@ -40,7 +40,8 @@ public class CreateCalendarActivityDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 Intent intent2 = new Intent(getContext(), MainActivity.class);
-                getContext().startActivity(intent2); }
+                getContext().startActivity(intent2);
+            }
         });
     }
 }
