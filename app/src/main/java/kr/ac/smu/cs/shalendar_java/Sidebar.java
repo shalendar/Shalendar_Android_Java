@@ -44,6 +44,8 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
     //
     private SidebarAdapter s_adapter;
 
+    private ImageView imageView;
+
     public void setEventListener(EventListener l) {
         listener = l;
     }
@@ -54,6 +56,8 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         void btnLevel2();
         void btnLevel3();
     }
+
+
 
     public Sidebar(Context context)
     {
