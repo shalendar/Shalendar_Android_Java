@@ -14,4 +14,7 @@
     <string name="title_license">라이센스</string>
     <string name="title_questions">자주하는 질문</string>
     <string name="title_activity_search__plan">일정 검색</string>
+
+    <string name="default_notification_channel_id">test</string>
+    <string name="default_datapayload_channel_id">test2</string>
 </resources>

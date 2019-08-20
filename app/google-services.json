@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "571052306999",
+    "firebase_url": "https://shalendar-7ff5c.firebaseio.com",
+    "project_id": "shalendar-7ff5c",
+    "storage_bucket": "shalendar-7ff5c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571052306999:android:34967914e68aa1d2",
+        "android_client_info": {
+          "package_name": "kr.ac.smu.cs.shalendar_java"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "571052306999-vl8vlrk63bqeimutg6tgm3u6n103flo4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZTen7bzjIV2SVRxvJUYa9xJBI6h3Z0Dc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "571052306999-vl8vlrk63bqeimutg6tgm3u6n103flo4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

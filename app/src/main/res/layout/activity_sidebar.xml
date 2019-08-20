@@ -43,7 +43,7 @@
             android:paddingLeft="10dp">
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/userName_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -52,7 +52,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/userID_textView2"
+                android:id="@+id/userID_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
