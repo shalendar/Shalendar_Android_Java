@@ -1,7 +1,9 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 
 public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowHolder> {
 
-
+    private Context context;
     private Context mContext;
     private ArrayList<SidebarItem> calendarList;
 
@@ -36,6 +38,7 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 //        SidebarAdapter.ItemRowHolder mh = new SidebarAdapter.ItemRowHolder(v);
 //        return mh;
 
+        context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.sidebaritem, parent, false);
 
@@ -90,7 +93,8 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
     }
 
 
-    public static class ItemRowHolder extends RecyclerView.ViewHolder {
+    public class ItemRowHolder extends RecyclerView.ViewHolder {
+
 
         TextView calendarSidebarName;
         ImageView calendarSidebarImage;
@@ -98,6 +102,7 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
         ImageView toInviteMember;
 
         int calendar_ID;
+        String calendarName;
 
 
         public ItemRowHolder(final View itemView) {
@@ -115,15 +120,45 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                 public void onClick(View v) {
                     Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
                     intent.putExtra("cid", calendar_ID);
-                    intent.putExtra("calName", calendarSidebarName.toString());
+                    intent.putExtra("calName", calendarName);
                     itemView.getContext().startActivity(intent);
                 }
             });
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(), calendarSidebarName.getText() + Integer.toString(calendar_ID), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
+                    dialog.setTitle("달력 수정/삭제");
+                    dialog.setMessage("달력 수정, 삭제하십니까?")
+                            .setPositiveButton("수정", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //여기 캘린더 수정화면으로 바꿔야함
+                                    Intent intent = new Intent(context, CreateCalendarActivity.class);
+                                    context.startActivity(intent);
+                                    dialog.cancel();
+                                }
+                            })
+                            .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alertDialog = dialog.create();
+                    alertDialog.show();
+                    return false;
                 }
             });
 
@@ -133,10 +168,14 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             this.calendar_ID = calendar_ID;
         }
 
+        public void setCalName(String calName) {
+            this.calendarName = calName;
+        }
 
         public void setItem(SidebarItem item) {
             calendarSidebarName.setText(item.getCalendarName());
             setCid(item.getCalendar_ID());
+            setCalName(item.getCalendarName());
             Ion.with(calendarSidebarImage)
                 .centerCrop()
                 .placeholder(R.drawable.face)

@@ -55,6 +55,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         void btnLevel1();
         void btnLevel2();
         void btnLevel3();
+        void btnInvited();
     }
 
 
@@ -75,6 +76,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         findViewById(R.id.btn_info).setOnClickListener(this);
         findViewById(R.id.btn_setting).setOnClickListener(this);
         findViewById(R.id.btn_add_calender).setOnClickListener(this);
+        findViewById(R.id.btn_invite).setOnClickListener(this);
 
 
         //사용자 ID 프로필 set
@@ -216,6 +218,9 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                 break;
             case R.id.btn_add_calender :
                 listener.btnLevel3();
+                break;
+            case R.id.btn_invite :
+                listener.btnInvited();
                 break;
             default:
                 break;

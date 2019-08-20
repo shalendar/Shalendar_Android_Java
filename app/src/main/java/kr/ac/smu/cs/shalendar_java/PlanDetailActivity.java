@@ -218,6 +218,7 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
 
         Sidebar sidebar = new Sidebar(mContext);
         sideLayout.addView(sidebar);
+        //sidebar.setUserID(userName);
 
         viewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,6 +250,12 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
             public void btnLevel3() {
                 Intent intent2 = new Intent(getApplicationContext(), CreateCalendarActivity.class);
                 startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
+            }
+
+            @Override
+            public void btnInvited() {
+                Intent intent3 = new Intent(getApplicationContext(), WaitInvite.class);
+                startActivityForResult(intent3, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
 
