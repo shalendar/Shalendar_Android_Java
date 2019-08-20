@@ -537,6 +537,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
+            @Override
+            public void btnInvited() {
+                Intent intent2 = new Intent(getApplicationContext(), WaitInvite.class);
+                startActivityForResult(intent2, CodeNumber.TO_WAITINVITEACTIVITY);
+            }
+
 
         });
     }
@@ -575,7 +581,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_search :
                 Intent intent2 = new Intent(getApplicationContext(), SearchPlanActivity.class);
-                startActivityForResult(intent2, CodeNumber.TO_SEARCH_PLAN_ACTIVITY);
+                startActivity(intent2);
                 break;
         }
     }

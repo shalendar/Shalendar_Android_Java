@@ -242,6 +242,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         Sidebar sidebar = new Sidebar(mContext);
         sideLayout.addView(sidebar);
+        //sidebar.setUserID(userName);
 
         viewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,6 +274,12 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
             public void btnLevel3() {
                 Intent intent2 = new Intent(getApplicationContext(), CreateCalendarActivity.class);
                 startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
+            }
+
+            @Override
+            public void btnInvited() {
+                Intent intent3 = new Intent(getApplicationContext(), WaitInvite.class);
+                startActivityForResult(intent3, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
 
