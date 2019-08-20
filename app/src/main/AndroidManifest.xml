@@ -38,11 +38,7 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id2"
             android:value="@string/default_datapayload_channel_id"/>
 
-
-
         <activity android:name=".CreateCalendarActivityDialog" />
-
-
 
         <activity android:name=".CreateCalendarActivity"
             android:theme ="@style/AppTheme.NoActionBar"
@@ -110,10 +106,10 @@
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name=".InviteActivity" />0
-            android:name=".SearchPlanActivity"
-            android:label="@string/title_activity_search__plan"
-            android:theme="@style/AppTheme.NoActionBar"/>
-            <!--android:theme="@style/AppTheme.NoActionBar"/>-->
+        android:name=".SearchPlanActivity"
+        android:label="@string/title_activity_search__plan"
+        android:theme="@style/AppTheme.NoActionBar"/>
+        <!--android:theme="@style/AppTheme.NoActionBar"/>-->
     </application>
 
 </manifest>
