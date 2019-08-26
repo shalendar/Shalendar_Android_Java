@@ -1,14 +1,23 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -29,6 +38,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -56,6 +66,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
+
 /*
   등록된 일정에 대하여
   게시판 형식으로 보여주는 Activity.
@@ -76,6 +88,10 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
     //서버로 부터 로그인 실패 시 오는 응답 변수
     private String responseFromServer;
+
+    private String imageURL;
+
+    private ImageView imageView;
 
     int sharePeopleNum;
 
@@ -108,7 +124,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         boardRecyclerView.setLayoutManager(linearLayoutManager);
 
         //통신코드 시작(initBoard)
-
+        checkPermissions();
         //통신 준비
         Ion.getDefault(getApplicationContext()).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(getApplicationContext()).getConscryptMiddleware().enable(false);
@@ -282,9 +298,98 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                 startActivityForResult(intent3, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
+            @Override
+            public void image_profile(){
+                getPictureFromGallery();
+            }
 
         });
     }
+
+    private void getPictureFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/jpg");
+        try {
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private String getPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Log.d("여기까지", "ㅇ5");
+        CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        Log.d("여기까지", "ㅇ6");
+
+        return cursor.getString(column_index);
+    }
+
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            switch (requestCode) {
+                //사진등록
+                case PICK_IMAGE_REQUEST:
+                    Log.d("여기까지", "ㅇ3");
+                    if (resultCode == RESULT_OK) {
+                        Log.d("여기까지", "ㅇ4");
+                        imageURL = getPathFromURI(data.getData());
+                        Log.d("사진 경로", imageURL);
+                        imageView.setImageURI(data.getData());
+                    }
+
+                    //주소받아오기
+
+            }
+        }catch (Exception e) {
+            Toast.makeText(this, "오류가 있습니다.", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED||
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    },
+                    1052);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1052: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted.
+                } else {
+                    // Permission denied - Show a message to inform the user that this app only works
+                    // with these permissions granted
+                }
+                return;
+            }
+        }
+    }
+
+
 
     public void closeMenu() {
 
