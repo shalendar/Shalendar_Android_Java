@@ -1,15 +1,24 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.shapes.RoundRectShape;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,6 +30,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,11 +40,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.builder.AnimateGifMode;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.io.File;
+import java.math.RoundingMode;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,6 +57,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
+
+import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -60,6 +75,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //UserToken
     private String userToken;
+
+    private String imageURL;
+
+    private ImageView imageView;
 
     //7-17
     boolean isPageOpen = false;
@@ -117,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        ionManager.showAllSche();
 
         showAllSche();
-
+        checkPermissions();
        // textViewTitle = (TextView) findViewById(R.id.main_title_textView);
         buttonToBoard = (Button) findViewById(R.id.main_toBoard_button);
         final TextView selectedDate = (TextView)findViewById(R.id.TextView1);
@@ -543,9 +562,145 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivityForResult(intent2, CodeNumber.TO_WAITINVITEACTIVITY);
             }
 
+            @Override
+            public void image_profile(){
+                getPictureFromGallery();
+            }
 
         });
     }
+
+    private void getPictureFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/jpg");
+        try {
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /*
+     폰에서 사진을 지정하면 해당 사진 주소를 가져온다.
+     */
+    private String getPathFromURI(Uri contentUri) {
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Log.d("여기까지", "ㅇ5");
+        CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        Log.d("여기까지", "ㅇ6");
+
+        return cursor.getString(column_index);
+    }
+
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        try {
+            switch (requestCode) {
+                //사진등록
+                case PICK_IMAGE_REQUEST:
+                    Log.d("여기까지", "ㅇ3");
+                    if (resultCode == RESULT_OK) {
+                        Log.d("여기까지", "ㅇ4");
+                        imageURL = getPathFromURI(data.getData());
+                        Log.d("사진 경로", imageURL);
+                        imageView = findViewById(R.id.image_profile);
+
+//                        Ion.with(imageView)
+//                                .centerCrop()
+//                                .resize(250, 250)
+//                                .load(imageURL);
+
+                        //JsonObject json = new JsonObject();
+                        //json.addProperty("img_url", imageURL);
+                        Log.i("프로필 변경", userToken);
+                        File file = new File(imageURL);
+                        if(file == null) {
+                            Toast.makeText(getApplicationContext(),"여기", Toast.LENGTH_LONG).show();
+                        }
+                        Ion.with(this)
+                                .load("POST",url.getServerUrl() + "/imageChange")
+                                .setHeader("Authorization", userToken)
+                                .setMultipartFile("img_url", file)
+                                //응답
+                                .asJsonObject()
+                                .setCallback(new FutureCallback<JsonObject>() {
+                                    @Override
+                                    public void onCompleted(Exception e, JsonObject result) {
+
+                                        if(e != null) {
+                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+
+                                        else {
+                                            String message = result.get("message").getAsString();
+
+                                            if(message.equals("image change success")) {
+                                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+
+                                                Ion.with(imageView)
+                                                        .centerCrop()
+                                                        .resize(250, 250)
+                                                        .load(imageURL);
+                                            }
+                                            else {
+                                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    }
+                                });
+//                        imageView.setImageURI(data.getData());
+                    }
+
+                    //주소받아오기
+
+            }
+        }catch (Exception e) {
+            Toast.makeText(this, "오류가 있습니다.", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+
+    private void checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED||
+                ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    },
+                    1052);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1052: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted.
+                } else {
+                    // Permission denied - Show a message to inform the user that this app only works
+                    // with these permissions granted
+                }
+                return;
+            }
+        }
+    }
+
 
     public void closeMenu() {
 

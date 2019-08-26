@@ -1,11 +1,16 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -33,6 +38,8 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
+
 /*
   일정 상세보기 Activity
   app bar의 메뉴에서 '일정 수정', '일정 삭제' 선택시
@@ -53,6 +60,8 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
     private Boolean isMenuShow = false;
     private Boolean isExitFlag = false;
 
+    //이미지 절대 경로
+    private String imageURL;
 
     //통신 위한 url
     private NetWorkUrl url = new NetWorkUrl();
@@ -258,9 +267,23 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
                 startActivityForResult(intent3, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
-
+            @Override
+            public void image_profile(){
+                getPictureFromGallery();
+            }
         });
     }
+
+    private void getPictureFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/jpg");
+        try {
+            startActivityForResult(intent, PICK_IMAGE_REQUEST);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void closeMenu() {
 

@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -64,7 +65,7 @@ public class CreateCalendarActivity extends AppCompatActivity {
 
 
 //        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            checkPermissions();
+            checkPermissions();
 //        }
 
 
@@ -113,7 +114,7 @@ public class CreateCalendarActivity extends AppCompatActivity {
                 progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
                 progressDialog.show();
 
-                Ion.with(getApplicationContext())
+                final Future ion = Ion.with(getApplicationContext())
                         .load("POST", url.getServerUrl() + "/createCal")
                         //요청 헤더 지정
                         //.setHeader("Content-Type","application/json")
@@ -145,6 +146,8 @@ public class CreateCalendarActivity extends AppCompatActivity {
                                 }
                             }
                         });
+
+
             }
         });
         ImageButton backButton;
@@ -157,7 +160,6 @@ public class CreateCalendarActivity extends AppCompatActivity {
             }
         });
     }
-
 
     public void Dialog() {
         dialog = new CreateCalendarActivityDialog(CreateCalendarActivity.this,
