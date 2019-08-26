@@ -68,6 +68,7 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         protected TextView inviteName;
 
         public ViewHolder(final View itemView) {
+
             super(itemView);
             this.WaitPeoplePic=(ImageView)itemView.findViewById(R.id.waitListPicture);
             this.emailID=(TextView)itemView.findViewById(R.id.waitListID);
