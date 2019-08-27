@@ -6,9 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
@@ -37,7 +40,8 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
 
 
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String WaitPeoplePic=waitList.get(position).getWaitPeoplePic();
+
+        String waitPeoplePic=waitList.get(position).getWaitPeoplePic();
         String emailID=waitList.get(position).getEmailID();
         String calendarName=waitList.get(position).getCalendarName();
         String invitedName=waitList.get(position).getInvitedName();
@@ -48,6 +52,11 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         holder.calendarName.setText(calendarName);
         holder.emailID.setText(emailID);
         //holder.WaitPeoplePic.setImageResource();
+
+        Ion.with(holder.waitPeoplePic)
+                .centerCrop()
+                .resize(50,50)
+                .load(waitPeoplePic);
     }
 
     @Override
@@ -61,20 +70,41 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        protected ImageView WaitPeoplePic;
+        protected ImageView waitPeoplePic;
         protected TextView emailID;
         protected TextView calendarName;
         protected TextView invitedName;
         protected TextView inviteName;
+        protected Button cancelButton;
+        protected Button acceptButton;
 
         public ViewHolder(final View itemView) {
 
             super(itemView);
-            this.WaitPeoplePic=(ImageView)itemView.findViewById(R.id.waitListPicture);
+            this.waitPeoplePic=(ImageView)itemView.findViewById(R.id.waitListPicture);
             this.emailID=(TextView)itemView.findViewById(R.id.waitListID);
             this.calendarName=(TextView)itemView.findViewById(R.id.calendarName);
             this.invitedName=(TextView)itemView.findViewById(R.id.invitedName);
             this.inviteName=(TextView)itemView.findViewById(R.id.inviteName);
+            this.cancelButton = itemView.findViewById(R.id.inviteCancelButton);
+            this.acceptButton = itemView.findViewById(R.id.inviteAcceptButton);
+
+
+            //초대 수락
+            acceptButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                }
+            });
+
+
+            //초대 거절
+            cancelButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
 
         }
     }

@@ -56,7 +56,10 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
     //
     private SidebarAdapter s_adapter;
 
-    //private ImageView imageView;
+    //
+    public static String userProfile_Name;
+    public static String userProfile_ID;
+    public static String userProfile_ImgURL;
 
 
     public void setEventListener(EventListener l) {
@@ -103,7 +106,6 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
 
 
-
         //사용자 ID 프로필 set
         TextView userName = findViewById(R.id.userName_textView);
         TextView userID = findViewById(R.id.userID_textView);
@@ -111,21 +113,26 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
 
         SharedPreferences pref = getContext().getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
-        userName.setText(pref.getString("userName", "DEFAULT :: USER"));
-        userID.setText(pref.getString("userEmail", "DEFAULT :: MIND@"));
-        String profileImageURL = pref.getString("img_url", "DEFAULT :: profile_IMAGE");
+        userProfile_Name = pref.getString("userName", "DEFAULT :: USER");
+        userProfile_ID = pref.getString("userEmail", "DEFAULT :: MIND@");
+        userProfile_ImgURL = pref.getString("img_url", "DEFAULT :: profile_IMAGE");
 
-        Log.i("사용자 프로필 이미지??", profileImageURL);
 
-        if(!(profileImageURL.equals("DEFAULT :: profile_IMAGE"))) {
+        userName.setText(userProfile_Name);
+        userID.setText(userProfile_ID);
+
+
+        Log.i("사용자 프로필 이미지??", userProfile_ImgURL);
+
+        if(!(userProfile_ImgURL.equals("DEFAULT :: profile_IMAGE"))) {
             Ion.with(imageView)
                     .centerCrop()
                     .resize(250, 250)
-                    .load(profileImageURL);
+                    .load(userProfile_ImgURL);
         }
 
         else {
-            Toast.makeText(getContext(), "사용자 프로필이 default임", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "프로필 사진을 정해보세요~", Toast.LENGTH_SHORT).show();
             Ion.with(imageView)
                     .centerCrop()
                     .placeholder(R.drawable.face)
@@ -219,6 +226,8 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
                 SidebarItem sitem = new SidebarItem();
 
+                //sitem.setSenderName(userProfile_Name);
+                //sitem.setSenderImg(userProfile_ImgURL);
                 sitem.setCalendarName(innerData.get("calName").getAsString());
                 sitem.setCalendarImage(innerData.get("img_url").getAsString());
                 sitem.setCalendar_ID(cid_Array[i]);

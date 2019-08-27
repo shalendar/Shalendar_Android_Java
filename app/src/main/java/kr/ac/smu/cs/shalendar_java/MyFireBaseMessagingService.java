@@ -51,7 +51,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
     //ForeGround 처리
     private void sendNotification(Map<String, String> data) {
 
-        Intent intent = new Intent(this, WaitInvite.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         //push로 받은 data를 그대로 다시 intent에 넣는다.
@@ -89,7 +89,7 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
     //backGround 처리
     private void sendNotification(String messageBody) {
 
-        Intent intent = new Intent(this, WaitInvite.class);
+        Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 

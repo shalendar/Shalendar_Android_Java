@@ -111,6 +111,8 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
         int calendar_ID;
         String calendarName;
+//        String senderName;
+//        String senderImg;
 
         NetWorkUrl url = new NetWorkUrl();
 
@@ -138,11 +140,19 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
+                ///////////////////////////
+                /*
+                사이드 바  달력 리스트에서 해당 달력 클릭 시
+                cid와 달력 이름등의 정보를 가지고
+                MainActivity로 돌아간다.
+                */
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(), calendarSidebarName.getText() + Integer.toString(calendar_ID), Toast.LENGTH_SHORT).show();
                     MainActivity.cid = calendar_ID;
                     MainActivity.calName = calendarName;
+                    Intent intent = new Intent(itemView.getContext(), MainActivity.class);
+                    itemView.getContext().startActivity(intent);
                 }
             });
 
@@ -182,6 +192,15 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
         }
 
+//        public void setSenderName(String senderName) {
+//            this.senderName = senderName;
+//        }
+
+
+//        public void setSenderImg(String senderImg) {
+//            this.senderImg = senderImg;
+//        }
+
         public void setCid(int calendar_ID) {
             this.calendar_ID = calendar_ID;
         }
@@ -190,22 +209,18 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             this.calendarName = calName;
         }
 
+
         public void setItem(SidebarItem item) {
             calendarSidebarName.setText(item.getCalendarName());
+            //setSenderName(item.getSenderName());
             setCid(item.getCalendar_ID());
             setCalName(item.getCalendarName());
+            //setSenderImg(item.getSenderImg());
+
             Ion.with(calendarSidebarImage)
                 .centerCrop()
                 .placeholder(R.drawable.face)
                 .load(item.getCalendarImage());
-        }
-
-        public int getCid() {
-            return this.calendar_ID;
-        }
-
-        public String getCalName() {
-            return this.calendarName;
         }
 
 
