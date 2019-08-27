@@ -17,13 +17,11 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-
 /*
     Login하는 Activity
     Login -> MainActivity로 넘어간다.
 
  */
-
 public class LoginActivity extends AppCompatActivity {
 
     //EditText 멤버 변수
@@ -50,8 +48,6 @@ public class LoginActivity extends AppCompatActivity {
     //서버로 부터 로그인 성공 시 오는 응답 profileImageURL변수
     private String img_url;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -76,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         //통신 준비.
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
@@ -116,7 +111,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "아이디/비밀번호가 잘못되었습니다", Toast.LENGTH_SHORT).show();
                 }
 */
-
                 //서버 통신코드 Ion 롸이브뤄리 사용
                 final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setMessage("로그인 중 입니다~");
@@ -129,8 +123,6 @@ public class LoginActivity extends AppCompatActivity {
                 //응답 바디 서버에 보낼 data 넣음
                 json.addProperty("id", userEmail);
                 json.addProperty("pw", userPassword);
-
-
                 Ion.with(getApplicationContext())
                         .load("POST", url.getServerUrl() + "/signin")
                         .setHeader("Content-Type", "application/json")
@@ -144,7 +136,6 @@ public class LoginActivity extends AppCompatActivity {
                                 if( e!= null) {
                                     Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
-
                                 else {
                                     progressDialog.dismiss();
                                     String message = result.get("message").getAsString();
@@ -156,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         //이메일로 회원가입 버튼 클릭 경우
         buttonToMember1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,8 +156,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-
     //서버 응답 처리
     //응답으로 받은 userToken, getSharedPreference에 저장.
     public void parseFromServer(String message, JsonObject result) {
@@ -198,15 +186,12 @@ public class LoginActivity extends AppCompatActivity {
 //            intent.putExtra("userEmail", userEmail);
 //            intent.putExtra("userName", userName);
 //            intent.putExtra("img_url", img_url);
-
-
             startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
         }
 
         else if(message.equals("wrong password")) {
             Toast.makeText(getApplicationContext(), "사용자 정보가 일치 하지 않습니다", Toast.LENGTH_LONG).show();
         }
-
         else {
             Toast.makeText(getApplicationContext(), "서버 연결 실패", Toast.LENGTH_LONG).show();
         }

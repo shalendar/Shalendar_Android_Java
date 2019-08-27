@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -30,20 +31,14 @@ import java.util.ArrayList;
 
 import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 
-public class WaitInvite extends AppCompatActivity implements View.OnClickListener {
-
+public class WaitInvite extends AppCompatActivity {
 
     ArrayList<WaitListItem> waitRecyclerList;
     private Context mContext = WaitInvite.this;
-
-    private ViewGroup mainLayout;   //사이드 나왔을때 클릭방지할 영역
-    private ViewGroup viewLayout;   //전체 감싸는 영역
-    private ViewGroup sideLayout;   //사이드바만 감싸는 영역
-    private ViewGroup calendarLayout; //달력레이아웃 부분
     private String imageURL;
     private ImageView imageView;
-    private Boolean isMenuShow = false;
     private Boolean isExitFlag = false;
+    ImageButton backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,60 +59,15 @@ public class WaitInvite extends AppCompatActivity implements View.OnClickListene
 
         waitInviteRecyclerView.setAdapter(w_adapter);
 
-    }
-
-    private void addSideView() {
-
-        Sidebar sidebar = new Sidebar(mContext);
-        sideLayout.addView(sidebar);
-        //sidebar.setUserID(userName);
-
-        viewLayout.setOnClickListener(new View.OnClickListener() {
+        backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
 
-        sidebar.setEventListener(new Sidebar.EventListener() {
 
-            @Override
-            public void btnCancel() {
-                closeMenu();
-            }
-
-            @Override
-            public void btnLevel1() {
-                Intent intent2 = new Intent(getApplicationContext(), NoticeActivity.class);
-                startActivityForResult(intent2, CodeNumber.TO_NOTICE_ACTIVITY);
-            }
-
-            @Override
-            public void btnLevel2() {
-                Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
-                startActivityForResult(intent2, CodeNumber.TO_SETTING_ACTIVITY);
-            }
-
-            @Override
-            public void btnLevel3() {
-                Intent intent2 = new Intent(getApplicationContext(), CreateCalendarActivity.class);
-                startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
-            }
-
-            @Override
-            public void btnInvited() {
-                Intent intent3 = new Intent(getApplicationContext(), WaitInvite.class);
-                startActivityForResult(intent3, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
-            }
-
-
-            @Override
-            public void image_profile(){
-                getPictureFromGallery();
-            }
-
-
-        });
     }
 
 
@@ -189,7 +139,6 @@ public class WaitInvite extends AppCompatActivity implements View.OnClickListene
                     1052);
         }
     }
-
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1052: {
@@ -209,46 +158,6 @@ public class WaitInvite extends AppCompatActivity implements View.OnClickListene
 
 
 
-    public void closeMenu() {
-
-        isMenuShow = false;
-        Animation slide = AnimationUtils.loadAnimation(mContext, R.anim.siderbar_hidden);
-        sideLayout.startAnimation(slide);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                viewLayout.setVisibility(View.GONE);
-                viewLayout.setEnabled(false);
-                mainLayout.setEnabled(true);
-            }
-        }, 450);
-    }
-
-    public void showMenu() {
-
-        isMenuShow = true;
-        Animation slide = AnimationUtils.loadAnimation(this, R.anim.sidebar_show);
-        sideLayout.startAnimation(slide);
-        viewLayout.setVisibility(View.VISIBLE);
-        viewLayout.setEnabled(true);
-        mainLayout.setEnabled(false);
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_menu:
-                showMenu();
-                break;
-            case R.id.btn_search :
-                Intent intent2 = new Intent(getApplicationContext(), SearchPlanActivity.class);
-                startActivityForResult(intent2, CodeNumber.TO_SEARCH_PLAN_ACTIVITY);
-                break;
-        }
-    }
-
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 
@@ -259,25 +168,4 @@ public class WaitInvite extends AppCompatActivity implements View.OnClickListene
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isMenuShow) {
-            closeMenu();
-        } else {
-
-            if (isExitFlag) {
-                finish();
-            } else {
-
-                isExitFlag = true;
-                Toast.makeText(this, "뒤로가기를 한번더 누르시면 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        isExitFlag = false;
-                    }
-                }, 2000);
-            }
-        }
-    }
 }
