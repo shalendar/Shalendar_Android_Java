@@ -173,12 +173,11 @@ public class LoginActivity extends AppCompatActivity {
     public void parseFromServer(String message, JsonObject result) {
         if(message.equals("login success")) {
 
-            if(result.get("img_url").isJsonNull()) {
+
+            if(result.get("img_url").isJsonNull())
                 img_url = "DEFAULT :: profile_IMAGE";
-            }
-            else {
+            else
                 img_url = result.get("img_url").getAsString();
-            }
 
             userName = result.get("userName").getAsString();
             userToken = result.get("token").getAsString();
@@ -188,11 +187,13 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
 
+
             editor.putString("userToken", userToken);
             editor.putString("userName", userName);
             editor.putString("userEmail", userEmail);
             editor.putString("img_url", img_url);
             editor.apply();
+
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 //            intent.putExtra("userEmail", userEmail);

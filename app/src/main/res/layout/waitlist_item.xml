@@ -54,13 +54,13 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/cancelbutton"
+            android:id="@+id/inviteCancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="거절" />
 
         <Button
-            android:id="@+id/okbutton"
+            android:id="@+id/inviteAcceptButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="수락" />
