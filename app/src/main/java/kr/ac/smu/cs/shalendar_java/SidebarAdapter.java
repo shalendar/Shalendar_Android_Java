@@ -1,11 +1,14 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +18,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowHolder> {
 
     private Context context;
     private Context mContext;
     private ArrayList<SidebarItem> calendarList;
+
 
 
     public SidebarAdapter(Context mContext, ArrayList<SidebarItem> calendarList) {
@@ -104,6 +112,8 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
         int calendar_ID;
         String calendarName;
 
+        NetWorkUrl url = new NetWorkUrl();
+
 
         public ItemRowHolder(final View itemView) {
             super(itemView);
@@ -116,6 +126,7 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
 //            멤버 초대화면으로 이동.
             toInviteMember.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
@@ -130,8 +141,11 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(), calendarSidebarName.getText() + Integer.toString(calendar_ID), Toast.LENGTH_SHORT).show();
+                    MainActivity.cid = calendar_ID;
+                    MainActivity.calName = calendarName;
                 }
             });
+
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -149,9 +163,13 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                                     dialog.cancel();
                                 }
                             })
+
                             .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    deleteCalendar(calendar_ID);
+                                    Intent intent = new Intent(context, MainActivity.class);
+                                    context.startActivity(intent);
                                     dialog.cancel();
                                 }
                             });
@@ -180,6 +198,61 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                 .centerCrop()
                 .placeholder(R.drawable.face)
                 .load(item.getCalendarImage());
+        }
+
+        public int getCid() {
+            return this.calendar_ID;
+        }
+
+        public String getCalName() {
+            return this.calendarName;
+        }
+
+
+        public void deleteCalendar(int calendar_ID) {
+
+            SharedPreferences pref = context.getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+            String userToken = pref.getString("userToken", "NO_TOKEN");
+            Log.i("C::Sharepref에 저장된 토큰", userToken);
+
+
+            final ProgressDialog progressDialog = new ProgressDialog(context);
+            progressDialog.setMessage("공유 달력을 삭제 중 입니다~");
+            progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+            progressDialog.show();
+
+            JsonObject json = new JsonObject();
+            json.addProperty("cid", calendar_ID);
+            Log.i("선택된 달력 cid", Integer.toString(calendar_ID));
+
+            Ion.with(context.getApplicationContext())
+                    .load("POST", url.getServerUrl() + "/deleteCal")
+                    .setHeader("Content-Type", "application/json")
+                    .setHeader("Authorization", userToken)
+                    .setJsonObjectBody(json)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+
+                            if(e != null) {
+                                Log.i("/DeleteCal", e.getMessage());
+                                Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+
+                            else {
+                                String message = result.get("message").getAsString();
+                                progressDialog.dismiss();
+                                if(message.equals("success")) {
+                                    Toast.makeText(context, "삭제 " + message, Toast.LENGTH_LONG).show();
+                                }
+
+                                else {
+                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    });
         }
     }
 

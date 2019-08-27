@@ -131,7 +131,8 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         final JsonObject json = new JsonObject();
 
-        json.addProperty("cid", 20);
+        Log.i("게시판 넘어온 cid", Integer.toString(MainActivity.cid));
+        json.addProperty("cid", MainActivity.cid);
 
 //        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
 //        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);

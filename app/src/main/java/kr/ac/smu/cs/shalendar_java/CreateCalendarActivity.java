@@ -31,6 +31,7 @@ import com.koushikdutta.ion.Ion;
 
 import java.io.File;
 
+import static android.content.Context.MODE_PRIVATE;
 import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 
 /*
@@ -48,7 +49,7 @@ public class CreateCalendarActivity extends AppCompatActivity {
     private String userToken;
 
     //통신 위한 url가져오기
-    NetWorkUrl url = new NetWorkUrl();
+    private NetWorkUrl url = new NetWorkUrl();
 
     //이미지 절대 경로
     private String imageURL;
@@ -81,11 +82,11 @@ public class CreateCalendarActivity extends AppCompatActivity {
         calendarName = findViewById(R.id.calTitle_EditText_createCal);
         aboutCalendar = findViewById(R.id.aboutCal_EditText_createCal);
 
+
         //갤러리에서 사진 가져오기 위한 ImageView리스너 구현
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 getPictureFromGallery();
             }
         });
@@ -101,13 +102,6 @@ public class CreateCalendarActivity extends AppCompatActivity {
 
                 File file = new File(imageURL);
                 //서버 통신.
-
-                //JsonObject json = new JsonObject();
-
-                //RequestBody 설정 JSONObjedt를 보내기 위한 준비json에 담는다.
-                //json.addProperty("calName", calName);
-                //json.addProperty("calContent", aboutCal);
-                //json.addProperty("img_url", "");
 
                 final ProgressDialog progressDialog = new ProgressDialog(CreateCalendarActivity.this);
                 progressDialog.setMessage("공유 달력을 등록중입니다~");
@@ -135,7 +129,7 @@ public class CreateCalendarActivity extends AppCompatActivity {
                                 }
 
                                 else {// 서버 연결 성공 시
-                                    dialog.dismiss();
+                                    progressDialog.dismiss();
                                     String message = result.get("message").getAsString();
                                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 
@@ -150,9 +144,9 @@ public class CreateCalendarActivity extends AppCompatActivity {
 
             }
         });
-        ImageButton backButton;
 
-        backButton = findViewById(R.id.btn_back);
+
+        ImageButton backButton = findViewById(R.id.btn_back);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
