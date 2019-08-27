@@ -197,16 +197,15 @@ public class InviteActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                //adapter.addItem(new UserEmail(input_Email));
-                //recyclerView.setAdapter(adapter);
             }
         });
     }
 
-    public void parseFromServer(JsonObject result) {
 
+    public void parseFromServer(JsonObject result) {
         String message = result.get("message").getAsString();
         if(message.equals("please check email")) {
+            //Log.i("현재 초대 리사이클러뷰 인원", Integer.toString(adapter.getItemCount()));
             adapter.addItem(new UserEmail(inputEmail, false));
             recyclerView.setAdapter(adapter);
         }

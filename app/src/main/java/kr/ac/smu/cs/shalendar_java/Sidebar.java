@@ -56,7 +56,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
     //
     private SidebarAdapter s_adapter;
 
-    private ImageView imageView;
+    //private ImageView imageView;
 
 
     public void setEventListener(EventListener l) {
@@ -107,11 +107,32 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         //사용자 ID 프로필 set
         TextView userName = findViewById(R.id.userName_textView);
         TextView userID = findViewById(R.id.userID_textView);
+        ImageView imageView = findViewById(R.id.image_profile);
 
 
         SharedPreferences pref = getContext().getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         userName.setText(pref.getString("userName", "DEFAULT :: USER"));
         userID.setText(pref.getString("userEmail", "DEFAULT :: MIND@"));
+        String profileImageURL = pref.getString("img_url", "DEFAULT :: profile_IMAGE");
+
+        Log.i("사용자 프로필 이미지??", profileImageURL);
+
+        if(!(profileImageURL.equals("DEFAULT :: profile_IMAGE"))) {
+            Ion.with(imageView)
+                    .centerCrop()
+                    .resize(250, 250)
+                    .load(profileImageURL);
+        }
+
+        else {
+            Toast.makeText(getContext(), "사용자 프로필이 default임", Toast.LENGTH_SHORT).show();
+            Ion.with(imageView)
+                    .centerCrop()
+                    .placeholder(R.drawable.face)
+                    .resize(250, 250);
+        }
+
+
 
 
         //리사이클러
@@ -212,8 +233,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                 for(int j=0; j<innerData2.size(); j++){ //공유달력 내 사용자들 명수
 
                     Log.i("해당 달력에 있는 사용자이름", innerData2.get(j).getAsJsonObject().get("id").getAsString());
-                    stItem.add(new SidebarTeamItem(R.drawable.face));
-
+                    stItem.add(new SidebarTeamItem(innerData2.get(j).getAsJsonObject().get("img_url").getAsString()));
                 }
 
 

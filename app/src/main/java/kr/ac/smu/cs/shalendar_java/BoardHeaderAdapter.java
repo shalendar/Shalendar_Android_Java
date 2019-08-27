@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.koushikdutta.ion.Ion;
+
 import java.util.ArrayList;
 
 
@@ -49,9 +51,14 @@ public class BoardHeaderAdapter extends RecyclerView.Adapter<BoardHeaderAdapter.
             teammate_pic=itemView.findViewById(R.id.teammember_profile_image);
             teammate_name=itemView.findViewById(R.id.teammember_profile_name);
         }
+
         void onBind(BoardTeamItem data) {
 
-            teammate_pic.setImageResource(data.getTeammate_pic());
+            //teammate_pic.setImageResource(data.getTeammate_pic());
+            Ion.with(teammate_pic)
+                    .centerCrop()
+                    .resize(200,200)
+                    .load(data.getTeammate_pic());
             teammate_name.setText(data.getTeammate_name());
         }
     }

@@ -70,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonToBoard;
     private Button buttonToRegisterPlan;
 
-    //SharedPreferences 변수
-    //private SharedPreferences pref;
 
     //UserToken
     private String userToken;
@@ -79,6 +77,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String imageURL;
 
     private ImageView imageView;
+
+
+    public static int cid;
+
+    public static String calName;
 
     //7-17
     boolean isPageOpen = false;
@@ -136,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        ionManager.showAllSche();
 
         showAllSche();
+
         checkPermissions();
        // textViewTitle = (TextView) findViewById(R.id.main_title_textView);
         buttonToBoard = (Button) findViewById(R.id.main_toBoard_button);
@@ -303,9 +307,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonToBoard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_BOARD_ACTIVITY);
+                if(cid == 0) {
+                    Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+                    startActivityForResult(intent, CodeNumber.TO_BOARD_ACTIVITY);
+                }
             }
         });
 
@@ -321,7 +329,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
     }
-
 
     public void insertData(){
 
@@ -520,7 +527,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void addSideView() {
 
-        Sidebar sidebar = new Sidebar(mContext);
+        final Sidebar sidebar = new Sidebar(mContext);
         sideLayout.addView(sidebar);
         //sidebar.setUserID(userName);
 
@@ -604,66 +611,73 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             switch (requestCode) {
                 //사진등록
                 case PICK_IMAGE_REQUEST:
-                    Log.d("여기까지", "ㅇ3");
                     if (resultCode == RESULT_OK) {
-                        Log.d("여기까지", "ㅇ4");
                         imageURL = getPathFromURI(data.getData());
                         Log.d("사진 경로", imageURL);
                         imageView = findViewById(R.id.image_profile);
 
-//                        Ion.with(imageView)
-//                                .centerCrop()
-//                                .resize(250, 250)
-//                                .load(imageURL);
-
-                        //JsonObject json = new JsonObject();
-                        //json.addProperty("img_url", imageURL);
-                        Log.i("프로필 변경", userToken);
-                        File file = new File(imageURL);
-                        if(file == null) {
-                            Toast.makeText(getApplicationContext(),"여기", Toast.LENGTH_LONG).show();
-                        }
-                        Ion.with(this)
-                                .load("POST",url.getServerUrl() + "/imageChange")
-                                .setHeader("Authorization", userToken)
-                                .setMultipartFile("img_url", file)
-                                //응답
-                                .asJsonObject()
-                                .setCallback(new FutureCallback<JsonObject>() {
-                                    @Override
-                                    public void onCompleted(Exception e, JsonObject result) {
-
-                                        if(e != null) {
-                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                        }
-
-                                        else {
-                                            String message = result.get("message").getAsString();
-
-                                            if(message.equals("image change success")) {
-                                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-
-                                                Ion.with(imageView)
-                                                        .centerCrop()
-                                                        .resize(250, 250)
-                                                        .load(imageURL);
-                                            }
-                                            else {
-                                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                            }
-                                        }
-                                    }
-                                });
-//                        imageView.setImageURI(data.getData());
+                        //Request to Server.
+                        setUserProfileImage_Server(imageURL);
                     }
-
-                    //주소받아오기
-
             }
+
         }catch (Exception e) {
             Toast.makeText(this, "오류가 있습니다.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
+    }
+
+
+    /*
+     사진 지정 후 서버와 통신 하는 메소드.
+     서버에서 success받으면
+     imageView에 set한다.
+     */
+    public void setUserProfileImage_Server(final String imageUrl) {
+
+        Log.i("프로필 변경", userToken);
+        File file = new File(imageUrl);
+
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("프로필 사진 등록 중 입니다~");
+        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        Ion.with(this)
+                .load("POST",url.getServerUrl() + "/imageChange")
+                //.setHeader("Content-Type", "application/json")
+                .setHeader("Authorization", userToken)
+                .progressDialog(progressDialog)
+                .setMultipartFile("file", file)
+                //응답
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+
+                        if(e != null) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                        else {
+                            String message = result.get("message").getAsString();
+
+                            if(message.equals("image change success")) {
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+
+                                Ion.with(imageView)
+                                        .centerCrop()
+                                        .resize(250, 250)
+                                        .load(imageUrl);
+
+                                progressDialog.dismiss();
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
     }
 
 
@@ -803,7 +817,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressDialog.show();
 
         JsonObject json = new JsonObject();
-        json.addProperty("cid", 20);
+
+        //////////////////////////////////////////////////////////////////////
+        json.addProperty("cid", cid);
+        //////////////////////////////////////////////////////////////////////
 
 
         Ion.with(this)

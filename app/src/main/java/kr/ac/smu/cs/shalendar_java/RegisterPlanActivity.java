@@ -229,7 +229,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
                 JsonObject json = new JsonObject();
 
-                json.addProperty("cid", 20);
+                json.addProperty("cid", MainActivity.cid);
                 json.addProperty("title", scheTitle);
                 json.addProperty("sContent", aboutSched);
                 json.addProperty("startDate", strStartDate + " " + strStartTime);
