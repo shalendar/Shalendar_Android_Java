@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.builder.AnimateGifMode;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<MainPlanItem> mainRecyclerList;
 
     private TextView textViewTitle;
+    private TextView selectedDate;
     private Button buttonToBoard;
     private Button buttonToRegisterPlan;
 
@@ -127,22 +129,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //SharedPreference에 저장된 userToken가져오기.
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
-        //값이 없으면 default로 0
         userToken = pref.getString("userToken", "NO_TOKEN");
-        Log.i("넘겨받은 토큰", userToken);
+        Log.i("Main화면::넘겨받은 토큰", userToken);
 
-        //
-//        ionManager = new IonManager(this);
-//        ionManager.showAllSche();
 
-        showAllSche();
+        //showAllSche() 원래 위치
+        //showAllSche();
 
         checkPermissions();
-       // textViewTitle = (TextView) findViewById(R.id.main_title_textView);
+
+        textViewTitle = (TextView) findViewById(R.id.calendarNameTextView);
         buttonToBoard = (Button) findViewById(R.id.main_toBoard_button);
-        final TextView selectedDate = (TextView)findViewById(R.id.TextView1);
+        selectedDate = (TextView)findViewById(R.id.TextView1);
         buttonToRegisterPlan = (Button) findViewById(R.id.main_ToRegister_button);
 
         //07-17
@@ -175,8 +174,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         addSideView();  //사이드바 add
 
+        if(cid == 0) {
+            Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
+        }
 
-        //materialCalendar
+        else {
+            //materialCalendar뷰 초기화
+            initCalendarView();
+            //서버로 부터 해당 달력의 일정을 가져온다.
+            showAllSche();
+            //서버로 부터 받은 모든 일정을 달력에 표시
+            setCalendarView();
+        }
+
+        /*
+          MainActivity에서 BoardActivity로 넘어간다.
+        */
+        buttonToBoard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cid == 0) {
+                    Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
+                    startActivityForResult(intent, CodeNumber.TO_BOARD_ACTIVITY);
+                }
+            }
+        });
+
+        /*
+          MainActivity에서 RegisterPlanActivity로 넘어간다.
+        */
+        buttonToRegisterPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), RegisterPlanActivity.class);
+                startActivityForResult(intent, CodeNumber.TO_REGISTERPLAN_ACTIVITY);
+            }
+        });
+
+    }
+
+    public void initCalendarView() {
         materialCalendarView = (MaterialCalendarView)findViewById(R.id.calendarView);
         materialCalendarView.setArrowColor(Color.parseColor("#ff6067"));
         materialCalendarView.state().edit()
@@ -190,26 +230,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new SundayDecorator(),
                 new SaturdayDecorator(),
                 oneDayDecorator);
+    }
 
-
-        //dummy data test용
-//        String[] result = {"2019-07-01", "2019-07-31", "2019-07-22"};
-//        new ApiSimulator(result).executeOnExecutor(Executors.newSingleThreadExecutor());
-
+    public void setCalendarView() {
         String[] resultDate = new String[schedList.size()];
         Log.i("resultDate크기", Integer.toString(resultDate.length));
 
 
-        for(int i = 0; i< schedList.size(); i++) {
-            //시작 날짜, 끝 날짜 같은 경우
-            //if(schedList.get(i).startDate.equals(schedList.get(i).endDate))
-                resultDate[i] = schedList.get(i).startDate;
-                Log.i("resultDate에 들어있는 시작 날짜", resultDate[i]);
-        }
-
-
-        new ApiSimulator(resultDate).executeOnExecutor(Executors.newSingleThreadExecutor());
-
+//        for(int i = 0; i< schedList.size(); i++) {
+//            //시작 날짜, 끝 날짜 같은 경우
+//            resultDate[i] = schedList.get(i).startDate;
+//            Log.i("resultDate에 들어있는 시작 날짜", resultDate[i]);
+//        }
+//
+//        new ApiSimulator(resultDate).executeOnExecutor(Executors.newSingleThreadExecutor());
 
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
@@ -241,93 +275,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 ///////애니메이션 구현
-                if (isPageOpen) {
-                    //calendarRelative.setClickable(false);
-                    main_animation.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getApplicationContext(),"열림",Toast.LENGTH_SHORT).show();
-                    main_animation.startAnimation(translateDownAnim);
-                    /*
-                    calendarLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            main_animation.startAnimation(translateDownAnim);
-                        }
-                    });*/
-                }
-
-                else {
-                    main_animation.setVisibility(View.VISIBLE);
-                    main_animation.startAnimation(translateUpAnim);
-                }
+//                if (isPageOpen) {
+//                    //calendarRelative.setClickable(false);
+//                    main_animation.setVisibility(View.INVISIBLE);
+//                    Toast.makeText(getApplicationContext(),"열림",Toast.LENGTH_SHORT).show();
+//                    main_animation.startAnimation(translateDownAnim);
+//                    /*
+//                    calendarLayout.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            main_animation.startAnimation(translateDownAnim);
+//                        }
+//                    });*/
+//                }
+//
+//                else {
+//                    main_animation.setVisibility(View.VISIBLE);
+//                    main_animation.startAnimation(translateUpAnim);
+//                }
 
                 Toast.makeText(getApplicationContext(), shot_Day , Toast.LENGTH_SHORT).show();
 
                 //TextView에 삽입
                 selectedDate.setText(shot_Day);
-
             }
         });
-
-
-        /*
-        //툴바
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-
-
-        //플로팅액션버튼
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-*/
-
-
-        /*//드로워
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        //내비게이션뷰
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        */
-
-
-        /*
-          MainActivity에서 BoardActivity로 넘어간다.
-        */
-        buttonToBoard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(cid == 0) {
-                    Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
-                    startActivityForResult(intent, CodeNumber.TO_BOARD_ACTIVITY);
-                }
-            }
-        });
-
-        /*
-          MainActivity에서 RegisterPlanActivity로 넘어간다.
-        */
-        buttonToRegisterPlan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), RegisterPlanActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_REGISTERPLAN_ACTIVITY);
-            }
-        });
-
     }
+
+
 
     public void insertData(){
 
@@ -465,53 +440,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     materialCalendarView.addDecorator(event2);
                 }
             }
-
-            HashSet<CalendarDay> dateSet = event1.getDates();
-
-
-//            materialCalendarView.addDecorator(new EventDecorator(1, Color.parseColor("#ff6067"), calendarDays, MainActivity.this));
-//            materialCalendarView.addDecorator(new EventDecorator(2, Color.parseColor("#f8c930"), calendarDays, MainActivity.this));
-//            materialCalendarView.addDecorator(new EventDecorator(3, Color.parseColor("#cdcdcd"), calendarDays, MainActivity.this));
         }
     }
-
-    //Test Code이다.
-    /*
-    private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
-
-        @Override
-        protected List<CalendarDay> doInBackground(@NonNull Void... voids) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.MONTH, -2);
-            ArrayList<CalendarDay> dates = new ArrayList<>();
-            for (int i = 0; i < 30; i++) {
-                CalendarDay day = CalendarDay.from(calendar);
-                dates.add(day);
-                calendar.add(Calendar.DATE, 5);
-            }
-
-            return dates;
-        }
-
-        @Override
-        protected void onPostExecute(@NonNull List<CalendarDay> calendarDays) {
-            super.onPostExecute(calendarDays);
-
-            if (isFinishing()) {
-                return;
-            }
-
-            materialCalendarView.addDecorator(new EventDecorator(1,Color.parseColor("#ff6067"), calendarDays, MainActivity.this));
-            materialCalendarView.addDecorator(new EventDecorator(2,Color.parseColor("#f8c930"), calendarDays, MainActivity.this));
-            materialCalendarView.addDecorator(new EventDecorator(3,Color.parseColor("#cdcdcd"), calendarDays, MainActivity.this));
-        }
-    }
-    */
 
     private void init() {
 
@@ -826,7 +756,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //////////////////////////////////////////////////////////////////////
 
 
-        Ion.with(this)
+        Future ion = Ion.with(getApplicationContext())
                 .load("POST", url.getServerUrl() + "/showAllSche")
                 .setHeader("Content-Type", "application/json")
                 .setJsonObjectBody(json)
@@ -910,67 +840,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return result;
                     }
                 });
-    }
 
+        try {
+            ion.get();
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if(id==R.id.toolbar_search){
-            Intent intent = new Intent(getApplicationContext(), SearchPlanActivity.class );
-            startActivityForResult(intent, CodeNumber.TO_SEARCH_PLAN_ACTIVITY);
-        }
-
-        //noinspection SimplifiableIfStatement
-
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.toNotice_item) {
-            Intent intent = new Intent(getApplicationContext(), NoticeActivity.class);
-            startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-
-        } else if (id == R.id.toInviteMember_item) {
-            Intent intent = new Intent(getApplicationContext(), InviteActivity.class);
-            startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-
-        } else if (id == R.id.toMakeCalendar_item) {
-            Intent intent = new Intent(getApplicationContext(), CreateCalendarActivity.class);
-            startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-
-        } else if (id == R.id.toSetting_item) {
-            Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
-            startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }*/
 
 
 

@@ -8,12 +8,15 @@ public class WaitListItem {
     String invitedName;
     String inviteName;
 
-    public WaitListItem(String waitPeoplePic, String emailID, String calendarName, String invitedName, String inviteName) {
+    int cid;
+
+    public WaitListItem(String waitPeoplePic, String emailID, String calendarName, String invitedName, String inviteName, int cid) {
         this.waitPeoplePic = waitPeoplePic;
         this.emailID = emailID;
         this.calendarName = calendarName;
         this.invitedName = invitedName;
         this.inviteName = inviteName;
+        this.cid = cid;
     }
 
     public String getWaitPeoplePic() {
@@ -54,5 +57,13 @@ public class WaitListItem {
 
     public void setInviteName(String inviteName) {
         this.inviteName = inviteName;
+    }
+
+    public int getCid() {
+        return this.cid;
+    }
+
+    public void setCid(int cid) {
+        this.cid = cid;
     }
 }
