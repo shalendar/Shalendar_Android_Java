@@ -20,9 +20,21 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
     private ArrayList<WaitListItem> waitList;
     private Context context;
 
+    private OnItemClickListener mListener = null;
+
+
     public WaitlistAdapter(ArrayList<WaitListItem> waitList, Context mContext) {
         this.waitList = waitList;
         this.context = mContext;
+    }
+
+    public interface OnItemClickListener {
+        void onAcceptClick(View v, int pos);
+        void onRejectClick(View v, int pos);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -39,24 +51,28 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
     }
 
 
+
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        String waitPeoplePic=waitList.get(position).getWaitPeoplePic();
-        String emailID=waitList.get(position).getEmailID();
-        String calendarName=waitList.get(position).getCalendarName();
-        String invitedName=waitList.get(position).getInvitedName();
-        String inviteName=waitList.get(position).getInviteName();
+        String waitPeopleImg = waitList.get(position).getWaitPeoplePic();
+        String senderEmailID = waitList.get(position).getEmailID();
+        String invitedCalName = waitList.get(position).getCalendarName();
+        String senderName = waitList.get(position).getInvitedName();
+        String receiverName = waitList.get(position).getInviteName();
+        int calendarID = waitList.get(position).getCid();
 
-        holder.inviteName.setText(inviteName);
-        holder.invitedName.setText(invitedName);
-        holder.calendarName.setText(calendarName);
-        holder.emailID.setText(emailID);
+        holder.inviteName.setText(senderName);
+        holder.invitedName.setText(receiverName);
+        holder.calendarName.setText(invitedCalName);
+        holder.emailID.setText(senderEmailID);
+        holder.setCalendarID(calendarID);
         //holder.WaitPeoplePic.setImageResource();
 
         Ion.with(holder.waitPeoplePic)
                 .centerCrop()
                 .resize(50,50)
-                .load(waitPeoplePic);
+                .load(waitPeopleImg);
+
     }
 
     @Override
@@ -78,7 +94,9 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         protected Button cancelButton;
         protected Button acceptButton;
 
-        public ViewHolder(final View itemView) {
+        protected int calendarID;
+
+        public ViewHolder(View itemView) {
 
             super(itemView);
             this.waitPeoplePic=(ImageView)itemView.findViewById(R.id.waitListPicture);
@@ -90,22 +108,32 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
             this.acceptButton = itemView.findViewById(R.id.inviteAcceptButton);
 
 
-            //초대 수락
             acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION) {
+                        if(mListener != null)
+                            mListener.onAcceptClick(v, pos);
+                    }
                 }
             });
 
 
-            //초대 거절
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION) {
+                        if(mListener != null)
+                            mListener.onRejectClick(v, pos);
+                    }
                 }
             });
+        }
 
+        public void setCalendarID(int cid) {
+            this.calendarID = cid;
         }
     }
 }

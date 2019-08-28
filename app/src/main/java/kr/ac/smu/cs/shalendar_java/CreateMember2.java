@@ -124,6 +124,9 @@ public class CreateMember2 extends AppCompatActivity {
         json.addProperty("id", userEmail);
         json.addProperty("pw", userPassword);
         json.addProperty("userName", userName);
+        /////////////////////////////////////////////////
+        //divce토큰 은 로그인 할 때 준다! 변경 필요.
+        /////////////////////////////////////////////////
         json.addProperty("deviceToken", deviceToken);
 
         final ProgressDialog progressDialog = new ProgressDialog(CreateMember2.this);

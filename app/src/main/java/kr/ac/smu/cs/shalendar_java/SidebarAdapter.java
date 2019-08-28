@@ -152,6 +152,7 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                     MainActivity.cid = calendar_ID;
                     MainActivity.calName = calendarName;
                     Intent intent = new Intent(itemView.getContext(), MainActivity.class);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     itemView.getContext().startActivity(intent);
                 }
             });
