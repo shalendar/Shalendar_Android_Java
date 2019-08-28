@@ -1,9 +1,11 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -27,11 +29,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.Future;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
 import java.util.ArrayList;
 
 import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 
 public class WaitInvite extends AppCompatActivity {
+
 
     ArrayList<WaitListItem> waitRecyclerList;
     private Context mContext = WaitInvite.this;
@@ -40,24 +49,36 @@ public class WaitInvite extends AppCompatActivity {
     private Boolean isExitFlag = false;
     ImageButton backButton;
 
+    //
+    private String userToken;
+
+    //서버 통신
+    NetWorkUrl url = new NetWorkUrl();
+
+    //
+    private String senderID;
+    private String receiver;
+    private String senderName;
+    private String sender_img;
+    private int cid;
+    private String calName;
+
+    //
+    private WaitlistAdapter w_adapter;
+    private RecyclerView waitInviteRecyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_invite);
-        checkPermissions();
         waitRecyclerList=new ArrayList<>();
 
-        RecyclerView waitInviteRecyclerView = (RecyclerView)findViewById(R.id.waitListRecycler);
+        waitInviteRecyclerView = (RecyclerView)findViewById(R.id.waitListRecycler);
         waitInviteRecyclerView.setHasFixedSize(true);
-        WaitlistAdapter w_adapter = new WaitlistAdapter(waitRecyclerList, this);
+        w_adapter = new WaitlistAdapter(waitRecyclerList, this);
         waitInviteRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
 
-        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
-        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
-        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
-        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
-
-        waitInviteRecyclerView.setAdapter(w_adapter);
 
         backButton = findViewById(R.id.btn_back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -68,104 +89,95 @@ public class WaitInvite extends AppCompatActivity {
         });
 
 
-    }
+
+        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+        //값이 없으면 default로 0
+        userToken = pref.getString("userToken", "NO_TOKEN");
+        Log.i("초대 대기 화면 :: 사용자 토큰", userToken);
 
 
-    private void getPictureFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/jpg");
-        try {
-            startActivityForResult(intent, PICK_IMAGE_REQUEST);
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
 
-    /*
-     폰에서 사진을 지정하면 해당 사진 주소를 가져온다.
-     */
-    private String getPathFromURI(Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Log.d("여기까지", "ㅇ5");
-        CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        Log.d("여기까지", "ㅇ6");
+        //통신 준비.
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(this).getConscryptMiddleware().enable(false);
 
-        return cursor.getString(column_index);
-    }
+        JsonObject json = new JsonObject();
+        json.addProperty("", "");
 
+        final ProgressDialog progressDialog = new ProgressDialog(WaitInvite.this);
+        progressDialog.setMessage("초대 리스트 불러오는 중 입니다~");
+        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+        progressDialog.show();
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        Future ion = Ion.with(getApplicationContext())
+                .load("POST", url.getServerUrl() + "/showInvitation")
+                .setHeader("Content-Type", "application/json")
+                .setHeader("Authorization", userToken)
+                .setJsonObjectBody(json)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
 
-        try {
-            switch (requestCode) {
-                //사진등록
-                case PICK_IMAGE_REQUEST:
-                    Log.d("여기까지", "ㅇ3");
-                    if (resultCode == RESULT_OK) {
-                        Log.d("여기까지", "ㅇ4");
-                        imageURL = getPathFromURI(data.getData());
-                        Log.d("사진 경로", imageURL);
-                        imageView.setImageURI(data.getData());
+                        if(e != null) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            String message = result.get("message").getAsString();
+
+                            if(message.equals("success")) {
+                                parseDataFromServer(result, progressDialog);
+                            } else if(message.equals("nothing")) {
+                                Toast.makeText(getApplicationContext(), "초대 받은 내역이 없습니다.", Toast.LENGTH_LONG).show();
+                            } else if(message.equals("fail")) {
+                                Toast.makeText(getApplicationContext(), "초대 중 에러가 발생하였습니다.", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "잘못된 응답 메세지 입니다.", Toast.LENGTH_LONG).show();
+                            }
+                        }
                     }
 
-                    //주소받아오기
+                });
 
-            }
-        }catch (Exception e) {
-            Toast.makeText(this, "오류가 있습니다.", Toast.LENGTH_LONG).show();
+        //응답 받아올 때 까지 대기.
+        try {
+            ion.get();
+        } catch(Exception e){
             e.printStackTrace();
         }
+
+//        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
+//        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
+//        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
+//        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
+//
+//        waitInviteRecyclerView.setAdapter(w_adapter);
     }
 
 
-    private void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED||
-                ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this,
-                    new String[]{
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    },
-                    1052);
-        }
-    }
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1052: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted.
-                } else {
-                    // Permission denied - Show a message to inform the user that this app only works
-                    // with these permissions granted
-                }
-                return;
+    public void parseDataFromServer(JsonObject result, ProgressDialog progressDialog) {
+
+        JsonArray invitation = result.get("invitation").getAsJsonArray();
+
+        if(invitation.size() == 0)
+            Toast.makeText(getApplicationContext(), "초대 받은 내역이 없습니다.", Toast.LENGTH_LONG).show();
+        else {
+            for(int i = 0; i<invitation.size(); i++) {
+                JsonObject invitationData = invitation.get(i).getAsJsonObject();
+                senderID = invitationData.get("sender").getAsString();
+                receiver = invitationData.get("receiver").getAsString();
+                senderName = invitationData.get("senderName").getAsString();
+                sender_img = invitationData.get("sender_img").getAsString();
+                cid = invitationData.get("cid").getAsInt();
+                calName = invitationData.get("cName").getAsString();
+                w_adapter.addItem(new WaitListItem(sender_img, senderID, calName, receiver, senderName));
             }
+            waitInviteRecyclerView.setAdapter(w_adapter);
         }
-    }
-
-
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            onBackPressed();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+        progressDialog.dismiss();
     }
 
 }
+

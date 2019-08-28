@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageView imageView;
 
-
     public static int cid;
 
     public static String calName;
@@ -119,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //서버로 받은 것.
     ArrayList<ScheduleData> schedList = new ArrayList<>();
-
 
 
     @Override
@@ -615,9 +614,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         imageURL = getPathFromURI(data.getData());
                         Log.d("사진 경로", imageURL);
                         imageView = findViewById(R.id.image_profile);
-
                         //Request to Server.
                         setUserProfileImage_Server(imageURL);
+
+                        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("img_url", imageURL);
+                        editor.commit();
                     }
             }
 
