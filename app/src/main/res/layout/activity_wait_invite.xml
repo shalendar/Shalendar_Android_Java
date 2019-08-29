@@ -43,7 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="15dp"
-                    android:text="달력이름"
+                    android:text="초대대기"
                     android:textColor="#4a4a4a"
                     android:textSize="20sp" />
 
@@ -52,16 +52,6 @@
                     android:layout_height="0dp"
                     android:layout_weight="1" />
 
-
-                <ImageButton
-                    android:id="@+id/btn_search"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center|right|center_vertical"
-                    android:layout_marginRight="15dp"
-                    android:adjustViewBounds="false"
-                    android:background="#FFFFFF"
-                    app:srcCompat="@drawable/btn_search" />
 
             </LinearLayout>
 
@@ -76,40 +66,17 @@
             <!-->내용 들어갈곳<-->
 
             <android.support.v7.widget.RecyclerView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/waitListRecycler">
+                android:id="@+id/waitListRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
             </android.support.v7.widget.RecyclerView>
 
-            //아래버튼
 
         </RelativeLayout>
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/fl_silde"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#80202735"
-        android:visibility="gone">
-
-        <!-->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.75"
-            android:background="#202735"/>
-        <-->
-
-
-        <FrameLayout
-            android:id="@+id/view_sildebar"
-            android:layout_width="305dp"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
 
 
 </RelativeLayout>
