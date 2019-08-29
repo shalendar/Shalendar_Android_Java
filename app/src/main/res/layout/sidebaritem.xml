@@ -30,10 +30,10 @@
 
             <ImageView
                 android:id="@+id/sidebarList_invite_member"
-                android:layout_marginLeft="80dp"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:src="@drawable/btn_add_people"/>
+                android:layout_marginLeft="0dp"
+                android:src="@drawable/btn_add_people" />
 
         </LinearLayout>
 

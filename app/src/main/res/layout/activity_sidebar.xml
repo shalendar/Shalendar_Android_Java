@@ -144,16 +144,6 @@
                 android:textColor="#202735"
                 android:textSize="14sp" />
 
-            <ImageButton
-                android:id="@+id/btn_trash"
-                android:layout_width="16dp"
-                android:layout_height="19dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="15dp"
-                android:adjustViewBounds="false"
-                android:background="@drawable/btn_delete" />
-
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
