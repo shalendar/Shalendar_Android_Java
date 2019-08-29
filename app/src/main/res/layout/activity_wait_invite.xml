@@ -47,10 +47,10 @@
                     android:textColor="#4a4a4a"
                     android:textSize="20sp" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
+                <!--<View-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="1" />-->
 
 
             </LinearLayout>
