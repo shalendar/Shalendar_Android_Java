@@ -32,11 +32,16 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
     @Override
     public void onBindViewHolder(TeamItemHolder holder, int position) {
         SidebarTeamItem teamIteam = teamPicList.get(position);
-        //holder.sideteammatePic.setImageResource(teamIteam.getTeammatePic());
-        Ion.with(holder.sideteamMatePic)
-                .centerCrop()
-                .resize(50,50)
-                .load(teamIteam.getTeammatePic());
+
+        if(teamIteam.getTeammatePic().equals("DEFAULT :: profile_IMAGE"))
+            holder.sideteamMatePic.setImageResource(R.drawable.profile_default);
+        else {
+            Ion.with(holder.sideteamMatePic)
+                    .centerCrop()
+                    .resize(50,50)
+                    .load(teamIteam.getTeammatePic());
+        }
+
     }
 
     @Override

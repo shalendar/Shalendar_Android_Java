@@ -242,7 +242,14 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                 for(int j=0; j<innerData2.size(); j++){ //공유달력 내 사용자들 명수
 
                     Log.i("해당 달력에 있는 사용자이름", innerData2.get(j).getAsJsonObject().get("id").getAsString());
-                    stItem.add(new SidebarTeamItem(innerData2.get(j).getAsJsonObject().get("img_url").getAsString()));
+                    String imageURL;
+
+                    if(innerData2.get(j).getAsJsonObject().get("img_url").isJsonNull())
+                        imageURL = "DEFAULT :: profile_IMAGE";
+                    else
+                        imageURL = innerData2.get(j).getAsJsonObject().get("img_url").getAsString();
+
+                    stItem.add(new SidebarTeamItem(imageURL));
                 }
 
 
@@ -256,7 +263,6 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         }
 
     }
-
 
     @Override
     public void onClick(View v) {

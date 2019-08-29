@@ -196,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(cid == 0) {
                     Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
                 }
+
                 else {
                     Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
                     startActivityForResult(intent, CodeNumber.TO_BOARD_ACTIVITY);

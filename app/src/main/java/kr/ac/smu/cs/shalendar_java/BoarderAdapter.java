@@ -101,7 +101,15 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             for (int i = 0; i < sharedPeoplenum; i++) {
                 JsonObject jsonArr = shareUserData.get(i).getAsJsonObject();
                 //id = jsonArr.get("id").getAsString();
-                h_adapter.addItem(new BoardTeamItem(jsonArr.get("userName").getAsString(), jsonArr.get("img_url").getAsString()));
+                String userName = jsonArr.get("userName").getAsString();
+                String userImgURL;
+
+                if(jsonArr.get("img_url").isJsonNull())
+                    userImgURL = "DEFAULT :: profile_IMAGE";
+                else
+                    userImgURL = jsonArr.get("img_url").getAsString();
+
+                h_adapter.addItem(new BoardTeamItem(userName, userImgURL));
             }
 
             Log.i("누가 먼저 실행되는 거임??11", Integer.toString(sharedPeoplenum));

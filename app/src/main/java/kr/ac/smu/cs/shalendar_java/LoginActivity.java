@@ -39,6 +39,9 @@ public class LoginActivity extends AppCompatActivity {
     //서버 통신 위한 url 객체 생성  여기서는 /signin
     private NetWorkUrl url = new NetWorkUrl();
 
+    //로그인시 서버로 넘길 deviceToken값
+    private String deviceToken;
+
     //서버로 부터 로그인 성공 시 오는 응답 Token 변수
     private String userToken;
 
@@ -65,10 +68,11 @@ public class LoginActivity extends AppCompatActivity {
            우선 버튼 클릭시 MainActivity로 넘어간다.
            - 나중에 CreateMemberActivity로 넘어가는 코드 짜야 한다.
         */
+
         //device TOken값
         try {
-            String token = FirebaseInstanceId.getInstance().getToken();
-            Log.i("Device Token", token);
+            deviceToken = FirebaseInstanceId.getInstance().getToken();
+            Log.i("로그인에서 Device Token", deviceToken);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,6 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                 //응답 바디 서버에 보낼 data 넣음
                 json.addProperty("id", userEmail);
                 json.addProperty("pw", userPassword);
+                json.addProperty("deviceToken", deviceToken);
                 Ion.with(getApplicationContext())
                         .load("POST", url.getServerUrl() + "/signin")
                         .setHeader("Content-Type", "application/json")

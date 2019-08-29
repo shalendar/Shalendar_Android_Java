@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
@@ -49,9 +52,6 @@ public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.View
 
             }
         });
-
-//        UserEmail item = items.get(position);
-//        holder.setItem(item);
     }
 
     @Override
@@ -78,17 +78,28 @@ public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        ImageView userImage;
         TextView userEmail;
         CheckBox checkBox;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            userImage = itemView.findViewById(R.id.inviteList_userImage);
             userEmail = itemView.findViewById(R.id.registeredUserEmail_TextView);
             checkBox = itemView.findViewById(R.id.checkBox);
         }
 
         public void setItem(UserEmail item) {
+
+            if(item.getUserImageURL().equals("DEFAULT :: profile_IMAGE"))
+                userImage.setImageResource(R.drawable.profile_default);
+            else {
+                Ion.with(userImage)
+                        .centerCrop()
+                        .resize(80,80)
+                        .load(item.getUserImageURL());
+            }
             userEmail.setText(item.getUserEmail());
 //            checkBox.setChecked(item.getIs_checked());
         }
