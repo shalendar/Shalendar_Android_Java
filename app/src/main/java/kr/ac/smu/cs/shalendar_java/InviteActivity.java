@@ -218,7 +218,14 @@ public class InviteActivity extends AppCompatActivity {
         String message = result.get("message").getAsString();
         if(message.equals("please check email")) {
             //Log.i("현재 초대 리사이클러뷰 인원", Integer.toString(adapter.getItemCount()));
-            adapter.addItem(new UserEmail(inputEmail, false));
+
+            String imageURl;
+            if(result.get("img_url").isJsonNull())
+                imageURl = "DEFAULT :: profile_IMAGE";
+            else
+                imageURl = result.get("img_url").getAsString();
+
+            adapter.addItem(new UserEmail(inputEmail, false, imageURl));
             recyclerView.setAdapter(adapter);
         }
 

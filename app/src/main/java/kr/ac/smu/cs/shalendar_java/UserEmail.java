@@ -7,6 +7,7 @@ package kr.ac.smu.cs.shalendar_java;
  */
 public class UserEmail {
 
+    private String userImageURL;
     private String user_Email;
     private Boolean is_checked;
 
@@ -17,6 +18,11 @@ public class UserEmail {
     public UserEmail(String user_Email, Boolean is_checked) {
         this.user_Email = user_Email;
         this.is_checked = is_checked;
+    }
+    public UserEmail(String user_Email, Boolean is_checked, String userImageURL) {
+        this.user_Email = user_Email;
+        this.is_checked = is_checked;
+        this.userImageURL = userImageURL;
     }
 
     public void setUserEmail(String user_Email) {
@@ -33,5 +39,13 @@ public class UserEmail {
 
     public Boolean getIs_checked() {
         return this.is_checked;
+    }
+
+    public void setUserImageURL(String userImageURL) {
+        this.userImageURL = userImageURL;
+    }
+
+    public String getUserImageURL() {
+        return this.userImageURL;
     }
 }
