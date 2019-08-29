@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //통신
     NetWorkUrl url = new NetWorkUrl();
 
+
     //서버로 받은 것.
     ArrayList<ScheduleData> schedList = new ArrayList<>();
 
@@ -172,7 +173,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //JS
         init();
 
-        addSideView();  //사이드바 add
+        //사이드바 설정
+        addSideView();
+
 
         if(cid == 0) {
             Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
@@ -217,6 +220,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+
+
     public void initCalendarView() {
         materialCalendarView = (MaterialCalendarView)findViewById(R.id.calendarView);
         materialCalendarView.setArrowColor(Color.parseColor("#ff6067"));
@@ -233,20 +238,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 oneDayDecorator);
     }
 
+
+
     public void setCalendarView() {
-        String[] resultDate = new String[schedList.size()];
-        Log.i("resultDate크기", Integer.toString(resultDate.length));
-
-
-//        for(int i = 0; i< schedList.size(); i++) {
-//            //시작 날짜, 끝 날짜 같은 경우
-//            resultDate[i] = schedList.get(i).startDate;
-//            Log.i("resultDate에 들어있는 시작 날짜", resultDate[i]);
-//        }
-//
-//        new ApiSimulator(resultDate).executeOnExecutor(Executors.newSingleThreadExecutor());
 
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 int Year = date.getYear();
