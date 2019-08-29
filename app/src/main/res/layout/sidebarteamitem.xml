@@ -5,8 +5,8 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:layout_width="15dp"
-        android:layout_height="15dp"
-        android:id="@+id/sidebarTeamImage"/>
+        android:id="@+id/sidebarTeamImage"
+        android:layout_width="25dp"
+        android:layout_height="25dp" />
 
 </LinearLayout>
