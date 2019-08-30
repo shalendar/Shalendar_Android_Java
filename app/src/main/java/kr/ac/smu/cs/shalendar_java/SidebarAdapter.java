@@ -149,7 +149,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(), calendarSidebarName.getText() + Integer.toString(calendar_ID), Toast.LENGTH_SHORT).show();
-                    Global.setCid(calendar_ID);
                     MainActivity.cid = calendar_ID;
                     MainActivity.calName = calendarName;
                     Intent intent = new Intent(itemView.getContext(), MainActivity.class);
