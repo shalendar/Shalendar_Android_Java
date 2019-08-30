@@ -115,7 +115,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         final JsonObject json = new JsonObject();
 
-        json.addProperty("cid", 20);
+        json.addProperty("cid", Global.getCid());
 
 //        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
 //        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);

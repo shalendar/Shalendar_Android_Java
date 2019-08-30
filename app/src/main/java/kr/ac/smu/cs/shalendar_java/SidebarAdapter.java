@@ -130,6 +130,7 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(), calendarSidebarName.getText() + Integer.toString(calendar_ID), Toast.LENGTH_SHORT).show();
+                    Global.setCid(calendar_ID);
                 }
             });
 

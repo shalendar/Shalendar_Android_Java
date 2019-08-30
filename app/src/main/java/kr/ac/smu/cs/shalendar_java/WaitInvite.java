@@ -2,6 +2,7 @@ package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,10 +17,17 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
 import java.util.ArrayList;
 
 public class WaitInvite extends AppCompatActivity implements View.OnClickListener {
 
+    //UserToken
+    private String userToken;
 
     ArrayList<WaitListItem> waitRecyclerList;
     private Context mContext = WaitInvite.this;
@@ -32,26 +40,96 @@ public class WaitInvite extends AppCompatActivity implements View.OnClickListene
     private Boolean isMenuShow = false;
     private Boolean isExitFlag = false;
 
+    //통신
+    NetWorkUrl url = new NetWorkUrl();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_invite);
 
-        waitRecyclerList=new ArrayList<>();
+        waitRecyclerList = new ArrayList<>();
 
-        RecyclerView waitInviteRecyclerView = (RecyclerView)findViewById(R.id.waitListRecycler);
+        RecyclerView waitInviteRecyclerView = (RecyclerView) findViewById(R.id.waitListRecycler);
         waitInviteRecyclerView.setHasFixedSize(true);
-        WaitlistAdapter w_adapter = new WaitlistAdapter(waitRecyclerList, this);
+        final WaitlistAdapter w_adapter = new WaitlistAdapter(waitRecyclerList, this);
         waitInviteRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
-
-        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
-        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
-        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
-        w_adapter.addItem(new WaitListItem("aaa","ididid","졸프","박지상","박성준"));
-
         waitInviteRecyclerView.setAdapter(w_adapter);
 
+        //SharedPreference에 저장된 userToken가져오기.
+        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+        //값이 없으면 default로 0
+        userToken = pref.getString("userToken", "NO_TOKEN");
+        Log.i("넘겨받은 토큰", userToken);
+
+        //통신 준비
+        Ion.getDefault(getApplicationContext()).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(getApplicationContext()).getConscryptMiddleware().enable(false);
+
+        final JsonObject json = new JsonObject();
+
+        json.addProperty("cid", Global.getCid());
+
+
+        Ion.with(getApplicationContext())
+                .load("POST", url.getServerUrl() + "/showInvitation")
+                .setHeader("Content-Type", "application/json")
+                .setHeader("Authorization", userToken)
+                //.progressDialog(progressDialog)
+                .setJsonObjectBody(json)
+                .asJsonObject() //응답
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        //받을 변수
+                        String sender, receiver, senderName, sender_Img, cNAME;
+                        int cid;
+
+                        if (e != null) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
+                        } else {
+                            //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
+                            //data: 다음에 나오는 것들도 JsonObject형식.
+                            //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
+                            //JSONArray가 아님. 얘는 [,]로 묶여 있어야 함.
+
+                            String message = result.get("message").getAsString();
+
+                            //서버로 부터 응답 메세지가 success이면...
+
+                            if (message.equals("success")) {
+                                //서버 응답 오면 로딩 창 해제
+
+                                //shareuserdata: {} 에서 {}안에 있는 것들도 JsonObject
+                                JsonArray invitation = result.get("invitation").getAsJsonArray();
+
+                                for (int i = 0; i < invitation.size(); i++) {
+                                    JsonObject innerData = invitation.get(i).getAsJsonObject();
+                                    sender = innerData.get("sender").getAsString();
+                                    receiver = innerData.get("receiver").getAsString();
+                                    sender_Img = innerData.get("sender_Img").getAsString();
+                                    senderName = innerData.get("senderName").getAsString();
+                                    cid = innerData.get("cid").getAsInt();
+                                }
+
+
+                                w_adapter.addItem(new WaitListItem());
+
+                                w_adapter.notifyDataSetChanged();
+                            } else
+
+                            {
+                                Toast.makeText(getApplicationContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
+
+
+        Log.i("누가 먼저 실행되는 거임??333", "BoardActivity Ion 통신 끝");
     }
+
 
     private void addSideView() {
 
@@ -133,7 +211,7 @@ public class WaitInvite extends AppCompatActivity implements View.OnClickListene
             case R.id.btn_menu:
                 showMenu();
                 break;
-            case R.id.btn_search :
+            case R.id.btn_search:
                 Intent intent2 = new Intent(getApplicationContext(), SearchPlanActivity.class);
                 startActivityForResult(intent2, CodeNumber.TO_SEARCH_PLAN_ACTIVITY);
                 break;

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -39,6 +40,10 @@ import com.koushikdutta.ion.Ion;
   UpdatePlan, DeletePlanActivity로 각각 넘어간다.
  */
 public class PlanDetailActivity extends AppCompatActivity implements View.OnClickListener {
+
+
+    //UserToken
+    private String userToken;
 
     private Button buttonToUpdate;
     private Button buttonToDelete;
@@ -94,13 +99,20 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
         final PlandetailAdapter plandetailAdapter = new PlandetailAdapter();
 
 
+        //SharedPreference에 저장된 userToken가져오기.
+        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+        //값이 없으면 default로 0
+        userToken = pref.getString("userToken", "NO_TOKEN");
+        Log.i("넘겨받은 토큰", userToken);
+
+
         //댓글 받아오는 통시 시작
         //서버와 통신. 헤더 부분의 정보를 서버응답으로 부터 온 정보들을 파싱하여 set한다.
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(this).getConscryptMiddleware().enable(false);
 
         JsonObject json = new JsonObject();
-        json.addProperty("cid",20);
+        json.addProperty("cid",Global.getCid());
         json.addProperty("sid", 10);
 
 //        final ProgressDialog progressDialog = new ProgressDialog(PlanDetailActivity.this);
@@ -112,6 +124,7 @@ public class PlanDetailActivity extends AppCompatActivity implements View.OnClic
         Ion.with(getApplicationContext())
                 .load("POST", url.getServerUrl() + "/readComments")
                 .setHeader("Content-Type", "application/json")
+                .setHeader("Authorization",userToken)
                 .setJsonObjectBody(json)
                 .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {

@@ -156,6 +156,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
             Log.i("공유달력 개수 ", Integer.toString(data.size()));
 
+
             for(int i = 0; i<data.size(); i++) { //공유달력 개수
                 JsonObject innerData = data.get(i).getAsJsonObject();
 
@@ -190,6 +191,11 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
                 }
 
+                //전역변수cid설정
+                if(cid_Array.length>0) {
+                    Global.setCid(cid_Array[0]);
+                }
+                else Global.setCid(0);
 
                 sitem.setTeamImageList(stItem);
                 calendarRecyclerList.add(sitem);

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +67,8 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         protected TextView calendarName;
         protected TextView invitedName;
         protected TextView inviteName;
+        protected Button Okbutton;
+        protected Button Cancelbutton;
 
         public ViewHolder(final View itemView) {
             super(itemView);
@@ -74,6 +77,22 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
             this.calendarName=(TextView)itemView.findViewById(R.id.calendarName);
             this.invitedName=(TextView)itemView.findViewById(R.id.invitedName);
             this.inviteName=(TextView)itemView.findViewById(R.id.inviteName);
+            this.Okbutton=itemView.findViewById(R.id.okbutton);
+            this.Cancelbutton=itemView.findViewById(R.id.cancelbutton);
+
+            Okbutton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(itemView.getContext(), "Ok", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            Cancelbutton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(itemView.getContext(), "Cancel", Toast.LENGTH_SHORT).show();
+                }
+            });
 
         }
     }

@@ -648,8 +648,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressDialog.show();
 
         JsonObject json = new JsonObject();
-        json.addProperty("cid", 20);
-
+        if(Global.getCid()==0) {
+            json.addProperty("cid", Global.getCid());
+        }
 
         Ion.with(this)
                 .load("POST", url.getServerUrl() + "/showAllSche")
