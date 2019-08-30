@@ -131,8 +131,8 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         final JsonObject json = new JsonObject();
 
-        Log.i("게시판 넘어온 cid", Integer.toString(MainActivity.cid));
         json.addProperty("cid", MainActivity.cid);
+        Log.i("게시판 넘어온 cid", Integer.toString(MainActivity.cid));
 
 //        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
 //        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -228,7 +228,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                     //plan의 일자
                                     planDate = startDate+" ~ "+endDate;
 
-                                    b_adapter.addItem(new BoardPlanItem(planDate, title, area, numOfCommentsstring));
+                                    b_adapter.addItem(new BoardPlanItem(planDate, title, area, numOfCommentsstring, sid));
 
                                 }
 

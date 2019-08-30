@@ -209,16 +209,17 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname(), Toast.LENGTH_SHORT).show();
 
+                    Global.setSid(boardList.get(getAdapterPosition() - 1).getSid());
 
                     JsonObject json = new JsonObject();
 
-                    json.addProperty("sid", 11);
+                    json.addProperty("sid", Global.getSid());
 
                     final ProgressDialog progressDialog = new ProgressDialog(itemView.getContext());
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    progressDialog.setMessage("잠시만 기다려주세요. 해당 일정 등록 중 입니다~");
+                    progressDialog.setMessage("해당 댓글로 이동중~"+boardList.get(getAdapterPosition() - 1).getSid());
                     progressDialog.show();
 
 

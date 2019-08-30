@@ -6,12 +6,22 @@ public class BoardPlanItem {
     String planname;
     String location;
     String replynum;
+    int sid;
 
-    public BoardPlanItem(String dateandtime, String planname, String location, String replynum) {
+    public BoardPlanItem(String dateandtime, String planname, String location, String replynum, int sid) {
         this.dateandtime = dateandtime;
         this.planname = planname;
         this.location = location;
         this.replynum = replynum;
+        this.sid = sid;
+    }
+
+    public int getSid() {
+        return sid;
+    }
+
+    public void setSid(int sid) {
+        this.sid = sid;
     }
 
     public String getDateandtime() {
