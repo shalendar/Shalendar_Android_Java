@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.koushikdutta.ion.Ion;
+
 import java.util.ArrayList;
 
 public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.TeamItemHolder>{
@@ -29,8 +32,15 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
     @Override
     public void onBindViewHolder(TeamItemHolder holder, int position) {
         SidebarTeamItem teamIteam = teamPicList.get(position);
-        holder.sideteammatePic.setImageResource(teamIteam.getTeammatePic());
 
+        if(teamIteam.getTeammatePic().equals("DEFAULT :: profile_IMAGE"))
+            holder.sideteamMatePic.setImageResource(R.drawable.profile_default);
+        else {
+            Ion.with(holder.sideteamMatePic)
+                    .centerCrop()
+                    .resize(50,50)
+                    .load(teamIteam.getTeammatePic());
+        }
 
     }
 
@@ -39,14 +49,14 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
         return (null != teamPicList ? teamPicList.size() : 0);
     }
 
+
     public class TeamItemHolder extends RecyclerView.ViewHolder {
 
-        protected ImageView sideteammatePic;
+        protected ImageView sideteamMatePic;
 
         public TeamItemHolder(View itemView) {
             super(itemView);
-
-            this.sideteammatePic = (ImageView) itemView.findViewById(R.id.sidebarTeamImage);
+            this.sideteamMatePic = itemView.findViewById(R.id.sidebarTeamImage);
 
         }
     }

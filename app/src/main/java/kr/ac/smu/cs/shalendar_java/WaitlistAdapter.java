@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.koushikdutta.ion.Ion;
+
 import java.util.ArrayList;
 
 public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHolder> {
@@ -18,9 +20,21 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
     private ArrayList<WaitListItem> waitList;
     private Context context;
 
+    private OnItemClickListener mListener = null;
+
+
     public WaitlistAdapter(ArrayList<WaitListItem> waitList, Context mContext) {
         this.waitList = waitList;
         this.context = mContext;
+    }
+
+    public interface OnItemClickListener {
+        void onAcceptClick(View v, int pos);
+        void onRejectClick(View v, int pos);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -37,18 +51,28 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
     }
 
 
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        String WaitPeoplePic=waitList.get(position).getWaitPeoplePic();
-        String emailID=waitList.get(position).getEmailID();
-        String calendarName=waitList.get(position).getCalendarName();
-        String invitedName=waitList.get(position).getInvitedName();
-        String inviteName=waitList.get(position).getInviteName();
 
-        holder.inviteName.setText(inviteName);
-        holder.invitedName.setText(invitedName);
-        holder.calendarName.setText(calendarName);
-        holder.emailID.setText(emailID);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+        String waitPeopleImg = waitList.get(position).getWaitPeoplePic();
+        String senderEmailID = waitList.get(position).getEmailID();
+        String invitedCalName = waitList.get(position).getCalendarName();
+        String senderName = waitList.get(position).getInvitedName();
+        String receiverName = waitList.get(position).getInviteName();
+        int calendarID = waitList.get(position).getCid();
+
+        holder.inviteName.setText(senderName);
+        holder.invitedName.setText(receiverName);
+        holder.calendarName.setText(invitedCalName);
+        holder.emailID.setText(senderEmailID);
+        holder.setCalendarID(calendarID);
         //holder.WaitPeoplePic.setImageResource();
+
+        Ion.with(holder.waitPeoplePic)
+                .centerCrop()
+                .resize(50,50)
+                .load(waitPeopleImg);
+
     }
 
     @Override
@@ -62,38 +86,56 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        protected ImageView WaitPeoplePic;
+        protected ImageView waitPeoplePic;
         protected TextView emailID;
         protected TextView calendarName;
         protected TextView invitedName;
         protected TextView inviteName;
         protected Button Okbutton;
         protected Button Cancelbutton;
+        protected Button cancelButton;
+        protected Button acceptButton;
 
-        public ViewHolder(final View itemView) {
+        protected int calendarID;
+
+        public ViewHolder(View itemView) {
+
             super(itemView);
-            this.WaitPeoplePic=(ImageView)itemView.findViewById(R.id.waitListPicture);
+            this.waitPeoplePic=(ImageView)itemView.findViewById(R.id.waitListPicture);
             this.emailID=(TextView)itemView.findViewById(R.id.waitListID);
             this.calendarName=(TextView)itemView.findViewById(R.id.calendarName);
             this.invitedName=(TextView)itemView.findViewById(R.id.invitedName);
             this.inviteName=(TextView)itemView.findViewById(R.id.inviteName);
-            this.Okbutton=itemView.findViewById(R.id.okbutton);
-            this.Cancelbutton=itemView.findViewById(R.id.cancelbutton);
+            this.cancelButton = itemView.findViewById(R.id.inviteCancelButton);
+            this.acceptButton = itemView.findViewById(R.id.inviteAcceptButton);
 
-            Okbutton.setOnClickListener(new View.OnClickListener() {
+
+            acceptButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(itemView.getContext(), "Ok", Toast.LENGTH_SHORT).show();
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION) {
+                        if(mListener != null)
+                            mListener.onAcceptClick(v, pos);
+                    }
                 }
             });
 
-            Cancelbutton.setOnClickListener(new View.OnClickListener() {
+
+            cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(itemView.getContext(), "Cancel", Toast.LENGTH_SHORT).show();
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION) {
+                        if(mListener != null)
+                            mListener.onRejectClick(v, pos);
+                    }
                 }
             });
+        }
 
+        public void setCalendarID(int cid) {
+            this.calendarID = cid;
         }
     }
 }

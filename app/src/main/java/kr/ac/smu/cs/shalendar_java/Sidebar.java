@@ -1,8 +1,18 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -26,7 +36,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
+import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 
 public class Sidebar extends LinearLayout implements View.OnClickListener {
 
@@ -44,7 +56,11 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
     //
     private SidebarAdapter s_adapter;
 
-    private ImageView imageView;
+    //
+    public static String userProfile_Name;
+    public static String userProfile_ID;
+    public static String userProfile_ImgURL;
+
 
     public void setEventListener(EventListener l) {
         listener = l;
@@ -56,8 +72,8 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         void btnLevel2();
         void btnLevel3();
         void btnInvited();
+        void image_profile();
     }
-
 
 
     public Sidebar(Context context)
@@ -70,6 +86,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         super(context, attrs);
     }
 
+
     private void init(){
         LayoutInflater.from(getContext()).inflate(R.layout.activity_sidebar, this, true);
         findViewById(R.id.btn_cancel).setOnClickListener(this);
@@ -77,16 +94,52 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         findViewById(R.id.btn_setting).setOnClickListener(this);
         findViewById(R.id.btn_add_calender).setOnClickListener(this);
         findViewById(R.id.btn_invite).setOnClickListener(this);
+        findViewById(R.id.image_profile).setOnClickListener(this);
+//
+//        imageView = findViewById(R.id.image_profile);
+//        imageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                getPictureFromGallery();
+//            }
+//        });
+
 
 
         //사용자 ID 프로필 set
         TextView userName = findViewById(R.id.userName_textView);
         TextView userID = findViewById(R.id.userID_textView);
+        ImageView imageView = findViewById(R.id.image_profile);
 
 
         SharedPreferences pref = getContext().getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
-        userName.setText(pref.getString("userName", "DEFAULT :: USER"));
-        userID.setText(pref.getString("userEmail", "DEFAULT :: MIND@"));
+        userProfile_Name = pref.getString("userName", "DEFAULT :: USER");
+        userProfile_ID = pref.getString("userEmail", "DEFAULT :: MIND@");
+        userProfile_ImgURL = pref.getString("img_url", "DEFAULT :: profile_IMAGE");
+
+
+        userName.setText(userProfile_Name);
+        userID.setText(userProfile_ID);
+
+
+        Log.i("사용자 프로필 이미지??", userProfile_ImgURL);
+
+        if(!(userProfile_ImgURL.equals("DEFAULT :: profile_IMAGE"))) {
+            Ion.with(imageView)
+                    .centerCrop()
+                    .resize(250, 250)
+                    .load(userProfile_ImgURL);
+        }
+
+        else {
+            Toast.makeText(getContext(), "프로필 사진을 정해보세요~", Toast.LENGTH_SHORT).show();
+            Ion.with(imageView)
+                    .centerCrop()
+                    .placeholder(R.drawable.face)
+                    .resize(250, 250);
+        }
+
+
 
 
         //리사이클러
@@ -105,6 +158,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         s_adapter.notifyDataSetChanged();
 
     }
+
 
     //서버에서 응답받은 것 파싱해서 여기에서 추가하면 된다.
     public void insertData(){
@@ -173,6 +227,8 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
                 SidebarItem sitem = new SidebarItem();
 
+                //sitem.setSenderName(userProfile_Name);
+                //sitem.setSenderImg(userProfile_ImgURL);
                 sitem.setCalendarName(innerData.get("calName").getAsString());
                 sitem.setCalendarImage(innerData.get("img_url").getAsString());
                 sitem.setCalendar_ID(cid_Array[i]);
@@ -187,8 +243,14 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                 for(int j=0; j<innerData2.size(); j++){ //공유달력 내 사용자들 명수
 
                     Log.i("해당 달력에 있는 사용자이름", innerData2.get(j).getAsJsonObject().get("id").getAsString());
-                    stItem.add(new SidebarTeamItem(R.drawable.face));
+                    String imageURL;
 
+                    if(innerData2.get(j).getAsJsonObject().get("img_url").isJsonNull())
+                        imageURL = "DEFAULT :: profile_IMAGE";
+                    else
+                        imageURL = innerData2.get(j).getAsJsonObject().get("img_url").getAsString();
+
+                    stItem.add(new SidebarTeamItem(imageURL));
                 }
 
                 //전역변수cid설정
@@ -208,8 +270,6 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
     }
 
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -228,6 +288,8 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
             case R.id.btn_invite :
                 listener.btnInvited();
                 break;
+            case R.id.image_profile :
+                listener.image_profile();
             default:
                 break;
         }

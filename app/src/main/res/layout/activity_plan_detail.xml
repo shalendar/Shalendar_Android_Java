@@ -26,14 +26,14 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/btn_menu"
+                    android:id="@+id/btn_back"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="15dp"
                     android:adjustViewBounds="false"
                     android:background="#FFFFFF"
-                    android:src="@drawable/btn_sidemenu" />
+                    android:src="@drawable/btn_back" />
 
                 <TextView
                     android:id="@+id/textView3"

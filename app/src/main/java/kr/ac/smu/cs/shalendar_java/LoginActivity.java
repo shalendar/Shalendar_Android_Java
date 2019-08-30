@@ -17,28 +17,11 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-
-import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-
 /*
     Login하는 Activity
     Login -> MainActivity로 넘어간다.
 
  */
-
 public class LoginActivity extends AppCompatActivity {
 
     //EditText 멤버 변수
@@ -56,10 +39,17 @@ public class LoginActivity extends AppCompatActivity {
     //서버 통신 위한 url 객체 생성  여기서는 /signin
     private NetWorkUrl url = new NetWorkUrl();
 
+    //로그인시 서버로 넘길 deviceToken값
+    private String deviceToken;
+
     //서버로 부터 로그인 성공 시 오는 응답 Token 변수
     private String userToken;
 
+    //서버로 부터 로그인 성공 시 오는 응답 UserName변수
+    private String userName;
 
+    //서버로 부터 로그인 성공 시 오는 응답 profileImageURL변수
+    private String img_url;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,14 +68,14 @@ public class LoginActivity extends AppCompatActivity {
            우선 버튼 클릭시 MainActivity로 넘어간다.
            - 나중에 CreateMemberActivity로 넘어가는 코드 짜야 한다.
         */
+
         //device TOken값
         try {
-            String token = FirebaseInstanceId.getInstance().getToken();
-            Log.i("Device Token", token);
+            deviceToken = FirebaseInstanceId.getInstance().getToken();
+            Log.i("로그인에서 Device Token", deviceToken);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         //통신 준비.
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
@@ -125,7 +115,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "아이디/비밀번호가 잘못되었습니다", Toast.LENGTH_SHORT).show();
                 }
 */
-
                 //서버 통신코드 Ion 롸이브뤄리 사용
                 final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setMessage("로그인 중 입니다~");
@@ -138,8 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                 //응답 바디 서버에 보낼 data 넣음
                 json.addProperty("id", userEmail);
                 json.addProperty("pw", userPassword);
-
-
+                json.addProperty("deviceToken", deviceToken);
                 Ion.with(getApplicationContext())
                         .load("POST", url.getServerUrl() + "/signin")
                         .setHeader("Content-Type", "application/json")
@@ -151,9 +139,8 @@ public class LoginActivity extends AppCompatActivity {
                             public void onCompleted(Exception e, JsonObject result) {
 
                                 if( e!= null) {
-                                    Toast.makeText(getApplicationContext(), "Connection Error", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
-
                                 else {
                                     progressDialog.dismiss();
                                     String message = result.get("message").getAsString();
@@ -165,7 +152,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
         //이메일로 회원가입 버튼 클릭 경우
         buttonToMember1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,27 +161,37 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-
     //서버 응답 처리
     //응답으로 받은 userToken, getSharedPreference에 저장.
     public void parseFromServer(String message, JsonObject result) {
         if(message.equals("login success")) {
-            userToken = result.get("token").getAsString();
-//            CreateMember2 member2 = new CreateMember2();
-//            String userName = member2.getUserName();
 
-            //Log.i("로그인 화면", userName);
+
+            if(result.get("img_url").isJsonNull())
+                img_url = "DEFAULT :: profile_IMAGE";
+            else
+                img_url = result.get("img_url").getAsString();
+
+            userName = result.get("userName").getAsString();
+            userToken = result.get("token").getAsString();
+
+            Log.i("로그인시 받은 이미지 URL", img_url);
 
             SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
+
+
             editor.putString("userToken", userToken);
-//            editor.putString("userName", userName);
+            editor.putString("userName", userName);
             editor.putString("userEmail", userEmail);
+            editor.putString("img_url", img_url);
             editor.apply();
 
+
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra("userEmail", userEmail);
+//            intent.putExtra("userEmail", userEmail);
+//            intent.putExtra("userName", userName);
+//            intent.putExtra("img_url", img_url);
             startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
         }
 

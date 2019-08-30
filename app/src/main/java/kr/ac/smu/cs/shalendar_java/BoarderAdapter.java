@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +48,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     JsonObject calendarData;
     String calName;
     String calContent;
+    ImageView boardHeaderImage;
     TextView boardHeadertitle;
     TextView boardHeaderContent;
 
@@ -75,8 +77,15 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             h_recyclerView.setLayoutManager(linearLayoutManager);
 
             //보더헤더 이름과 설명 설정하는 부분
+            boardHeaderImage = view.findViewById(R.id.boardHeaderImage);
             boardHeadertitle=(TextView) view.findViewById(R.id.boardHeadertitle);
             boardHeaderContent=(TextView) view.findViewById(R.id.boardHeaderContent);
+
+            Ion.with(boardHeaderImage)
+                    .centerCrop()
+                    .resize(350, 250)
+                    .load(calendarData.get("img_url").getAsString());
+
 
             calName = calendarData.get("calName").getAsString();
             calContent = calendarData.get("calContent").getAsString();
@@ -92,14 +101,22 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             for (int i = 0; i < sharedPeoplenum; i++) {
                 JsonObject jsonArr = shareUserData.get(i).getAsJsonObject();
                 //id = jsonArr.get("id").getAsString();
-                h_adapter.addItem(new BoardTeamItem(jsonArr.get("id").getAsString(), R.drawable.ic_launcher_foreground));
+                String userName = jsonArr.get("userName").getAsString();
+                String userImgURL;
+
+                if(jsonArr.get("img_url").isJsonNull())
+                    userImgURL = "DEFAULT :: profile_IMAGE";
+                else
+                    userImgURL = jsonArr.get("img_url").getAsString();
+
+                h_adapter.addItem(new BoardTeamItem(userName, userImgURL));
             }
 
             Log.i("누가 먼저 실행되는 거임??11", Integer.toString(sharedPeoplenum));
-
-        h_adapter.notifyDataSetChanged();
-
+            h_adapter.notifyDataSetChanged();
             holder = new HeaderViewHolder(view);
+
+
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.boardplan_item, parent, false);
             holder = new ItemViewHolder(view);

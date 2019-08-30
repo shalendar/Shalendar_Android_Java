@@ -1,253 +1,242 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
-public class WaitInvite extends AppCompatActivity implements View.OnClickListener {
+import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 
-    //UserToken
-    private String userToken;
+public class WaitInvite extends AppCompatActivity {
+
 
     ArrayList<WaitListItem> waitRecyclerList;
     private Context mContext = WaitInvite.this;
-
-    private ViewGroup mainLayout;   //사이드 나왔을때 클릭방지할 영역
-    private ViewGroup viewLayout;   //전체 감싸는 영역
-    private ViewGroup sideLayout;   //사이드바만 감싸는 영역
-    private ViewGroup calendarLayout; //달력레이아웃 부분
-
-    private Boolean isMenuShow = false;
+    private String imageURL;
+    private ImageView imageView;
     private Boolean isExitFlag = false;
+    ImageButton backButton;
 
-    //통신
+    //
+    private String userToken;
+
+    //서버 통신
     NetWorkUrl url = new NetWorkUrl();
+
+    //
+
+    private String senderID;
+    private String receiver;
+    private String senderName;
+    private String sender_img;
+    private int cid;
+    private String calName;
+
+    //
+    private WaitlistAdapter w_adapter;
+    private RecyclerView waitInviteRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wait_invite);
+        waitRecyclerList=new ArrayList<>();
 
-        waitRecyclerList = new ArrayList<>();
-
-        RecyclerView waitInviteRecyclerView = (RecyclerView) findViewById(R.id.waitListRecycler);
+        waitInviteRecyclerView = (RecyclerView)findViewById(R.id.waitListRecycler);
         waitInviteRecyclerView.setHasFixedSize(true);
-        final WaitlistAdapter w_adapter = new WaitlistAdapter(waitRecyclerList, this);
+        w_adapter = new WaitlistAdapter(waitRecyclerList, this);
         waitInviteRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
-        waitInviteRecyclerView.setAdapter(w_adapter);
 
-        //SharedPreference에 저장된 userToken가져오기.
+
+        backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
+
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         //값이 없으면 default로 0
         userToken = pref.getString("userToken", "NO_TOKEN");
-        Log.i("넘겨받은 토큰", userToken);
-
-        //통신 준비
-        Ion.getDefault(getApplicationContext()).configure().setLogging("ion-sample", Log.DEBUG);
-        Ion.getDefault(getApplicationContext()).getConscryptMiddleware().enable(false);
-
-        final JsonObject json = new JsonObject();
-
-        json.addProperty("cid", Global.getCid());
+        Log.i("초대 대기 화면 :: 사용자 토큰", userToken);
 
 
-        Ion.with(getApplicationContext())
+        //통신 준비.
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(this).getConscryptMiddleware().enable(false);
+
+        JsonObject json = new JsonObject();
+        json.addProperty("", "");
+
+        final ProgressDialog progressDialog = new ProgressDialog(WaitInvite.this);
+        progressDialog.setMessage("초대 리스트 불러오는 중 입니다~");
+        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        Future ion = Ion.with(getApplicationContext())
                 .load("POST", url.getServerUrl() + "/showInvitation")
                 .setHeader("Content-Type", "application/json")
                 .setHeader("Authorization", userToken)
-                //.progressDialog(progressDialog)
+                .setTimeout(60000)
+                .progressDialog(progressDialog)
                 .setJsonObjectBody(json)
-                .asJsonObject() //응답
+                .asJsonObject()
                 .setCallback(new FutureCallback<JsonObject>() {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
-                        //받을 변수
-                        String sender, receiver, senderName, sender_Img, cNAME;
-                        int cid;
 
-                        if (e != null) {
+                        if(e != null) {
                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-
-                        } else {
-                            //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
-                            //data: 다음에 나오는 것들도 JsonObject형식.
-                            //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
-                            //JSONArray가 아님. 얘는 [,]로 묶여 있어야 함.
-
+                        }
+                        else {
                             String message = result.get("message").getAsString();
 
-                            //서버로 부터 응답 메세지가 success이면...
-
-                            if (message.equals("success")) {
-                                //서버 응답 오면 로딩 창 해제
-
-                                //shareuserdata: {} 에서 {}안에 있는 것들도 JsonObject
-                                JsonArray invitation = result.get("invitation").getAsJsonArray();
-
-                                for (int i = 0; i < invitation.size(); i++) {
-                                    JsonObject innerData = invitation.get(i).getAsJsonObject();
-                                    sender = innerData.get("sender").getAsString();
-                                    receiver = innerData.get("receiver").getAsString();
-                                    sender_Img = innerData.get("sender_Img").getAsString();
-                                    senderName = innerData.get("senderName").getAsString();
-                                    cid = innerData.get("cid").getAsInt();
-                                }
-
-
-                                w_adapter.addItem(new WaitListItem());
-
-                                w_adapter.notifyDataSetChanged();
-                            } else
-
-                            {
-                                Toast.makeText(getApplicationContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
+                            if(message.equals("success")) {
+                                parseDataFromServer(result);
+                            } else if(message.equals("nothing")) {
+                                Toast.makeText(getApplicationContext(), "초대 받은 내역이 없습니다.", Toast.LENGTH_LONG).show();
+                            } else if(message.equals("fail")) {
+                                Toast.makeText(getApplicationContext(), "초대 중 에러가 발생하였습니다.", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "잘못된 응답 메세지 입니다.", Toast.LENGTH_LONG).show();
                             }
                         }
                     }
+
                 });
 
+        //응답 받아올 때 까지 대기.
+        try {
+            ion.get();
+            progressDialog.dismiss();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
 
-        Log.i("누가 먼저 실행되는 거임??333", "BoardActivity Ion 통신 끝");
-    }
 
+        w_adapter.setOnItemClickListener(new WaitlistAdapter.OnItemClickListener() {
 
-    private void addSideView() {
+            private int ACCEPT_FLAG;
 
-        Sidebar sidebar = new Sidebar(mContext);
-        sideLayout.addView(sidebar);
-        //sidebar.setUserID(userName);
-
-        viewLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onAcceptClick(View v, int pos) {
+                //Toast.makeText(getApplicationContext(),
+                // waitRecyclerList.get(pos).calendarName + Integer.toString(waitRecyclerList.get(pos).cid), Toast.LENGTH_LONG).show();
+                ACCEPT_FLAG = 1;
+                String senderEmail = waitRecyclerList.get(pos).emailID;
+                String receiver = waitRecyclerList.get(pos).invitedName;
+                int cid = waitRecyclerList.get(pos).cid;
+
+                Log.i("SenderEmail", senderEmail);
+                Log.i("receiver", receiver);
+                Log.i("FLAG", Integer.toString(ACCEPT_FLAG));
+                Log.i("cid", Integer.toString(cid));
+
+                sendToServer(ACCEPT_FLAG, senderEmail, receiver, cid);
+            }
+
+            @Override
+            public void onRejectClick(View v, int pos) {
+                ACCEPT_FLAG = 0;
+                String senderEmail = waitRecyclerList.get(pos).emailID;
+                String receiver = waitRecyclerList.get(pos).invitedName;
+                int cid = waitRecyclerList.get(pos).cid;
+                sendToServer(ACCEPT_FLAG, senderEmail, receiver, cid);
+
+                Log.i("SenderEmail", senderEmail);
+                Log.i("receiver", receiver);
+                Log.i("FLAG", Integer.toString(ACCEPT_FLAG));
+                Log.i("cid", Integer.toString(cid));
 
             }
         });
-
-        sidebar.setEventListener(new Sidebar.EventListener() {
-
-            @Override
-            public void btnCancel() {
-                closeMenu();
-            }
-
-            @Override
-            public void btnLevel1() {
-                Intent intent2 = new Intent(getApplicationContext(), NoticeActivity.class);
-                startActivityForResult(intent2, CodeNumber.TO_NOTICE_ACTIVITY);
-            }
-
-            @Override
-            public void btnLevel2() {
-                Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
-                startActivityForResult(intent2, CodeNumber.TO_SETTING_ACTIVITY);
-            }
-
-            @Override
-            public void btnLevel3() {
-                Intent intent2 = new Intent(getApplicationContext(), CreateCalendarActivity.class);
-                startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
-            }
-
-            @Override
-            public void btnInvited() {
-                Intent intent3 = new Intent(getApplicationContext(), WaitInvite.class);
-                startActivityForResult(intent3, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
-            }
-
-
-        });
-    }
-
-    public void closeMenu() {
-
-        isMenuShow = false;
-        Animation slide = AnimationUtils.loadAnimation(mContext, R.anim.siderbar_hidden);
-        sideLayout.startAnimation(slide);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                viewLayout.setVisibility(View.GONE);
-                viewLayout.setEnabled(false);
-                mainLayout.setEnabled(true);
-            }
-        }, 450);
-    }
-
-    public void showMenu() {
-
-        isMenuShow = true;
-        Animation slide = AnimationUtils.loadAnimation(this, R.anim.sidebar_show);
-        sideLayout.startAnimation(slide);
-        viewLayout.setVisibility(View.VISIBLE);
-        viewLayout.setEnabled(true);
-        mainLayout.setEnabled(false);
     }
 
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btn_menu:
-                showMenu();
-                break;
-            case R.id.btn_search:
-                Intent intent2 = new Intent(getApplicationContext(), SearchPlanActivity.class);
-                startActivityForResult(intent2, CodeNumber.TO_SEARCH_PLAN_ACTIVITY);
-                break;
+
+    public void parseDataFromServer(JsonObject result) {
+
+        JsonArray invitation = result.get("invitation").getAsJsonArray();
+
+        if(invitation.size() == 0)
+            Toast.makeText(getApplicationContext(), "초대 받은 내역이 없습니다.", Toast.LENGTH_LONG).show();
+        else {
+            for(int i = 0; i<invitation.size(); i++) {
+                JsonObject invitationData = invitation.get(i).getAsJsonObject();
+                senderID = invitationData.get("sender").getAsString();
+                receiver = invitationData.get("receiver").getAsString();
+                senderName = invitationData.get("senderName").getAsString();
+                sender_img = invitationData.get("sender_img").getAsString();
+                cid = invitationData.get("cid").getAsInt();
+                calName = invitationData.get("cName").getAsString();
+                w_adapter.addItem(new WaitListItem(sender_img, senderID, calName, receiver, senderName, cid));
+            }
+            waitInviteRecyclerView.setAdapter(w_adapter);
         }
+        //progressDialog.dismiss();
     }
 
+    public void sendToServer(int ACCEPT_FLAG, String senderEmail, String receiver, int cid) {
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        JsonObject json = new JsonObject();
+        json.addProperty("flag", ACCEPT_FLAG);
+        json.addProperty("sender", senderEmail);
+        json.addProperty("receiver", receiver);
+        json.addProperty("cid", cid);
 
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            onBackPressed();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isMenuShow) {
-            closeMenu();
-        } else {
-
-            if (isExitFlag) {
-                finish();
-            } else {
-
-                isExitFlag = true;
-                Toast.makeText(this, "뒤로가기를 한번더 누르시면 앱이 종료됩니다.", Toast.LENGTH_SHORT).show();
-                new Handler().postDelayed(new Runnable() {
+        Ion.with(getApplicationContext())
+                .load("POST", url.getServerUrl() + "/acceptInvitation")
+                .setHeader("Content-Type", "application/json")
+                .setJsonObjectBody(json)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
                     @Override
-                    public void run() {
-                        isExitFlag = false;
+                    public void onCompleted(Exception e, JsonObject result) {
+
+                        if(e != null) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            String message = result.get("message").getAsString();
+                            if(message.equals("accept")) {
+                                Toast.makeText(getApplicationContext(), "초대 수락 완료", Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(WaitInvite.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                            else if (message.equals("reject")) {
+                                Toast.makeText(getApplicationContext(), "초대 거절", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(), "초대 수락 실패", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
                     }
-                }, 2000);
-            }
-        }
+                });
     }
 }

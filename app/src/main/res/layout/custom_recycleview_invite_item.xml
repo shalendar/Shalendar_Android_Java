@@ -15,6 +15,7 @@
         android:weightSum="8">
 
         <ImageView
+            android:id="@+id/inviteList_userImage"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_margin="8dp"

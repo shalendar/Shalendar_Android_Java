@@ -2,26 +2,29 @@ package kr.ac.smu.cs.shalendar_java;
 
 public class WaitListItem {
 
-    String WaitPeoplePic;
+    String waitPeoplePic;
     String emailID;
     String calendarName;
     String invitedName;
     String inviteName;
 
-    public WaitListItem(String waitPeoplePic, String emailID, String calendarName, String invitedName, String inviteName) {
-        WaitPeoplePic = waitPeoplePic;
+    int cid;
+
+    public WaitListItem(String waitPeoplePic, String emailID, String calendarName, String invitedName, String inviteName, int cid) {
+        this.waitPeoplePic = waitPeoplePic;
         this.emailID = emailID;
         this.calendarName = calendarName;
         this.invitedName = invitedName;
         this.inviteName = inviteName;
+        this.cid = cid;
     }
 
     public String getWaitPeoplePic() {
-        return WaitPeoplePic;
+        return this.waitPeoplePic;
     }
 
     public void setWaitPeoplePic(String waitPeoplePic) {
-        WaitPeoplePic = waitPeoplePic;
+        this.waitPeoplePic = waitPeoplePic;
     }
 
     public String getEmailID() {
@@ -54,5 +57,13 @@ public class WaitListItem {
 
     public void setInviteName(String inviteName) {
         this.inviteName = inviteName;
+    }
+
+    public int getCid() {
+        return this.cid;
+    }
+
+    public void setCid(int cid) {
+        this.cid = cid;
     }
 }
