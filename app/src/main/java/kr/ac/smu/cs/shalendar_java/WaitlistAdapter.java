@@ -66,7 +66,6 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         holder.calendarName.setText(invitedCalName);
         holder.emailID.setText(senderEmailID);
         holder.setCalendarID(calendarID);
-        //holder.WaitPeoplePic.setImageResource();
 
         Ion.with(holder.waitPeoplePic)
                 .centerCrop()
@@ -118,7 +117,6 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
                     }
                 }
             });
-
 
             cancelButton.setOnClickListener(new View.OnClickListener() {
                 @Override

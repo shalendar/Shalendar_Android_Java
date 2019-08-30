@@ -80,6 +80,8 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
     private Button buttonToPlanDtail;
     private ScrollView scrollView;
     private BoarderAdapter b_adapter;
+    private Button buttonToHome;
+    private Button buttonToRegisterPlan;
 
     //서버 통신 위한 url 객체 생성  여기서는 /signin
     private NetWorkUrl url = new NetWorkUrl();
@@ -93,6 +95,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
     private String imageURL;
 
     private ImageView imageView;
+
 
 
     int sharePeopleNum;
@@ -112,6 +115,25 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
+
+        buttonToHome = (Button) findViewById(R.id.button_home);
+        buttonToRegisterPlan = (Button) findViewById(R.id.main_ToRegister_button);
+
+        buttonToRegisterPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { Intent intent = new Intent(getApplicationContext(), RegisterPlanActivity.class);
+                startActivityForResult(intent, CodeNumber.TO_REGISTERPLAN_ACTIVITY);
+            }
+        });
+
+
+        buttonToHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
+            }
+        });
+
 
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         userToken = pref.getString("userToken", "NO_TOKEN");
@@ -137,8 +159,8 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         final JsonObject json = new JsonObject();
 
-        Log.i("게시판 넘어온 cid", Integer.toString(MainActivity.cid));
         json.addProperty("cid", MainActivity.cid);
+        Log.i("게시판 넘어온 cid", Integer.toString(MainActivity.cid));
 
 //        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
 //        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -234,7 +256,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                     //plan의 일자
                                     planDate = startDate+" ~ "+endDate;
 
-                                    b_adapter.addItem(new BoardPlanItem(planDate, title, area, numOfCommentsstring));
+                                    b_adapter.addItem(new BoardPlanItem(planDate, title, area, numOfCommentsstring, sid));
 
                                 }
 
