@@ -9,14 +9,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
-
-public class CreateCalendarActivityDialog extends Dialog {
-
+public class RegisterPlanActivityDialog extends Dialog {
 
     private Button gotomain;
 
 
-    public CreateCalendarActivityDialog(Context context, View.OnClickListener singleListener) {
+    public RegisterPlanActivityDialog(Context context, View.OnClickListener singleListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
     }
 
@@ -44,4 +42,9 @@ public class CreateCalendarActivityDialog extends Dialog {
             }
         });
     }
+
+
+
+
+
 }
