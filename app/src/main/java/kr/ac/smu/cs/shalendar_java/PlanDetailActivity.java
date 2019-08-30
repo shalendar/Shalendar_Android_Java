@@ -28,6 +28,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +60,9 @@ public class PlanDetailActivity extends AppCompatActivity  {
 
     //통신 위한 url
     private NetWorkUrl url = new NetWorkUrl();
+
+
+    ImageButton backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,6 +203,14 @@ public class PlanDetailActivity extends AppCompatActivity  {
                 alertDialog.show();
 
                 return false;
+            }
+        });
+
+        backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
         });
     }

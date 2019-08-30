@@ -47,12 +47,6 @@
                     android:textColor="#4a4a4a"
                     android:textSize="20sp" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="1" />
-
-
 
             </LinearLayout>
 
@@ -73,10 +67,11 @@
                 <!--리사이클러뷰-->
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/BoarderRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/BoarderRecyclerView"
-                    android:layout_above="@+id/downButtons">
+                    android:layout_above="@+id/downButtons"
+                    android:layout_marginBottom="-1dp">
 
                 </android.support.v7.widget.RecyclerView>
 
