@@ -250,11 +250,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                     stItem.add(new SidebarTeamItem(imageURL));
                 }
 
-                //전역변수cid설정
-                if (cid_Array.length > 0) {
-                    MainActivity.cid = (cid_Array[0]);
-                } else
-                    MainActivity.cid = 0;
+                
 
                 sitem.setTeamImageList(stItem);
                 calendarRecyclerList.add(sitem);

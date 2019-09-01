@@ -367,7 +367,6 @@ public class PlanDetailActivity extends AppCompatActivity {
 
                 AlertDialog alertDialog = dialog.create();
                 alertDialog.show();
-
                 return false;
             }
         });

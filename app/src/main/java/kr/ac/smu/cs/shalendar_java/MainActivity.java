@@ -487,6 +487,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void btnLevel3() {
                 Intent intent2 = new Intent(getApplicationContext(), CreateCalendarActivity.class);
+                //캘린더 생성 코드
+                intent2.putExtra("where",88888);
                 startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
