@@ -253,8 +253,7 @@ public class CreateCalendarActivity extends AppCompatActivity {
     }
 
     public void Dialog() {
-        dialog = new CreateCalendarActivityDialog(CreateCalendarActivity.this,
-                leftListener); // 왼쪽 버튼 이벤트
+        dialog = new CreateCalendarActivityDialog(CreateCalendarActivity.this, leftListener); // 왼쪽 버튼 이벤트
         // 오른쪽 버튼 이벤트
 
         //요청 이 다이어로그를 종료할 수 있게 지정함

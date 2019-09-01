@@ -233,6 +233,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_button"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:text="작성 완료"
                 android:textColor="@color/buttonTextColor"
                 android:textStyle="bold" />

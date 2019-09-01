@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.JsonArray;
@@ -30,6 +31,7 @@ public class InviteActivity extends AppCompatActivity {
     private EditText userEmail;
     private TextView addEmail;
     private Button toEmailInviteButton;
+    ImageButton backButton;
 
     //사용자 토큰 값
     private String userToken;
@@ -55,6 +57,13 @@ public class InviteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invite);
+        backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         recyclerView = findViewById(R.id.invite_email_RecycleView);
 

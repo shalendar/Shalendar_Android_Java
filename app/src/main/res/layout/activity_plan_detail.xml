@@ -51,16 +51,6 @@
                     android:layout_weight="1" />
 
 
-                <ImageButton
-                    android:id="@+id/btn_search"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center|right|center_vertical"
-                    android:layout_marginRight="15dp"
-                    android:adjustViewBounds="false"
-                    android:background="#FFFFFF"
-                    app:srcCompat="@drawable/btn_search" />
-
             </LinearLayout>
 
         </RelativeLayout>
