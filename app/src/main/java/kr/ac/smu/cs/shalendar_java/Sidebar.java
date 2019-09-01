@@ -250,7 +250,6 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                     stItem.add(new SidebarTeamItem(imageURL));
                 }
 
-
                 sitem.setTeamImageList(stItem);
                 calendarRecyclerList.add(sitem);
             }
