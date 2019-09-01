@@ -123,6 +123,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //서버로 받은 것.
     ArrayList<ScheduleData> schedList = new ArrayList<>();
 
+    //달력에 표시할 dot을 가지는 즉, 서버로 부터 응답받은 날짜들
+    ArrayList<CalendarDay> dates = new ArrayList<>();
+
+    //dates ArrayList에서 시작 날짜 == 끝 날짜  시작 날짜 != 끝날짜 경계 index
+    public int boundary_index;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,6 +260,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void setCalendarView() {
 
+        for(int i = 0; i<schedList.size(); i++) {
+            if(schedList.get(i).startDate.equals(schedList.get(i).endDate)) {
+                //result.add(schedList.get(i).startDate);
+                try {
+                    String sameDate = schedList.get(i).startDate;
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+                    Date start = sdf.parse(sameDate);
+
+                    CalendarDay day = CalendarDay.from(start);
+                    dates.add(day);
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+        //startDate == Enddate와 startDate != EndDate 경계 index값
+        boundary_index = dates.size();
+//        boundary_index = 4;
+        Log.i("start와 end == 마지막index", Integer.toString(boundary_index));
+
+        for(int i = 0; i<schedList.size(); i++) {
+
+            if(!(schedList.get(i).startDate.equals(schedList.get(i).endDate))) {
+
+                try {
+                    String s_date = schedList.get(i).startDate;
+                    String e_date = schedList.get(i).endDate;
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+                    Date start = sdf.parse(s_date);
+                    Date end = sdf.parse(e_date);
+
+
+                    Date currentDate = start;
+                    while (currentDate.compareTo(end) <= 0) {
+                        CalendarDay day = CalendarDay.from(currentDate);
+                        dates.add(day);
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(currentDate);
+                        c.add(Calendar.DAY_OF_MONTH, 1);
+                        currentDate = c.getTime();
+                    }
+
+                }catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        Log.i("들어있는 date", dates.toString());
+
+        new ApiSimulator().executeOnExecutor(Executors.newSingleThreadExecutor());
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
 
             @Override
@@ -267,60 +335,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i("Day test", Day + "");
 
 
-                //
                 SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
-                String shot_Day = Year + "-" + Month + "-" + Day;
-                //ParsePosition pos = new ParsePosition( 0 );
-                //Date initialDate = format.parse(shot_Day, pos);
-
-                //String parseDate = format.format(initialDate);
-
-                Log.i("shot_Day test", shot_Day + "");
-                materialCalendarView.clearSelection();
+                Date formatDate = date.getDate();
+                String selectionDate = format.format(formatDate);
 
 
-//                insertData();
+                Log.i("shot_Day test", selectionDate + "");
+//                materialCalendarView.clearSelection();
 
+
+                insertData(selectionDate);
 
 
                 ///////애니메이션 구현
-//                if (isPageOpen) {
-//                    //calendarRelative.setClickable(false);
-//                    main_animation.setVisibility(View.INVISIBLE);
-//                    Toast.makeText(getApplicationContext(),"열림",Toast.LENGTH_SHORT).show();
-//                    main_animation.startAnimation(translateDownAnim);
-//                    /*
-//                    calendarLayout.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            main_animation.startAnimation(translateDownAnim);
-//                        }
-//                    });*/
-//                }
-//
-//                else {
-//                    main_animation.setVisibility(View.VISIBLE);
-//                    main_animation.startAnimation(translateUpAnim);
-//                }
+                if (isPageOpen) {
+                    //calendarRelative.setClickable(false);
+                    main_animation.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getApplicationContext(),"열림",Toast.LENGTH_SHORT).show();
+                    main_animation.startAnimation(translateDownAnim);
+                    /*
+                    calendarLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            main_animation.startAnimation(translateDownAnim);
+                        }
+                    });*/
+                }
 
-                Toast.makeText(getApplicationContext(), shot_Day , Toast.LENGTH_SHORT).show();
+                else {
+                    main_animation.setVisibility(View.VISIBLE);
+                    main_animation.startAnimation(translateUpAnim);
+                }
+
+                Toast.makeText(getApplicationContext(), selectionDate , Toast.LENGTH_SHORT).show();
 
                 //TextView에 삽입
-                selectedDate.setText(shot_Day);
+                selectedDate.setText(selectionDate);
+                materialCalendarView.clearSelection();
             }
         });
     }
 
 
+    public void insertData(String selectionDate){
 
-    public void insertData(){
-
+        Log.i("insertDate()에서", selectionDate + "");
         Log.i("LIST 길이", Integer.toString(schedList.size()));
-        for(int i=0; i<schedList.size(); i++) {
+        for(int i = 0; i < schedList.size(); i++) {
             MainPlanItem mitem = new MainPlanItem();
             mitem.setMainPlanname(schedList.get(i).sche_title);
-            mitem.setMainPlantime(schedList.get(i).startDate + " ~ " + schedList.get(i).endDate);
+            mitem.setMainPlantime(schedList.get(i).startDate + " >> " + schedList.get(i).endDate);
 
             ArrayList<MainPlanTeamIteam> mtItem = new ArrayList<>();
             for(int j=0; j<6; j++){
@@ -359,12 +423,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private class ApiSimulator extends AsyncTask<Void, Void, List<CalendarDay>> {
 
-        String[] Time_Result;
-
-        ApiSimulator(String[] Time_Result) {
-            this.Time_Result = Time_Result;
-        }
-
         @Override
         protected List<CalendarDay> doInBackground(@NonNull Void... voids) {
 
@@ -374,45 +432,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
 
-            //calendar에는 시스템의 현재 날짜가 저장되어있다.
-            Calendar calendar = Calendar.getInstance();
-            //ArrayList를 사용해야 한다.
-            ArrayList<CalendarDay> dates = new ArrayList<>();
 
-
-            //dummy data Test용 for문
-            //특정날짜 달력에 점표시해주는곳
-            //월은 0이 1월 년,일은 그대로
-            //string 문자열인 Time_Result 을 받아와서 -를 기준으로짜르고 string을 int 로 변환
-            for (int i = 0; i < Time_Result.length; i++) {
-                String[] time = Time_Result[i].split("-");
-                int year = Integer.parseInt(time[0]);
-                int month = Integer.parseInt(time[1]);
-                int dayy = Integer.parseInt(time[2]);
-                calendar.set(year, month - 1, dayy);
-                CalendarDay day = CalendarDay.from(calendar);
-                dates.add(day);
-            }
-
-            //map에 있는 data 처리 for문
-//            for(String key : map.keySet()) {
-//                Log.d("시작날짜 key", key);
-//                Log.d("종료날짜 value", map.get(key));
-//                //시작 날짜, 종료날짜 같은 경우.
-//                if(key.equals(map.get(key))) {
-//                    String[] time = key.split("-");
-//                    int year = Integer.parseInt(time[0]);
-//                    int month = Integer.parseInt(time[1]);
-//                    int dayy = Integer.parseInt(time[2]);
-//                    Log.d("쪼갠 날짜", Integer.toString(year) + "," + Integer.toString(month) + "," + Integer.toString(dayy));
-//                    calendar.set(year, month-1, dayy);
-//                    CalendarDay day = CalendarDay.from(calendar);
-//                    dates.add(day);
-//                }
-
-                //시작 날짜, 종료날짜 다른 경우
-
-//            }
 
             //dates ArrayList에 사용자 지정 날짜들이 들어있다. 2019-7-8형식.
             Log.d("들어있는 Date", dates.toString());
@@ -429,25 +449,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
 
+            ArrayList<CalendarDay> tempDateList = (ArrayList<CalendarDay>)calendarDays;
+            HashMap<CalendarDay, Integer> map = new HashMap<>();
 
-            //실질적으로 dot을 찍는 class의 Method를 호출한다.
-            EventDecorator event1 = new EventDecorator(1, Color.parseColor("#ff6067"),
-                    calendarDays, MainActivity.this);
-            EventDecorator event2 = new EventDecorator(2, Color.parseColor("#f8c930"),
-                    calendarDays, MainActivity.this);
+            for(int i = 0; i<tempDateList.size(); i++) {
+                CalendarDay i_date = tempDateList.get(i);
+                int duplicate_count = 1;
 
-
-//            materialCalendarView.addDecorator(event1);
-            int[] eventCount = EventDecorator.eventCount;
-
-            Log.d("배열 길이", Integer.toString(eventCount.length));
-            for(int i = 0; i<3; i++) {
-                if(eventCount[i] == 0) {
-                    materialCalendarView.addDecorator(event1);
+                for(int j = i + 1; j < tempDateList.size(); j++) {
+                    CalendarDay j_date = tempDateList.get(j);
+                    if(i_date.equals(j_date))
+                        duplicate_count++;
                 }
 
-                else if(eventCount[i] == 1) {
+                if(!map.containsKey(i_date))
+                    map.put(i_date, duplicate_count);
+
+                Log.i(i_date.toString(), " :: " + Integer.toString(duplicate_count));
+            }
+
+
+
+            EventDecorator event, event2, event3;
+
+            for(CalendarDay key: map.keySet()) {
+                Log.i("MAP","key : " + key.toString() + "Value : " + map.get(key));
+
+                ArrayList<CalendarDay> dateList = new ArrayList<>();
+                int duplicateDateCount = map.get(key);
+
+                if(duplicateDateCount == 1) {
+                    dateList.add(key);
+                    event = new EventDecorator(1, Color.parseColor("#ff6067"), dateList, MainActivity.this);
+                    materialCalendarView.addDecorator(event);
+                }
+
+                else if(duplicateDateCount == 2) {
+                    dateList.add(key);
+                    event = new EventDecorator(1, Color.parseColor("#ff6067"), dateList, MainActivity.this);
+                    event2 = new EventDecorator(2, Color.parseColor("#f8c930"), dateList, MainActivity.this);
+                    materialCalendarView.addDecorator(event);
                     materialCalendarView.addDecorator(event2);
+                }
+
+                else if(duplicateDateCount >= 3) {
+                    dateList.add(key);
+                    event = new EventDecorator(1, Color.parseColor("#ff6067"), dateList, MainActivity.this);
+                    event2 = new EventDecorator(2, Color.parseColor("#f8c930"), dateList, MainActivity.this);
+                    event3 = new EventDecorator(3, Color.parseColor("#cdcdcd"), dateList, MainActivity.this);
+                    materialCalendarView.addDecorator(event);
+                    materialCalendarView.addDecorator(event2);
+                    materialCalendarView.addDecorator(event3);
+                }
+
+                else {
+                    Toast.makeText(getApplicationContext(), "No Event", Toast.LENGTH_LONG).show();
                 }
             }
         }
