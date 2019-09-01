@@ -6,18 +6,23 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
+import java.util.ArrayList;
 
 public class SearchPlanActivity extends AppCompatActivity {
 
@@ -30,10 +35,25 @@ public class SearchPlanActivity extends AppCompatActivity {
     //서버 연동
     NetWorkUrl url = new NetWorkUrl();
 
+    //검색결과 뷰
+    private SearchPlanAdapter s_adapter;
+    private RecyclerView searchPlanRecycler;
+    ArrayList<SearchPlanItem> searchPlanList;
+
+    String plantitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_plan);
+
+        searchPlanList = new ArrayList<>();
+
+        searchPlanRecycler = (RecyclerView)findViewById(R.id.searchRecycle);
+        searchPlanRecycler.setHasFixedSize(true);
+        s_adapter = new SearchPlanAdapter(searchPlanList, this);
+        searchPlanRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
+
 
         final EditText searchText = findViewById(R.id.search_Keyword);
         ImageView searchSchedule = findViewById(R.id.search_Schedule);
@@ -125,9 +145,11 @@ public class SearchPlanActivity extends AppCompatActivity {
 
                 if(title.contains(keyword))
                 {
+                    s_adapter.addItem(new SearchPlanItem(title));
                     Log.i("파싱한 title", title);
                     Log.i("파싱한 sid", Integer.toString(sid));
                 }
+                searchPlanRecycler.setAdapter(s_adapter);
             }
         }
 

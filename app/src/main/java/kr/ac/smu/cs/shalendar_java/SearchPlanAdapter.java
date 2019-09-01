@@ -16,8 +16,9 @@ public class SearchPlanAdapter extends RecyclerView.Adapter<SearchPlanAdapter.Vi
     private ArrayList<SearchPlanItem> searchList;
     private Context context;
 
-    public SearchPlanAdapter() {
-        super();
+    public SearchPlanAdapter(ArrayList<SearchPlanItem> searchList, Context mContext) {
+        this.searchList = searchList;
+        this.context = mContext;
     }
 
     @Override
