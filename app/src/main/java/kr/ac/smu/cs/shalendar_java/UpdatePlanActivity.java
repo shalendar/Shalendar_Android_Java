@@ -44,7 +44,6 @@ public class UpdatePlanActivity extends AppCompatActivity {
     private TextView recommandedTime;
     ImageButton backButton;
 
-
     //서버로 보낼 data
     private String scheTitle;
     private String strStartDate;
@@ -65,7 +64,7 @@ public class UpdatePlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_plan);
 
-        //buttonCompleteUpdate = findViewById(R.id.updatePlan_toMain_button);
+        //buttonCompleteUpdate = findViewById(R.id.sendButton);
         planTitle = findViewById(R.id.update_title_EditText);
         aboutPlan = findViewById(R.id.update_aboutPlan_EditText);
         location = findViewById(R.id.update_location_EditText);
@@ -85,15 +84,18 @@ public class UpdatePlanActivity extends AppCompatActivity {
         initTime();
 
 
-         //일정 수정 화면으로 이동 서버 통신 준비.
+        //일정 수정 화면으로 이동 서버 통신 준비.
 
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(this).getConscryptMiddleware().enable(false);
 
-        /*
-        buttonCompleteUpdate.setOnClickListener(new View.OnClickListener() {
+
+        buttonCompleteRegister.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+
+                Toast.makeText(getApplicationContext(), "눌림", Toast.LENGTH_SHORT).show();
 
                 scheTitle = planTitle.getText().toString().trim();
                 aboutSched = aboutPlan.getText().toString().trim();
@@ -106,16 +108,14 @@ public class UpdatePlanActivity extends AppCompatActivity {
 
                 JsonObject json = new JsonObject();
 
-                json.addProperty("sid", 4);
+                json.addProperty("sid", Global.getSid());
                 json.addProperty("title", scheTitle);
                 json.addProperty("sContent", aboutSched);
-                json.addProperty("startDate", strStartDate);
-                json.addProperty("startTime",strStartTime);
-                json.addProperty("endDate",strEndDate);
-                json.addProperty("endTime",strEndTime);
-                json.addProperty("area",strLocation);
-
-
+                json.addProperty("startDate", strStartDate + " " + strStartTime);
+                //json.addProperty("startTime",strStartTime);
+                json.addProperty("endDate", strEndDate + " " + strEndTime);
+                //json.addProperty("endTime",strEndTime);
+                json.addProperty("area", strLocation);
 
                 final ProgressDialog progressDialog = new ProgressDialog(UpdatePlanActivity.this);
                 progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -127,18 +127,16 @@ public class UpdatePlanActivity extends AppCompatActivity {
                         .load("POST", url.getServerUrl() + "/updateSche")
                         .progressDialog(progressDialog)
                         //요청 헤더 지정
-                        .setHeader("Content-Type","application/json")
+                        .setHeader("Content-Type", "application/json")
                         .setJsonObjectBody(json)
                         .asJsonObject()
                         .setCallback(new FutureCallback<JsonObject>() {
                             @Override
                             public void onCompleted(Exception e, JsonObject result) {
 
-                                if(e != null) {
+                                if (e != null) {
                                     Toast.makeText(getApplicationContext(), "Error during Server Connection", Toast.LENGTH_LONG).show();
-                                }
-
-                                else {
+                                } else {
                                     progressDialog.cancel();
                                     Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
                                     //setResult(RESULT_OK);
@@ -149,7 +147,7 @@ public class UpdatePlanActivity extends AppCompatActivity {
                             }
                         });
             }
-        });*/
+        });
 
         ImageButton backButton = findViewById(R.id.btn_back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +156,6 @@ public class UpdatePlanActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
     }
 
 
@@ -187,7 +184,7 @@ public class UpdatePlanActivity extends AppCompatActivity {
                             Date date1 = format1.parse("" + hourOfDay + ":" + minute);
                             startTime.setText(new SimpleDateFormat("hh:mm a").format(date1.getTime()));
                             strStartTime = new SimpleDateFormat("HH-mm-ss").format(date1.getTime());
-                            Log.i("시작 시간",strStartTime);
+                            Log.i("시작 시간", strStartTime);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -242,7 +239,7 @@ public class UpdatePlanActivity extends AppCompatActivity {
                         intFirstday = dayOfMonth;
                         strStartDate = dateFormatByUserCase(1, year, month, dayOfMonth);
 
-                        Log.i("시작 날짜",strStartDate);
+                        Log.i("시작 날짜", strStartDate);
 
 
                     }
