@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
     android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:background="#ffffff">
+    android:paddingLeft="16dp">
 
     <TextView
         android:id="@+id/planDetail_title_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:text="일정 제목"
         android:textColor="#444444"
-        android:text="일정 제목 :: "
-        />
+        android:textSize="20sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,21 +22,20 @@
         android:paddingTop="4dp">
 
         <ImageView
+            android:id="@+id/plandetail_header_profile_pic"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/face"
-            android:id="@+id/plandetail_header_profile_pic"/>
+            android:src="@drawable/face" />
 
         <TextView
+            android:id="@+id/plandetail_header_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#444444"
-            android:text="박보영"
-            android:paddingTop="2dp"
             android:paddingLeft="6dp"
-            android:id="@+id/plandetail_header_profile_name"
-            />
+            android:paddingTop="2dp"
+            android:text="박보영"
+            android:textColor="#444444"
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -50,18 +48,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:text="장소  | "
             android:textColor="#265570"
-            android:text="장소  | "/>
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/plandetail_header_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
-            android:textSize="14sp"
+            android:text="공학관"
             android:textColor="#a4a4a4"
-            android:text="공학관"/>
+            android:textSize="14sp" />
 
     </LinearLayout>
 
@@ -70,58 +68,53 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textSize="14sp"
-        android:textColor="#265570"
         android:text="일정 설명"
-        />
+        android:textColor="#265570"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/plandetail_header_aboutSchedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textSize="14sp"
-        android:textColor="#444444"
         android:text="DEFAULT"
-        />
+        android:textColor="#444444"
+        android:textSize="14sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
         android:layout_marginTop="15dp"
-        android:textColor="#265570"
         android:text="일정"
-        />
+        android:textColor="#265570"
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/plandetail_header_startToEndTime"
         android:layout_width="340dp"
         android:layout_height="40dp"
-        android:textSize="14sp"
-        android:textColor="#4a4a4a"
+        android:layout_gravity="center"
         android:background="#f8f8f8"
         android:paddingLeft="4dp"
         android:paddingTop="10dp"
-        android:layout_gravity="center"
         android:text="4월 5일 금요일 오전 10:00 ~ 4월 6일 토요일 오전 10:00"
-        />
+        android:textColor="#4a4a4a"
+        android:textSize="14sp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:textColor="#f6f6f6"
-        />
+        android:textColor="#f6f6f6" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
-        android:textSize="16sp"
+        android:textAllCaps="false"
         android:textColor="#4a4a4a"
-        tools:text="댓글"
+        android:textSize="16sp"
         android:textStyle="bold"
-        />
+        tools:text="댓글" />
 
 
 </LinearLayout>

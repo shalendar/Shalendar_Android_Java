@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -57,7 +58,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
     private Button buttonCompleteRegister;
     private TextView recommandedTime;
     private RegisterPlanActivityDialog dialog;
-
+    ImageButton backButton;
     //추가본 7.10
     boolean isPageOpen = false;
     ArrayList<RecommandTimeItem> itemList;
@@ -87,6 +88,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
     private String strEndTime;
     private String aboutSched;
     private String strLocation;
+
 
 
     //시작 날짜, 종료 날짜 비교
@@ -283,6 +285,15 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         });
             }
         });
+
+        ImageButton backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
     }
 
     public void Dialog() {
