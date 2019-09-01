@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -41,7 +42,7 @@ public class UpdatePlanActivity extends AppCompatActivity {
     private Button buttonToRecommandTime;
     private Button buttonCompleteRegister;
     private TextView recommandedTime;
-
+    ImageButton backButton;
 
 
     //서버로 보낼 data
@@ -149,6 +150,15 @@ public class UpdatePlanActivity extends AppCompatActivity {
                         });
             }
         });*/
+
+        ImageButton backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
     }
 
 

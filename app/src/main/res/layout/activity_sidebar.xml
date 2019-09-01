@@ -49,6 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="정구일"
+                android:textStyle="bold"
                 android:textColor="#4a4a4a"
                 android:textSize="18sp" />
 
