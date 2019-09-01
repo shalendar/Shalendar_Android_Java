@@ -170,6 +170,8 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                                 public void onClick(DialogInterface dialog, int which) {
                                     //여기 캘린더 수정화면으로 바꿔야함
                                     Intent intent = new Intent(context, CreateCalendarActivity.class);
+                                    //99999 캘린더 수정 코드
+                                    intent.putExtra("where", 99999);
                                     context.startActivity(intent);
                                     dialog.cancel();
                                 }
