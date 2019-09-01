@@ -110,6 +110,8 @@ public class SearchPlanActivity extends AppCompatActivity {
                                 }
                             });
                 }
+                keyword="";
+                searchText.setText("");
             }
         });
 
@@ -145,7 +147,7 @@ public class SearchPlanActivity extends AppCompatActivity {
 
                 if(title.contains(keyword))
                 {
-                    s_adapter.addItem(new SearchPlanItem(title));
+                    s_adapter.addItem(new SearchPlanItem(title, sid));
                     Log.i("파싱한 title", title);
                     Log.i("파싱한 sid", Integer.toString(sid));
                 }
