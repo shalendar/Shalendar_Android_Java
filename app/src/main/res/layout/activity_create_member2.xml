@@ -65,6 +65,7 @@
             android:layout_marginBottom="20dp"
             android:paddingLeft="10dp"
             android:text="개인정보 입력"
+            android:textStyle="bold"
             android:textSize="27sp" />
 
         <EditText

@@ -21,13 +21,13 @@
         app:srcCompat="@drawable/ic_add_date" />
 
     <TextView
-        android:id="@+id/Calendar"
+        android:id="@+id/Calenda"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="10dp"
         android:paddingTop="15dp"
-        android:text="해당 캘린더가 등록되었습니다."
+        android:text="해당 일정이 등록되었습니다."
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textColor="#000000"
         tools:layout_editor_absoluteX="233dp"

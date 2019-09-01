@@ -10,12 +10,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -55,7 +57,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
     private Button buttonToRecommandTime;
     private Button buttonCompleteRegister;
     private TextView recommandedTime;
-
+    private RegisterPlanActivityDialog dialog;
+    ImageButton backButton;
     //추가본 7.10
     boolean isPageOpen = false;
     ArrayList<RecommandTimeItem> itemList;
@@ -85,6 +88,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
     private String strEndTime;
     private String aboutSched;
     private String strLocation;
+
 
 
     //시작 날짜, 종료 날짜 비교
@@ -266,16 +270,52 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
                                 else {// 서버 연결 성공 시
                                     //프로그래스 dialog종료
-                                    progressDialog.cancel();
-                                    Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
-                                    setResult(RESULT_OK);
-                                    finish();
+                                    progressDialog.dismiss();
+                                    String message = result.get("message").getAsString();
+                                    //Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
+
+                                    if(message.equals("success"))
+                                        Dialog();
+                                    else
+                                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                  //  setResult(RESULT_OK);
+                                   // finish();
                                 }
                             }
                         });
             }
         });
+
+        ImageButton backButton = findViewById(R.id.btn_back);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
     }
+
+    public void Dialog() {
+        dialog = new RegisterPlanActivityDialog(RegisterPlanActivity.this, leftListener); // 왼쪽 버튼 이벤트
+        // 오른쪽 버튼 이벤트
+
+        //요청 이 다이어로그를 종료할 수 있게 지정함
+        dialog.setCancelable(true);
+        dialog.getWindow().setGravity(Gravity.CENTER);
+        dialog.show();
+    }
+
+    //다이얼로그 클릭이벤트
+    private View.OnClickListener leftListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            Toast.makeText(RegisterPlanActivity.this, "버튼을 클릭하였습니다.", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        }
+    };
+
+
+
 
     //7.10 추가부분
     private class SlidingPageAnimationListener implements Animation.AnimationListener {

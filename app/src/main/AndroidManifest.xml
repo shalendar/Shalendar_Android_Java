@@ -95,7 +95,8 @@
             android:name=".PlanDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".UpdatePlanActivity" />
+        <activity android:name=".UpdatePlanActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name=".DeletePlanActivity" />
 
@@ -107,7 +108,8 @@
             android:name=".SettingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".InviteActivity" />
+        <activity android:name=".InviteActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".SearchPlanActivity"
             android:label="@string/title_activity_search__plan"

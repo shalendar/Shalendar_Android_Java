@@ -45,7 +45,8 @@
                     android:layout_marginLeft="15dp"
                     android:text="달력이름"
                     android:textColor="#4a4a4a"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <View
                     android:layout_width="0dp"
@@ -171,7 +172,7 @@
 
         <FrameLayout
             android:id="@+id/view_sildebar"
-            android:layout_width="305dp"
+            android:layout_width="300dp"
             android:layout_height="match_parent" />
 
     </FrameLayout>

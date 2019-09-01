@@ -183,11 +183,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addSideView();
 
 
+
+
         if(cid == 0) {
             Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
+            textViewTitle.setText("달력이름");
         }
 
         else {
+            textViewTitle.setText(MainActivity.calName);
             //materialCalendar뷰 초기화
             initCalendarView();
             //서버로 부터 해당 달력의 일정을 가져온다.
@@ -216,11 +220,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         /*
           MainActivity에서 RegisterPlanActivity로 넘어간다.
         */
+
+
+
         buttonToRegisterPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), RegisterPlanActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_REGISTERPLAN_ACTIVITY);
+                if(cid == 0){
+                    Toast.makeText(getApplicationContext(),"달력을 먼저 선택하세요", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent intent = new Intent(getApplicationContext(), RegisterPlanActivity.class);
+                    startActivityForResult(intent, CodeNumber.TO_REGISTERPLAN_ACTIVITY);
+                }
             }
         });
 
@@ -543,6 +555,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void btnLevel3() {
                 Intent intent2 = new Intent(getApplicationContext(), CreateCalendarActivity.class);
+                //캘린더 생성 코드
+                intent2.putExtra("where",88888);
                 startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
@@ -804,6 +818,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressDialog.show();
 
         JsonObject json = new JsonObject();
+
 
         //////////////////////////////////////////////////////////////////////
         json.addProperty("cid", cid);

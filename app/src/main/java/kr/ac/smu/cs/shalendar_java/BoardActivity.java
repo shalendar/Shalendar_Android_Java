@@ -56,6 +56,7 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -79,6 +80,8 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
     private Button buttonToPlanDtail;
     private ScrollView scrollView;
     private BoarderAdapter b_adapter;
+    private Button buttonToHome;
+    private Button buttonToRegisterPlan;
 
     //서버 통신 위한 url 객체 생성  여기서는 /signin
     private NetWorkUrl url = new NetWorkUrl();
@@ -92,6 +95,8 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
     private String imageURL;
 
     private ImageView imageView;
+
+
 
     int sharePeopleNum;
 
@@ -110,6 +115,29 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
+
+        buttonToHome = (Button) findViewById(R.id.button_home);
+        buttonToRegisterPlan = (Button) findViewById(R.id.main_ToRegister_button);
+
+        buttonToRegisterPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { Intent intent = new Intent(getApplicationContext(), RegisterPlanActivity.class);
+                startActivityForResult(intent, CodeNumber.TO_REGISTERPLAN_ACTIVITY);
+            }
+        });
+
+
+        buttonToHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) { Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
+            }
+        });
+
+
+        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+        userToken = pref.getString("userToken", "NO_TOKEN");
+        Log.i("Board화면::넘겨받은 토큰", userToken);
 
         //JS
         init();
@@ -131,8 +159,8 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         final JsonObject json = new JsonObject();
 
-        Log.i("게시판 넘어온 cid", Integer.toString(MainActivity.cid));
         json.addProperty("cid", MainActivity.cid);
+        Log.i("게시판 넘어온 cid", Integer.toString(MainActivity.cid));
 
 //        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
 //        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -228,7 +256,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                     //plan의 일자
                                     planDate = startDate+" ~ "+endDate;
 
-                                    b_adapter.addItem(new BoardPlanItem(planDate, title, area, numOfCommentsstring));
+                                    b_adapter.addItem(new BoardPlanItem(planDate, title, area, numOfCommentsstring, sid));
 
                                 }
 
@@ -331,6 +359,9 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+
+
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -338,21 +369,71 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
             switch (requestCode) {
                 //사진등록
                 case PICK_IMAGE_REQUEST:
-                    Log.d("여기까지", "ㅇ3");
                     if (resultCode == RESULT_OK) {
-                        Log.d("여기까지", "ㅇ4");
                         imageURL = getPathFromURI(data.getData());
                         Log.d("사진 경로", imageURL);
-                        imageView.setImageURI(data.getData());
+                        imageView = findViewById(R.id.image_profile);
+                        //Request to Server.
+                        setUserProfileImage_Server(imageURL);
+
+                        SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("img_url", imageURL);
+                        editor.commit();
                     }
-
-                    //주소받아오기
-
             }
+
         }catch (Exception e) {
             Toast.makeText(this, "오류가 있습니다.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
+    }
+
+    public void setUserProfileImage_Server(final String imageUrl) {
+
+        Log.i("프로필 변경", userToken);
+        File file = new File(imageUrl);
+
+        final ProgressDialog progressDialog = new ProgressDialog(BoardActivity.this);
+        progressDialog.setMessage("프로필 사진 등록 중 입니다~");
+        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+        Ion.with(this)
+                .load("POST",url.getServerUrl() + "/imageChange")
+                //.setHeader("Content-Type", "application/json")
+                .setHeader("Authorization", userToken)
+                .progressDialog(progressDialog)
+                .setMultipartFile("file", file)
+                //응답
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+
+                        if(e != null) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                        else {
+                            String message = result.get("message").getAsString();
+
+                            if(message.equals("image change success")) {
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+
+                                Ion.with(imageView)
+                                        .centerCrop()
+                                        .resize(250, 250)
+                                        .load(imageUrl);
+
+                                progressDialog.dismiss();
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
     }
 
 
@@ -372,6 +453,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                     1052);
         }
     }
+
 
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -407,6 +489,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         }, 450);
     }
 
+
     public void showMenu() {
 
         isMenuShow = true;
@@ -417,6 +500,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         mainLayout.setEnabled(false);
     }
 
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -425,6 +509,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -435,6 +520,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         }
         return super.onKeyDown(keyCode, event);
     }
+
 
     @Override
     public void onBackPressed() {

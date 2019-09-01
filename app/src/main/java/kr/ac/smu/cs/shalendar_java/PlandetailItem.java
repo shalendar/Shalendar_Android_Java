@@ -6,11 +6,14 @@ public class PlandetailItem {
     String reply_name;
     String reply_content;
     String reply_date;
+    int commentNum;
 
-    public PlandetailItem(String reply_name, String reply_date, String reply_content) {
+
+    public PlandetailItem( String reply_name, String reply_content, String reply_date, int commentNum) {
         this.reply_name = reply_name;
         this.reply_content = reply_content;
         this.reply_date = reply_date;
+        this.commentNum = commentNum;
     }
 
     public PlandetailItem(String reply_picture, String reply_name, String reply_date, String reply_content) {
@@ -18,6 +21,14 @@ public class PlandetailItem {
         this.reply_name = reply_name;
         this.reply_content = reply_content;
         this.reply_date = reply_date;
+    }
+
+    public int getCommentNum() {
+        return commentNum;
+    }
+
+    public void setCommentNum(int commentNum) {
+        this.commentNum = commentNum;
     }
 
     public String getReply_picture() {

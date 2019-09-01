@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,7 +33,6 @@ import com.koushikdutta.ion.Ion;
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
-
 
 
 public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -78,8 +78,8 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             //보더헤더 이름과 설명 설정하는 부분
             boardHeaderImage = view.findViewById(R.id.boardHeaderImage);
-            boardHeadertitle=(TextView) view.findViewById(R.id.boardHeadertitle);
-            boardHeaderContent=(TextView) view.findViewById(R.id.boardHeaderContent);
+            boardHeadertitle = (TextView) view.findViewById(R.id.boardHeadertitle);
+            boardHeaderContent = (TextView) view.findViewById(R.id.boardHeaderContent);
 
             Ion.with(boardHeaderImage)
                     .centerCrop()
@@ -104,7 +104,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 String userName = jsonArr.get("userName").getAsString();
                 String userImgURL;
 
-                if(jsonArr.get("img_url").isJsonNull())
+                if (jsonArr.get("img_url").isJsonNull())
                     userImgURL = "DEFAULT :: profile_IMAGE";
                 else
                     userImgURL = jsonArr.get("img_url").getAsString();
@@ -177,6 +177,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    Global.setSid(boardList.get(getAdapterPosition() - 1).getSid());
                     Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname() + "이거 수정한다잉", Toast.LENGTH_SHORT).show();
 
                     AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
@@ -195,6 +196,43 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             .setNegativeButton("삭제", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+
+                                    //서버와 통신.
+                                    Ion.getDefault(itemView.getContext()).configure().setLogging("ion-sample", Log.DEBUG);
+                                    Ion.getDefault(itemView.getContext()).getConscryptMiddleware().enable(false);
+
+                                    JsonObject json = new JsonObject();
+
+                                    json.addProperty("sid", Global.getSid());
+                                    Log.d("ttt", "가져온 sid는 "+Global.getSid());
+                                    Ion.with(itemView.getContext())
+                                            .load("POST", url.getServerUrl() + "/deleteSche")
+                                            .setHeader("Content-Type", "application/json")
+                                            .setJsonObjectBody(json)
+                                            .asJsonObject()
+                                            .setCallback(new FutureCallback<JsonObject>() {
+                                                @Override
+                                                public void onCompleted(Exception e, JsonObject result) {
+
+                                                    if (e != null) {
+                                                        Toast.makeText(itemView.getContext(), "Server Connection Error!", Toast.LENGTH_LONG).show();
+                                                    } else {
+
+                                                        String message = result.get("message").getAsString();
+                                                        //서버로 부터 응답 메세지가 success이면...
+
+                                                        if (message.equals("success")) {
+                                                            //서버 응답 오면 로딩 창 해제
+                                                            Toast.makeText(itemView.getContext(), "일정 삭제 성공", Toast.LENGTH_LONG).show();
+
+                                                        } else {
+                                                            Toast.makeText(itemView.getContext(), "일정 삭제 실패", Toast.LENGTH_LONG).show();
+                                                        }
+
+                                                    }
+                                                }
+                                            });
+
                                     dialog.cancel();
                                 }
                             });
@@ -209,16 +247,20 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname(), Toast.LENGTH_SHORT).show();
 
+
+                    //sid오류
+                    Global.setSid(boardList.get(getAdapterPosition() - 1).getSid());
+                    Log.d("어댑터sid","sid는"+Global.getSid());
 
                     JsonObject json = new JsonObject();
 
-                    json.addProperty("sid", 11);
+                    json.addProperty("sid", Global.getSid());
 
                     final ProgressDialog progressDialog = new ProgressDialog(itemView.getContext());
                     progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                    progressDialog.setMessage("잠시만 기다려주세요. 해당 일정 등록 중 입니다~");
+                    progressDialog.setMessage("해당 댓글로 이동중~" + boardList.get(getAdapterPosition() - 1).getSid());
                     progressDialog.show();
 
 
@@ -262,8 +304,8 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                             //endTime = data.get("endTime").getAsString();
 
                                             //뒤에 0.000 잘라내기
-                                            startDate = startDate.substring(0,16);
-                                            endDate = endDate.substring(0,16);
+                                            startDate = startDate.substring(0, 16);
+                                            endDate = endDate.substring(0, 16);
                                             startToEnd = startDate + " ~ " + endDate;
 
                                             Intent intent = new Intent(context, PlanDetailActivity.class);

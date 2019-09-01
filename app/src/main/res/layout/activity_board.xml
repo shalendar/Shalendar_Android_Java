@@ -44,6 +44,7 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="15dp"
                     android:text="게시판"
+                    android:textStyle="bold"
                     android:textColor="#4a4a4a"
                     android:textSize="20sp" />
 
@@ -51,7 +52,6 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
-
 
 
             </LinearLayout>
@@ -73,10 +73,11 @@
                 <!--리사이클러뷰-->
 
                 <android.support.v7.widget.RecyclerView
+                    android:id="@+id/BoarderRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/BoarderRecyclerView"
-                    android:layout_above="@+id/downButtons">
+                    android:layout_above="@+id/downButtons"
+                    android:layout_marginBottom="-1dp">
 
                 </android.support.v7.widget.RecyclerView>
 
@@ -91,12 +92,14 @@
                     android:orientation="horizontal">
 
                     <Button
+                        android:id="@+id/button_home"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/tab_1_active" />
 
 
                     <Button
+                        android:id="@+id/main_ToRegister_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/tab_2" />
@@ -132,7 +135,7 @@
 
         <FrameLayout
             android:id="@+id/view_sildebar"
-            android:layout_width="280dp"
+            android:layout_width="300dp"
             android:layout_height="match_parent"
             android:background="#000000" />
 

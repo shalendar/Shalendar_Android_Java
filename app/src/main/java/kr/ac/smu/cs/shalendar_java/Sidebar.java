@@ -68,16 +68,20 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
     public interface EventListener {
         void btnCancel();
+
         void btnLevel1();
+
         void btnLevel2();
+
         void btnLevel3();
+
         void btnInvited();
+
         void image_profile();
     }
 
 
-    public Sidebar(Context context)
-    {
+    public Sidebar(Context context) {
         this(context, null);
         init();
     }
@@ -87,7 +91,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
     }
 
 
-    private void init(){
+    private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.activity_sidebar, this, true);
         findViewById(R.id.btn_cancel).setOnClickListener(this);
         findViewById(R.id.btn_info).setOnClickListener(this);
@@ -103,7 +107,6 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 //                getPictureFromGallery();
 //            }
 //        });
-
 
 
         //사용자 ID 프로필 set
@@ -124,14 +127,12 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
         Log.i("사용자 프로필 이미지??", userProfile_ImgURL);
 
-        if(!(userProfile_ImgURL.equals("DEFAULT :: profile_IMAGE"))) {
+        if (!(userProfile_ImgURL.equals("DEFAULT :: profile_IMAGE"))) {
             Ion.with(imageView)
                     .centerCrop()
                     .resize(250, 250)
                     .load(userProfile_ImgURL);
-        }
-
-        else {
+        } else {
             Toast.makeText(getContext(), "프로필 사진을 정해보세요~", Toast.LENGTH_SHORT).show();
             Ion.with(imageView)
                     .centerCrop()
@@ -140,14 +141,12 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         }
 
 
-
-
         //리사이클러
         calendarRecyclerList = new ArrayList<>();
 
         insertData();
 
-        RecyclerView sidebarRecyclerView = (RecyclerView)findViewById(R.id.sideBarRecyclerView);
+        RecyclerView sidebarRecyclerView = (RecyclerView) findViewById(R.id.sideBarRecyclerView);
         sidebarRecyclerView.setHasFixedSize(true);
         s_adapter = new SidebarAdapter(sidebarRecyclerView.getContext(), calendarRecyclerList);
         sidebarRecyclerView.setLayoutManager(new LinearLayoutManager(sidebarRecyclerView.getContext(), LinearLayout.VERTICAL, false));
@@ -161,7 +160,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
 
     //서버에서 응답받은 것 파싱해서 여기에서 추가하면 된다.
-    public void insertData(){
+    public void insertData() {
 
         //header로 보낼 token값 가져오기.
         SharedPreferences pref = getContext().getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
@@ -186,11 +185,9 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
 
-                        if(e != null) {
+                        if (e != null) {
                             Toast.makeText(getContext(), "Sever Connection Error", Toast.LENGTH_LONG).show();
-                        }
-
-                        else {
+                        } else {
                             String message = result.get("message").getAsString();
                             Toast.makeText(getContext(), "/readAllcal" + message, Toast.LENGTH_LONG).show();
                             parseDataFromServer(message, result);
@@ -201,7 +198,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
     //서버 응답 처리
     public void parseDataFromServer(String message, JsonObject result) {
-        if(message.equals("success")) {
+        if (message.equals("success")) {
             //달력정보를 JSONArray로 받는다.
             JsonArray data = result.get("data").getAsJsonArray();
 
@@ -210,7 +207,8 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
             Log.i("공유달력 개수 ", Integer.toString(data.size()));
 
-            for(int i = 0; i<data.size(); i++) { //공유달력 개수
+
+            for (int i = 0; i < data.size(); i++) { //공유달력 개수
                 JsonObject innerData = data.get(i).getAsJsonObject();
 
                 //int cid = innerData.get("cid").getAsInt();
@@ -239,12 +237,12 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
                 ArrayList<SidebarTeamItem> stItem = new ArrayList<>();
 
-                for(int j=0; j<innerData2.size(); j++){ //공유달력 내 사용자들 명수
+                for (int j = 0; j < innerData2.size(); j++) { //공유달력 내 사용자들 명수
 
                     Log.i("해당 달력에 있는 사용자이름", innerData2.get(j).getAsJsonObject().get("id").getAsString());
                     String imageURL;
 
-                    if(innerData2.get(j).getAsJsonObject().get("img_url").isJsonNull())
+                    if (innerData2.get(j).getAsJsonObject().get("img_url").isJsonNull())
                         imageURL = "DEFAULT :: profile_IMAGE";
                     else
                         imageURL = innerData2.get(j).getAsJsonObject().get("img_url").getAsString();
@@ -252,13 +250,10 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                     stItem.add(new SidebarTeamItem(imageURL));
                 }
 
-
                 sitem.setTeamImageList(stItem);
                 calendarRecyclerList.add(sitem);
             }
-        }
-
-        else {
+        } else {
             Toast.makeText(getContext(), "/readAllCal 공유하는 달력 없음", Toast.LENGTH_LONG).show();
         }
 
@@ -270,19 +265,19 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
             case R.id.btn_cancel:
                 listener.btnCancel();
                 break;
-            case R.id.btn_info :
+            case R.id.btn_info:
                 listener.btnLevel1();
                 break;
-            case R.id.btn_setting :
+            case R.id.btn_setting:
                 listener.btnLevel2();
                 break;
-            case R.id.btn_add_calender :
+            case R.id.btn_add_calender:
                 listener.btnLevel3();
                 break;
-            case R.id.btn_invite :
+            case R.id.btn_invite:
                 listener.btnInvited();
                 break;
-            case R.id.image_profile :
+            case R.id.image_profile:
                 listener.image_profile();
             default:
                 break;
