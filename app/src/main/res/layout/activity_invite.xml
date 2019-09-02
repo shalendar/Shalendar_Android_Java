@@ -84,18 +84,25 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/jisang"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="#265570"
-        tools:text="초대 가능한 사람" />
+        android:text="초대 가능한 사람" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/invite_email_RecycleView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp" />
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/invite_email_RecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/invite_email_button"
