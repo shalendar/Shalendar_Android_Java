@@ -1,16 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<LinearLayout android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".RegisterPlanActivity"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout
+        android:id="@+id/rl_001"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#FFFFFF">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:adjustViewBounds="false"
+                android:background="#FFFFFF"
+                android:src="@drawable/btn_back" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="15dp"
+                android:text="일정 수정"
+                android:textStyle="bold"
+                android:background="#FFFFFF"
+                android:textColor="#4a4a4a"
+                android:textSize="20sp" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -18,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            tools:context=".RegisterPlanActivity">
+           >
 
 
             <LinearLayout
@@ -184,7 +224,10 @@
                     android:id="@+id/update_getTime_Button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="추천시간받기" />
+                    android:layout_marginBottom="5dp"
+                    android:background="#ececec"
+                    android:text="추천시간받기"
+                    android:textColor="#a4a4a4" />
 
                 <TextView
                     android:id="@+id/update_getTime_TextView"
@@ -233,6 +276,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/round_button"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:text="작성 완료"
                     android:textColor="@color/buttonTextColor"
                     android:textStyle="bold" />
@@ -275,3 +319,5 @@
 
     </FrameLayout>
 </ScrollView>
+
+</LinearLayout>

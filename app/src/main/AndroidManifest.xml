@@ -95,7 +95,8 @@
             android:name=".PlanDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <activity android:name=".UpdatePlanActivity" />
+        <activity android:name=".UpdatePlanActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name=".DeletePlanActivity" />
 

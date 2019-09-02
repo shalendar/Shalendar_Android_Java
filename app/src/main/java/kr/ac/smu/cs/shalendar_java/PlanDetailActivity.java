@@ -51,7 +51,7 @@ public class PlanDetailActivity extends AppCompatActivity {
     //UserToken
     private String userToken;
 
-
+    private TextView textViewTitle;
     private Button buttonToUpdate;
     private Button buttonToDelete;
     private ImageButton replySend;
@@ -77,8 +77,11 @@ public class PlanDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan_detail);
 
+        textViewTitle = (TextView) findViewById(R.id.shareCalName);
         replySend = (ImageButton) findViewById(R.id.replysend_button);
         replyInput = (EditText) findViewById(R.id.replyInput);
+
+        textViewTitle.setText(MainActivity.calName);
 
         //리스트뷰
         final ListView plandetail_Listview = (ListView) findViewById(R.id.planDetail_listView);
@@ -384,16 +387,4 @@ public class PlanDetailActivity extends AppCompatActivity {
             }
         });
     }
-
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            onBackPressed();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
 }

@@ -47,7 +47,6 @@ public class CustomEventDecorator implements LineBackgroundSpan {
         canvas.drawCircle((left + right) / 2 - 20, bottom + radius, radius, paint);
         paint.setColor(oldColor);
         */
-        Log.d("들어있는 값", Integer.toString(pivotNum));
         switch(pivotNum) {
             case 1:
                 canvas.drawCircle((left + right) / 2, (bottom + top) / 2 + 30, radius, paint);
@@ -67,7 +66,5 @@ public class CustomEventDecorator implements LineBackgroundSpan {
             default:
                 break;
         }
-//        eventCount++;
-        Log.d("탈출 값", Integer.toString(pivotNum));
     }
 }
