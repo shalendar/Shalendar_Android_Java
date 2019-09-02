@@ -1,6 +1,7 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -58,7 +59,7 @@ public class MainPlanAdapter extends RecyclerView.Adapter<MainPlanAdapter.ItemRo
         protected TextView main_plantime;
         protected RecyclerView mainteam_recyclerView;
 
-        public ItemRowHolder(View itemView) {
+        public ItemRowHolder(final View itemView) {
             super(itemView);
 
             this.mainteam_recyclerView = (RecyclerView) itemView.findViewById(R.id.mainteam_recyclerView);
@@ -69,6 +70,8 @@ public class MainPlanAdapter extends RecyclerView.Adapter<MainPlanAdapter.ItemRo
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(v.getContext(), main_planname.getText(), Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(itemView.getContext(), PlanDetailActivity.class);
                 }
             });
 
