@@ -133,10 +133,15 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                     if (MainActivity.cid == 0) {
                         Toast.makeText(itemView.getContext(), "달력을 먼저 선택해주세요", Toast.LENGTH_SHORT).show();
                     } else {
-                        Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
-                        intent.putExtra("cid", calendar_ID);
-                        intent.putExtra("calName", calendarName);
-                        itemView.getContext().startActivity(intent);
+                        if (getAdapterPosition() == 0) {
+//                        calendarSidebarName.setText("개인 달력");
+                            Toast.makeText(itemView.getContext(), "해당 달력은 개인 달력 입니다.", Toast.LENGTH_LONG).show();
+                        } else {
+                            Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
+                            intent.putExtra("cid", calendar_ID);
+                            intent.putExtra("calName", calendarName);
+                            itemView.getContext().startActivity(intent);
+                        }
                     }
                 }
             });
@@ -161,7 +166,9 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             });
 
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            itemView.setOnLongClickListener(new View.OnLongClickListener()
+
+            {
                 @Override
                 public boolean onLongClick(View v) {
 
@@ -195,8 +202,8 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                     return false;
                 }
             });
-
         }
+
 
 //        public void setSenderName(String senderName) {
 //            this.senderName = senderName;
@@ -215,7 +222,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             this.calendarName = calName;
         }
 
-
         public void setItem(SidebarItem item) {
             calendarSidebarName.setText(item.getCalendarName());
             //setSenderName(item.getSenderName());
@@ -228,7 +234,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                     .placeholder(R.drawable.face)
                     .load(item.getCalendarImage());
         }
-
 
         public void deleteCalendar(int calendar_ID) {
 

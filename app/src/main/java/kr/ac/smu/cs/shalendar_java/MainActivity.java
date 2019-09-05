@@ -9,12 +9,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -36,37 +34,30 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.builder.AnimateGifMode;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import java.io.File;
-import java.math.RoundingMode;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
-
 import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //
-    ArrayList<MainPlanItem> mainRecyclerList;
+//    ArrayList<MainPlanItem> mainRecyclerList;
 
     private TextView textViewTitle;
     private TextView selectedDate;
@@ -81,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ImageView imageView;
 
+    //static
     public static int cid;
-
     public static String calName;
 
     //7-17
@@ -108,26 +99,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Boolean isExitFlag = false;
 
     //materialCalendar
-    String time, kcal, menu;
+    String time, kcal,menu;
     private final OneDayDecorator oneDayDecorator = new OneDayDecorator();
     MaterialCalendarView materialCalendarView;
     Cursor cursor;
 
-    //사용자 지정 날짜 가지는 자료구조.
-    HashMap<String, String> map = new HashMap<>();
 
     //통신
     NetWorkUrl url = new NetWorkUrl();
-
 
     //서버로 받은 것.
     ArrayList<ScheduleData> schedList = new ArrayList<>();
 
     //달력에 표시할 dot을 가지는 즉, 서버로 부터 응답받은 날짜들
+    //date에는 startDate와 endDate가 다를 경우, 사이의 date들도 가진다.
     ArrayList<CalendarDay> dates = new ArrayList<>();
 
     //dates ArrayList에서 시작 날짜 == 끝 날짜  시작 날짜 != 끝날짜 경계 index
     public int boundary_index;
+
+    //달력에 점 찍을 data들
+    private HashMap<CalendarDay, Integer> map = new HashMap<>();
+
+    //startDate와 endDate를 String에서 CalendarDay형으로 바꾼다.
+    //이외의 schedList의 각 data들은 동일. 즉 나머지는 그냥 복사.
+    private ArrayList<CalendarScheduleData> csdList = new ArrayList<>();
+
+
+    RecyclerView mainRecyclerView;
+
 
 
     @Override
@@ -140,15 +140,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         userToken = pref.getString("userToken", "NO_TOKEN");
         Log.i("Main화면::넘겨받은 토큰", userToken);
 
-
-        //showAllSche() 원래 위치
-        //showAllSche();
-
+        //갤러리 접근 허용 체크.
         checkPermissions();
 
         textViewTitle = (TextView) findViewById(R.id.calendarNameTextView);
         buttonToBoard = (Button) findViewById(R.id.main_toBoard_button);
-        selectedDate = (TextView) findViewById(R.id.TextView1);
+        selectedDate = (TextView)findViewById(R.id.TextView1);
         buttonToRegisterPlan = (Button) findViewById(R.id.main_ToRegister_button);
 
         //07-17
@@ -166,15 +163,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //리사이클러 부분
 
-        mainRecyclerList = new ArrayList<>();
+//        mainRecyclerList=new ArrayList<>();
 
-        //insertData();
 
-        RecyclerView mainRecyclerView = (RecyclerView) findViewById(R.id.mainRecyclerview);
-        mainRecyclerView.setHasFixedSize(true);
-        MainPlanAdapter m_adapter = new MainPlanAdapter(mainRecyclerList, this);
-        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
-        mainRecyclerView.setAdapter(m_adapter);
+        mainRecyclerView = (RecyclerView)findViewById(R.id.mainRecyclerview);
+//        mainRecyclerView.setHasFixedSize(true);
+//        MainPlanAdapter m_adapter = new MainPlanAdapter(mainRecyclerList,this);
+//        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
+//        mainRecyclerView.setAdapter(m_adapter);
 
         //JS
         init();
@@ -183,10 +179,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addSideView();
 
 
-        if (cid == 0) {
+        if(cid == 0) {
             Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
             textViewTitle.setText("달력이름");
-        } else {
+        }
+
+        else {
             textViewTitle.setText(MainActivity.calName);
             //materialCalendar뷰 초기화
             initCalendarView();
@@ -202,26 +200,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonToBoard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cid == 0) {
+                if(cid == 0) {
                     Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
-                } else {
+                }
+
+                else {
                     Intent intent = new Intent(getApplicationContext(), BoardActivity.class);
                     startActivityForResult(intent, CodeNumber.TO_BOARD_ACTIVITY);
                 }
             }
         });
 
+
+
         /*
           MainActivity에서 RegisterPlanActivity로 넘어간다.
         */
-
-
         buttonToRegisterPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (cid == 0) {
-                    Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요", Toast.LENGTH_LONG).show();
-                } else {
+                if(cid == 0){
+                    Toast.makeText(getApplicationContext(),"달력을 먼저 선택하세요", Toast.LENGTH_LONG).show();
+                }
+                else {
                     Intent intent = new Intent(getApplicationContext(), RegisterPlanActivity.class);
                     startActivityForResult(intent, CodeNumber.TO_REGISTERPLAN_ACTIVITY);
                 }
@@ -232,12 +233,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     public void initCalendarView() {
-        materialCalendarView = (MaterialCalendarView) findViewById(R.id.calendarView);
+        materialCalendarView = (MaterialCalendarView)findViewById(R.id.calendarView);
         materialCalendarView.setArrowColor(Color.parseColor("#ff6067"));
         materialCalendarView.state().edit()
                 .setFirstDayOfWeek(Calendar.SUNDAY)
-                .setMinimumDate(CalendarDay.from(2017, 0, 1))
-                .setMaximumDate(CalendarDay.from(2020, 11, 31))
+                .setMinimumDate(CalendarDay.from(2017,0,1))
+                .setMaximumDate(CalendarDay.from(2020,11,31))
                 .setCalendarDisplayMode(CalendarMode.MONTHS)
                 .commit();
 
@@ -248,11 +249,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+
     public void setCalendarView() {
 
-        for (int i = 0; i < schedList.size(); i++) {
-            if (schedList.get(i).startDate.equals(schedList.get(i).endDate)) {
-                //result.add(schedList.get(i).startDate);
+        for(int i = 0; i<schedList.size(); i++) {
+            if(schedList.get(i).startDate.equals(schedList.get(i).endDate)) {
                 try {
                     String sameDate = schedList.get(i).startDate;
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
@@ -260,7 +261,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     CalendarDay day = CalendarDay.from(start);
                     dates.add(day);
-                } catch (Exception e) {
+
+
+                    CalendarScheduleData csd = new CalendarScheduleData();
+                    csd.sche_title = schedList.get(i).sche_title;
+                    csd.cid = schedList.get(i).cid;
+                    csd.sid = schedList.get(i).sid;
+                    csd.sche_content = schedList.get(i).sche_content;
+                    csd.startDate = day;
+                    csd.startTime = schedList.get(i).startTime;
+                    csd.middleDate = day;
+                    csd.endDate = day;
+                    csd.endTime = schedList.get(i).endTime;
+                    csd.area = schedList.get(i).area;
+                    csd.numberofComment = schedList.get(i).numberofComment;
+
+                    csdList.add(csd);
+
+                }catch(Exception e) {
                     e.printStackTrace();
                 }
 
@@ -269,12 +287,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //startDate == Enddate와 startDate != EndDate 경계 index값
         boundary_index = dates.size();
-//        boundary_index = 4;
         Log.i("start와 end == 마지막index", Integer.toString(boundary_index));
 
-        for (int i = 0; i < schedList.size(); i++) {
+        for(int i = 0; i<schedList.size(); i++) {
 
-            if (!(schedList.get(i).startDate.equals(schedList.get(i).endDate))) {
+            if(!(schedList.get(i).startDate.equals(schedList.get(i).endDate))) {
 
                 try {
                     String s_date = schedList.get(i).startDate;
@@ -289,13 +306,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     while (currentDate.compareTo(end) <= 0) {
                         CalendarDay day = CalendarDay.from(currentDate);
                         dates.add(day);
+
+                        /////////////////////////////////////////////////
+                        CalendarScheduleData csd = new CalendarScheduleData();
+                        csd.sche_title = schedList.get(i).sche_title;
+                        csd.cid = schedList.get(i).cid;
+                        csd.sid = schedList.get(i).sid;
+                        csd.sche_content = schedList.get(i).sche_content;
+                        csd.startDate = CalendarDay.from(start);
+                        csd.startTime = schedList.get(i).startTime;
+                        csd.middleDate = day;
+                        csd.endDate = CalendarDay.from(end);
+                        csd.endTime = schedList.get(i).endTime;
+                        csd.area = schedList.get(i).area;
+                        csd.numberofComment = schedList.get(i).numberofComment;
+
+                        csdList.add(csd);
+                        //////////////////////////////////////////////////
+
                         Calendar c = Calendar.getInstance();
                         c.setTime(currentDate);
                         c.add(Calendar.DAY_OF_MONTH, 1);
                         currentDate = c.getTime();
                     }
 
-                } catch (Exception e) {
+                }catch(Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -304,12 +339,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Log.i("들어있는 date", dates.toString());
 
+        Log.i("csdList Size()", Integer.toString(csdList.size()));
+
+        for(int i = 0; i < csdList.size(); i++) {
+            Log.i("scheTitle", csdList.get(i).sche_title);
+            Log.i("startDate", csdList.get(i).startDate.toString());
+            Log.i("middleDate", csdList.get(i).middleDate.toString());
+            Log.i("endDate", csdList.get(i).endDate.toString());
+            Log.i("sid", Integer.toString(csdList.get(i).sid));
+            Log.i("cid", Integer.toString(csdList.get(i).cid));
+        }
+
+
         new ApiSimulator().executeOnExecutor(Executors.newSingleThreadExecutor());
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
         materialCalendarView.setOnDateChangedListener(new OnDateSelectedListener() {
 
             @Override
@@ -327,19 +372,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Date formatDate = date.getDate();
                 String selectionDate = format.format(formatDate);
 
+                Calendar c = Calendar.getInstance();
+                c.setTime(formatDate);
+                int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 
-                Log.i("shot_Day test", selectionDate + "");
+                String day = Global.getDayOfWeek(dayOfWeek);
+
+
+                Log.i("shot_Day test", selectionDate + "" + day);
 //                materialCalendarView.clearSelection();
 
 
-                insertData(selectionDate);
+                insertData(date);
 
 
                 ///////애니메이션 구현
                 if (isPageOpen) {
                     //calendarRelative.setClickable(false);
                     main_animation.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getApplicationContext(), "열림", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"열림",Toast.LENGTH_SHORT).show();
                     main_animation.startAnimation(translateDownAnim);
                     /*
                     calendarLayout.setOnClickListener(new View.OnClickListener() {
@@ -348,37 +399,122 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             main_animation.startAnimation(translateDownAnim);
                         }
                     });*/
-                } else {
+                }
+
+                else {
                     main_animation.setVisibility(View.VISIBLE);
                     main_animation.startAnimation(translateUpAnim);
                 }
 
-                Toast.makeText(getApplicationContext(), selectionDate, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), selectionDate , Toast.LENGTH_SHORT).show();
 
                 //TextView에 삽입
                 selectedDate.setText(selectionDate);
                 materialCalendarView.clearSelection();
+
             }
         });
     }
 
 
-    public void insertData(String selectionDate) {
+    public void insertData(CalendarDay date){
 
-        Log.i("insertDate()에서", selectionDate + "");
-        Log.i("LIST 길이", Integer.toString(schedList.size()));
-        for (int i = 0; i < schedList.size(); i++) {
+        ArrayList<MainPlanItem> mainRecyclerList = new ArrayList<>();
+        mainRecyclerView.setHasFixedSize(true);
+        MainPlanAdapter m_adapter = new MainPlanAdapter(mainRecyclerList,this);
+        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
+        mainRecyclerView.setAdapter(m_adapter);
+
+        Log.i("insertDate()csdListSize", Integer.toString(csdList.size()));
+
+        ArrayList<CalendarScheduleData> shotDayList = new ArrayList<>();
+        int animationItemCount = 0;
+        for(int i = 0; i<csdList.size(); i++) {
+            if(date.equals(csdList.get(i).middleDate)) {
+                CalendarScheduleData csd = new CalendarScheduleData();
+
+                csd.sche_title = csdList.get(i).sche_title;
+                csd.startDate = csdList.get(i).startDate;
+                csd.middleDate = csdList.get(i).middleDate;
+                csd.startTime = csdList.get(i).startTime;
+                csd.endDate = csdList.get(i).endDate;
+                csd.endTime = csdList.get(i).endTime;
+                csd.sid = csdList.get(i).sid;
+                shotDayList.add(csd);
+                animationItemCount++;
+            }
+        }
+
+        for(int i = 0; i<animationItemCount; i++) {
             MainPlanItem mitem = new MainPlanItem();
-            mitem.setMainPlanname(schedList.get(i).sche_title);
-            mitem.setMainPlantime(schedList.get(i).startDate + " >> " + schedList.get(i).endDate);
+
+            String startDate = calendarDayToStringFormat(shotDayList.get(i).startDate);
+            String endDate = calendarDayToStringFormat(shotDayList.get(i).endDate);
+
+            String d_day = getDday(shotDayList.get(i).middleDate, shotDayList.get(i).endDate);
+
+            mitem.setMainPlanname(shotDayList.get(i).sche_title);
+
+
+            if(startDate.equals(endDate)) {
+                mitem.setMainPlantime(startDate);
+                mitem.setMainPlanDday("");
+            }
+            else {
+                mitem.setMainPlantime(startDate + " ~ " + endDate);
+                mitem.setMainPlanDday(d_day);
+            }
+            mitem.setSid(shotDayList.get(i).sid);
 
             ArrayList<MainPlanTeamIteam> mtItem = new ArrayList<>();
-            for (int j = 0; j < 6; j++) {
+            for(int j=0; j<6; j++){
                 mtItem.add(new MainPlanTeamIteam(R.drawable.face));
             }
+
             mitem.setTeamPicList(mtItem);
             mainRecyclerList.add(mitem);
         }
+    }
+
+
+    //일정이 여러날에 걸친 경우
+    //D-day보여준다.
+    public String getDday(CalendarDay currentDay, CalendarDay endDay) {
+
+        int count = 0;
+
+        while(currentDay.isBefore(endDay)) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(currentDay.getDate());
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            currentDay = CalendarDay.from(c.getTime());
+            count++;
+        }
+
+        if(count == 0) {
+            return "D - day";
+        }
+
+        else
+            return "D - " + Integer.toString(count);
+    }
+
+
+
+    public String calendarDayToStringFormat(CalendarDay date) {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Date formatDate = date.getDate();
+        String parseDate = format.format(formatDate);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(formatDate);
+        int dayofWeek = c.get(Calendar.DAY_OF_WEEK);
+
+        String day = Global.getDayOfWeek(dayofWeek);
+        String resultDate = parseDate + day;
+
+        return resultDate;
     }
 
 
@@ -419,10 +555,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
 
+
             //dates ArrayList에 사용자 지정 날짜들이 들어있다. 2019-7-8형식.
             Log.d("들어있는 Date", dates.toString());
             return dates;
         }
+
 
 
         @Override
@@ -433,45 +571,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 return;
             }
 
-            ArrayList<CalendarDay> tempDateList = (ArrayList<CalendarDay>) calendarDays;
-            HashMap<CalendarDay, Integer> map = new HashMap<>();
+            ArrayList<CalendarDay> tempDateList = (ArrayList<CalendarDay>)calendarDays;
+//            HashMap<CalendarDay, Integer> map = new HashMap<>();
 
-            for (int i = 0; i < tempDateList.size(); i++) {
+            for(int i = 0; i<tempDateList.size(); i++) {
                 CalendarDay i_date = tempDateList.get(i);
                 int duplicate_count = 1;
 
-                for (int j = i + 1; j < tempDateList.size(); j++) {
+                for(int j = i + 1; j < tempDateList.size(); j++) {
                     CalendarDay j_date = tempDateList.get(j);
-                    if (i_date.equals(j_date))
+                    if(i_date.equals(j_date))
                         duplicate_count++;
                 }
 
-                if (!map.containsKey(i_date))
+                if(!map.containsKey(i_date))
                     map.put(i_date, duplicate_count);
 
                 Log.i(i_date.toString(), " :: " + Integer.toString(duplicate_count));
             }
 
 
+
             EventDecorator event, event2, event3;
 
-            for (CalendarDay key : map.keySet()) {
-                Log.i("MAP", "key : " + key.toString() + "Value : " + map.get(key));
+            for(CalendarDay key: map.keySet()) {
+                Log.i("MAP","key : " + key.toString() + "Value : " + map.get(key));
 
                 ArrayList<CalendarDay> dateList = new ArrayList<>();
                 int duplicateDateCount = map.get(key);
 
-                if (duplicateDateCount == 1) {
+                if(duplicateDateCount == 1) {
                     dateList.add(key);
                     event = new EventDecorator(1, Color.parseColor("#ff6067"), dateList, MainActivity.this);
                     materialCalendarView.addDecorator(event);
-                } else if (duplicateDateCount == 2) {
+                }
+
+                else if(duplicateDateCount == 2) {
                     dateList.add(key);
                     event = new EventDecorator(1, Color.parseColor("#ff6067"), dateList, MainActivity.this);
                     event2 = new EventDecorator(2, Color.parseColor("#f8c930"), dateList, MainActivity.this);
                     materialCalendarView.addDecorator(event);
                     materialCalendarView.addDecorator(event2);
-                } else if (duplicateDateCount >= 3) {
+                }
+
+                else if(duplicateDateCount >= 3) {
                     dateList.add(key);
                     event = new EventDecorator(1, Color.parseColor("#ff6067"), dateList, MainActivity.this);
                     event2 = new EventDecorator(2, Color.parseColor("#f8c930"), dateList, MainActivity.this);
@@ -479,7 +622,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     materialCalendarView.addDecorator(event);
                     materialCalendarView.addDecorator(event2);
                     materialCalendarView.addDecorator(event3);
-                } else {
+                }
+
+                else {
                     Toast.makeText(getApplicationContext(), "No Event", Toast.LENGTH_LONG).show();
                 }
             }
@@ -533,7 +678,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void btnLevel3() {
                 Intent intent2 = new Intent(getApplicationContext(), CreateCalendarActivity.class);
                 //캘린더 생성 코드
-                intent2.putExtra("where", 88888);
+                intent2.putExtra("where",88888);
                 startActivityForResult(intent2, CodeNumber.TO_CREATE_CALENDAR_ACTIVITY);
             }
 
@@ -544,7 +689,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void image_profile() {
+            public void image_profile(){
                 getPictureFromGallery();
             }
 
@@ -566,7 +711,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      폰에서 사진을 지정하면 해당 사진 주소를 가져온다.
      */
     private String getPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
+        String[] proj = { MediaStore.Images.Media.DATA };
         Log.d("여기까지", "ㅇ5");
         CursorLoader loader = new CursorLoader(getApplicationContext(), contentUri, proj, null, null, null);
         Cursor cursor = loader.loadInBackground();
@@ -599,7 +744,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
             }
 
-        } catch (Exception e) {
+        }catch (Exception e) {
             Toast.makeText(this, "오류가 있습니다.", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
@@ -622,7 +767,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         progressDialog.show();
 
         Ion.with(this)
-                .load("POST", url.getServerUrl() + "/imageChange")
+                .load("POST",url.getServerUrl() + "/imageChange")
                 //.setHeader("Content-Type", "application/json")
                 .setHeader("Authorization", userToken)
                 .progressDialog(progressDialog)
@@ -633,12 +778,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onCompleted(Exception e, JsonObject result) {
 
-                        if (e != null) {
+                        if(e != null) {
                             Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                        } else {
+                        }
+
+                        else {
                             String message = result.get("message").getAsString();
 
-                            if (message.equals("image change success")) {
+                            if(message.equals("image change success")) {
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 
                                 Ion.with(imageView)
@@ -647,7 +794,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                         .load(imageUrl);
 
                                 progressDialog.dismiss();
-                            } else {
+                            }
+                            else {
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                             }
                         }
@@ -659,7 +807,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED ||
+                != PackageManager.PERMISSION_GRANTED||
                 ContextCompat.checkSelfPermission(this,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -716,13 +864,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mainLayout.setEnabled(false);
     }
 
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_menu:
                 showMenu();
                 break;
-            case R.id.btn_search:
+            case R.id.btn_search :
                 Intent intent2 = new Intent(getApplicationContext(), SearchPlanActivity.class);
                 startActivity(intent2);
                 break;
@@ -779,6 +928,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
 //    }
 
+
     public void showAllSche() {
 
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
@@ -807,13 +957,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onCompleted(Exception e, JsonObject result) {
 
 
-                        if (e != null) {
+                        if( e!= null) {
                             Toast.makeText(getApplicationContext(), "Server Connection Error", Toast.LENGTH_LONG).show();
-                        } else {
+                        }
+
+                        else {
                             progressDialog.dismiss();
 
                             String message = result.get("message").getAsString();
-                            if (message.equals("success")) {
+                            if(message.equals("success")) {
                                 JsonArray data = result.get("data").getAsJsonArray();
                                 //scheduleData = new ScheduleData[data.size()];
                                 //schedList = new ArrayList<>();
@@ -821,7 +973,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Log.i("들어있는 일정 개수", Integer.toString(data.size()));
 
                                 String[] dateTime;
-                                for (int i = 0; i < data.size(); i++) {
+                                for(int i = 0; i< data.size(); i++) {
                                     JsonObject sched_data = data.get(i).getAsJsonObject();
 
                                     ScheduleData scheduleData = new ScheduleData();
@@ -846,18 +998,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                     schedList.add(scheduleData);
 
-//                                    Log.i("title", sche_title);
-//                                    Log.i("cid", Integer.toString(cid));
-//                                    Log.i("sid", Integer.toString(sid));
-//                                    Log.i("sche_content", sche_content);
-//                                    Log.i("startDate", startDate);
-//                                    Log.i("endDate", endDate);
-//                                    Log.i("area", area);
-//                                    Log.i("# of comments", Integer.toString(numberofComment));
-
                                 }
 
-                            } else {
+                            }
+
+                            else {
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
                             }
                         }
@@ -868,7 +1013,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         String[] parseData = date.split(" ");
                         String[] result = new String[parseData.length];
 
-                        for (int i = 0; i < parseData.length; i++) {
+                        for(int i = 0; i<parseData.length; i++) {
                             Log.i("들어있는 값", parseData[i]);
                         }
                         result[0] = parseData[0].trim();
@@ -880,11 +1025,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             ion.get();
-        } catch (Exception e) {
+        }catch(Exception e) {
             e.printStackTrace();
         }
     }
 }
-
-
-

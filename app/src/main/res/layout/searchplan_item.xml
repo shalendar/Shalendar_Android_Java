@@ -6,12 +6,11 @@
     android:layout_margin="30dp">
 
     <TextView
-        android:layout_marginLeft="20dp"
         android:id="@+id/searchPlanitem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:text="검색된 일정"
-        android:textSize="30sp"
-        />
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
 </LinearLayout>
