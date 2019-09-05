@@ -189,7 +189,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                             Toast.makeText(getContext(), "Sever Connection Error", Toast.LENGTH_LONG).show();
                         } else {
                             String message = result.get("message").getAsString();
-                            Toast.makeText(getContext(), "/readAllcal" + message, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "/readAllcal::" + message, Toast.LENGTH_LONG).show();
                             parseDataFromServer(message, result);
                         }
                     }
@@ -254,9 +254,8 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                 calendarRecyclerList.add(sitem);
             }
         } else {
-            Toast.makeText(getContext(), "/readAllCal 공유하는 달력 없음", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "/readAllCal 현재 달력 없음", Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override

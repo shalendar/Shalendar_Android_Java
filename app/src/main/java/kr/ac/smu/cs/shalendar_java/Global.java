@@ -43,4 +43,30 @@ public class Global {
     public static void setSid(int sid) {
         Global.sid = sid;
     }
+
+    public static String getDayOfWeek(int DAY_OF_WEEK) {
+
+        String dayOfWeek = null;
+
+        switch (DAY_OF_WEEK) {
+            case 1: dayOfWeek = "(일)";
+                break;
+            case 2: dayOfWeek = "(월)";
+                break;
+            case 3: dayOfWeek = "(화)";
+                break;
+            case 4: dayOfWeek = "(수)";
+                break;
+            case 5: dayOfWeek = "(목)";
+                break;
+            case 6: dayOfWeek = "(금)";
+                break;
+            case 7: dayOfWeek = "(토)";
+                break;
+            default:
+        }
+
+        return dayOfWeek;
+    }
+
 }
