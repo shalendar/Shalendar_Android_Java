@@ -33,7 +33,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
     private ArrayList<SidebarItem> calendarList;
 
 
-
     public SidebarAdapter(Context mContext, ArrayList<SidebarItem> calendarList) {
         this.mContext = mContext;
         this.calendarList = calendarList;
@@ -131,10 +130,14 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
-                    intent.putExtra("cid", calendar_ID);
-                    intent.putExtra("calName", calendarName);
-                    itemView.getContext().startActivity(intent);
+                    if (MainActivity.cid == 0) {
+                        Toast.makeText(itemView.getContext(), "달력을 먼저 선택해주세요", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
+                        intent.putExtra("cid", calendar_ID);
+                        intent.putExtra("calName", calendarName);
+                        itemView.getContext().startActivity(intent);
+                    }
                 }
             });
 
@@ -221,9 +224,9 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             //setSenderImg(item.getSenderImg());
 
             Ion.with(calendarSidebarImage)
-                .centerCrop()
-                .placeholder(R.drawable.face)
-                .load(item.getCalendarImage());
+                    .centerCrop()
+                    .placeholder(R.drawable.face)
+                    .load(item.getCalendarImage());
         }
 
 
@@ -253,19 +256,15 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                         @Override
                         public void onCompleted(Exception e, JsonObject result) {
 
-                            if(e != null) {
+                            if (e != null) {
                                 Log.i("/DeleteCal", e.getMessage());
                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-
-                            else {
+                            } else {
                                 String message = result.get("message").getAsString();
                                 progressDialog.dismiss();
-                                if(message.equals("success")) {
+                                if (message.equals("success")) {
                                     Toast.makeText(context, "삭제 " + message, Toast.LENGTH_LONG).show();
-                                }
-
-                                else {
+                                } else {
                                     Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                                 }
                             }

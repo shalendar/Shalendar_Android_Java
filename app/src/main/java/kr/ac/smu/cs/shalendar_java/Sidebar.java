@@ -215,7 +215,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                 cid_Array[i] = innerData.get("cid").getAsInt();
 
                 //해당 달력 내 사용자들 정보를 JSONArray로 받는다.
-                JsonArray data2 = result.get("data2").getAsJsonArray();
+                JsonArray data2 = result.get("data2").getAsJsonArray();;
                 JsonArray innerData2 = data2.get(i).getAsJsonArray();
 
                 Log.i("전달 받은 cid", Integer.toString(cid_Array[i]));
