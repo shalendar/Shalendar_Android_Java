@@ -33,7 +33,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
     private ArrayList<SidebarItem> calendarList;
 
 
-
     public SidebarAdapter(Context mContext, ArrayList<SidebarItem> calendarList) {
         this.mContext = mContext;
         this.calendarList = calendarList;
@@ -131,10 +130,17 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
-                    intent.putExtra("cid", calendar_ID);
-                    intent.putExtra("calName", calendarName);
-                    itemView.getContext().startActivity(intent);
+                    if(getAdapterPosition() == 0) {
+//                        calendarSidebarName.setText("개인 달력");
+                        Toast.makeText(itemView.getContext(), "해당 달력은 개인 달력 입니다.", Toast.LENGTH_LONG).show();
+                    }
+
+                    else {
+                        Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
+                        intent.putExtra("cid", calendar_ID);
+                        intent.putExtra("calName", calendarName);
+                        itemView.getContext().startActivity(intent);
+                    }
                 }
             });
 

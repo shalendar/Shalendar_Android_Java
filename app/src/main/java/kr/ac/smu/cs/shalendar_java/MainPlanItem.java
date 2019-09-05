@@ -8,6 +8,9 @@ public class MainPlanItem {
 
     String mainPlanname;
     String mainPlantime;
+    String mainPlanDday;
+    int sid;
+
     private ArrayList<MainPlanTeamIteam> teamPicList;
 
     public MainPlanItem() {
@@ -33,6 +36,22 @@ public class MainPlanItem {
 
     public void setMainPlantime(String mainPlantime) {
         this.mainPlantime = mainPlantime;
+    }
+
+    public String getMainPlanDday() {
+        return this.mainPlanDday;
+    }
+
+    public void setMainPlanDday(String mainPlanDday) {
+        this.mainPlanDday = mainPlanDday;
+    }
+
+    public int getSid() {
+        return this.sid;
+    }
+
+    public void setSid(int sid) {
+        this.sid = sid;
     }
 
     public ArrayList<MainPlanTeamIteam> getTeamPicList() {
