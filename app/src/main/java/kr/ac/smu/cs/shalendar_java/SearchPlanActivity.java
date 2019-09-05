@@ -135,6 +135,10 @@ public class SearchPlanActivity extends AppCompatActivity {
      */
     public void parseResponse(String message, JsonObject result) {
 
+        //파싱전 먼저들어온 item지우기
+        //adapter.items.clear();
+
+
         if(message.equals("success")) {
 
             JsonArray data = result.get("data").getAsJsonArray();

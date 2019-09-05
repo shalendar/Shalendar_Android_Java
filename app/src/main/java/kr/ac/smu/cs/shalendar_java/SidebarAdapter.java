@@ -130,16 +130,18 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
                 @Override
                 public void onClick(View v) {
-                    if(getAdapterPosition() == 0) {
+                    if (MainActivity.cid == 0) {
+                        Toast.makeText(itemView.getContext(), "달력을 먼저 선택해주세요", Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (getAdapterPosition() == 0) {
 //                        calendarSidebarName.setText("개인 달력");
-                        Toast.makeText(itemView.getContext(), "해당 달력은 개인 달력 입니다.", Toast.LENGTH_LONG).show();
-                    }
-
-                    else {
-                        Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
-                        intent.putExtra("cid", calendar_ID);
-                        intent.putExtra("calName", calendarName);
-                        itemView.getContext().startActivity(intent);
+                            Toast.makeText(itemView.getContext(), "해당 달력은 개인 달력 입니다.", Toast.LENGTH_LONG).show();
+                        } else {
+                            Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
+                            intent.putExtra("cid", calendar_ID);
+                            intent.putExtra("calName", calendarName);
+                            itemView.getContext().startActivity(intent);
+                        }
                     }
                 }
             });
@@ -164,7 +166,9 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             });
 
 
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            itemView.setOnLongClickListener(new View.OnLongClickListener()
+
+            {
                 @Override
                 public boolean onLongClick(View v) {
 
@@ -198,8 +202,8 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                     return false;
                 }
             });
-
         }
+
 
 //        public void setSenderName(String senderName) {
 //            this.senderName = senderName;
@@ -218,7 +222,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             this.calendarName = calName;
         }
 
-
         public void setItem(SidebarItem item) {
             calendarSidebarName.setText(item.getCalendarName());
             //setSenderName(item.getSenderName());
@@ -227,11 +230,10 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             //setSenderImg(item.getSenderImg());
 
             Ion.with(calendarSidebarImage)
-                .centerCrop()
-                .placeholder(R.drawable.face)
-                .load(item.getCalendarImage());
+                    .centerCrop()
+                    .placeholder(R.drawable.face)
+                    .load(item.getCalendarImage());
         }
-
 
         public void deleteCalendar(int calendar_ID) {
 
@@ -259,19 +261,15 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                         @Override
                         public void onCompleted(Exception e, JsonObject result) {
 
-                            if(e != null) {
+                            if (e != null) {
                                 Log.i("/DeleteCal", e.getMessage());
                                 Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-
-                            else {
+                            } else {
                                 String message = result.get("message").getAsString();
                                 progressDialog.dismiss();
-                                if(message.equals("success")) {
+                                if (message.equals("success")) {
                                     Toast.makeText(context, "삭제 " + message, Toast.LENGTH_LONG).show();
-                                }
-
-                                else {
+                                } else {
                                     Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                                 }
                             }

@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        mainRecyclerList=new ArrayList<>();
 
 
-          mainRecyclerView = (RecyclerView)findViewById(R.id.mainRecyclerview);
+        mainRecyclerView = (RecyclerView)findViewById(R.id.mainRecyclerview);
 //        mainRecyclerView.setHasFixedSize(true);
 //        MainPlanAdapter m_adapter = new MainPlanAdapter(mainRecyclerList,this);
 //        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
