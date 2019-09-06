@@ -12,7 +12,7 @@ import android.widget.Button;
 public class RegisterPlanActivityDialog extends Dialog {
 
     private Button gotomain;
-
+    RegisterPlanActivity Aactivity = (RegisterPlanActivity)RegisterPlanActivity.RegisterplanclearActivity;
 
     public RegisterPlanActivityDialog(Context context, View.OnClickListener singleListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -39,6 +39,7 @@ public class RegisterPlanActivityDialog extends Dialog {
             public void onClick(View v) {
                 Intent intent2 = new Intent(getContext(), MainActivity.class);
                 getContext().startActivity(intent2);
+                Aactivity.finish();
             }
         });
     }

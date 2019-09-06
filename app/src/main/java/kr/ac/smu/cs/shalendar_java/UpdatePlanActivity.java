@@ -138,11 +138,12 @@ public class UpdatePlanActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Error during Server Connection", Toast.LENGTH_LONG).show();
                                 } else {
                                     progressDialog.cancel();
-                                    Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
                                     //setResult(RESULT_OK);
                                     //finish();
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
+                                    finish();
                                 }
                             }
                         });

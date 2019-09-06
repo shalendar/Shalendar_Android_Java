@@ -12,7 +12,7 @@
     <RelativeLayout
         android:id="@+id/id_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <!-->툴바부분<-->
 
@@ -66,9 +66,9 @@
             <!-->내용 들어갈곳<-->
 
             <RelativeLayout
+                android:id="@+id/where"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
 
                 <!--리사이클러뷰-->
 
