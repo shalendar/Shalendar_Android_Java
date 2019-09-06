@@ -89,6 +89,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
     private String aboutSched;
     private String strLocation;
 
+    RecyclerView recyclerView;
+
 
 
     //시작 날짜, 종료 날짜 비교
@@ -114,20 +116,20 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
         sndbutton = findViewById(R.id.sendButton);
 
-        RecyclerView recyclerView = findViewById(R.id.recotime_Recycler);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView = findViewById(R.id.recotime_Recycler);
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(layoutManager);
+//
+//        t_adapter = new RecommandTimeAdapter(this, itemList);
 
-        t_adapter = new RecommandTimeAdapter(this, itemList);
+//        t_adapter.addItem(new RecommandTimeItem("1", "14:00-15:00"));
+//        t_adapter.addItem(new RecommandTimeItem("2", "15:00-16:00"));
+//        t_adapter.addItem(new RecommandTimeItem("3", "16:00-17:00"));
+//        t_adapter.addItem(new RecommandTimeItem("4", "17:00-18:00"));
 
-        t_adapter.addItem(new RecommandTimeItem("1", "14:00-15:00"));
-        t_adapter.addItem(new RecommandTimeItem("2", "15:00-16:00"));
-        t_adapter.addItem(new RecommandTimeItem("3", "16:00-17:00"));
-        t_adapter.addItem(new RecommandTimeItem("4", "17:00-18:00"));
+//        recyclerView.setAdapter(t_adapter);
 
-        recyclerView.setAdapter(t_adapter);
-
-        t_adapter.notifyDataSetChanged();
+//        t_adapter.notifyDataSetChanged();
 
         //애니메이션
         translateUpAnim = AnimationUtils.loadAnimation(this, R.anim.translate_up);
@@ -136,6 +138,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
         SlidingPageAnimationListener animListener = new SlidingPageAnimationListener();
         translateUpAnim.setAnimationListener(animListener);
         translateDownAnim.setAnimationListener(animListener);
+
 
         //전송버튼 눌릴때
         sndbutton.setOnClickListener(new View.OnClickListener() {
@@ -153,19 +156,26 @@ public class RegisterPlanActivity extends AppCompatActivity {
             }
         });
 
-        //추천시간 눌릴때
-        reccomandtime_button = findViewById(R.id.register_getTime_Button);
-        reccomandtime_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isPageOpen) {
-                    page.startAnimation(translateDownAnim);
-                } else {
-                    page.setVisibility(View.VISIBLE);
-                    page.startAnimation(translateUpAnim);
-                }
-            }
-        });
+//        //추천시간 눌릴때
+//        reccomandtime_button = findViewById(R.id.register_getTime_Button);
+//        reccomandtime_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                ////////////////////////////////////////////////
+//                //추천시간 서버 통신
+//                ////////////////////////////////////////////////
+//
+//                getRecommandTimeFromServer();
+//
+//                if (isPageOpen) {
+//                    page.startAnimation(translateDownAnim);
+//                } else {
+//                    page.setVisibility(View.VISIBLE);
+//                    page.startAnimation(translateUpAnim);
+//                }
+//            }
+//        });
 
         //
         planTitle = findViewById(R.id.register_title_EditText);
@@ -201,12 +211,45 @@ public class RegisterPlanActivity extends AppCompatActivity {
         });
         */
 
+        //추천시간 눌릴때
+        reccomandtime_button = findViewById(R.id.register_getTime_Button);
+        reccomandtime_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        /*
-         통신 새로운 방법 시도(통신 class만 따로 뺌)
-         */
+                ////////////////////////////////////////////////
+                //추천시간 서버 통신
+                ////////////////////////////////////////////////
+                Log.i("추천시간 버튼에서", strStartDate);
+//                Log.i("추천시간 버튼에서", strStartTime);
+                Log.i("추천시간 버튼에서", strEndDate);
+//                Log.i("추천시간 버튼에서", strEndTime);
 
-        //IonManager ionManager = new IonManager(this);
+                if(strStartTime != null && strStartDate != null && strEndDate != null && strStartDate.equals(strEndDate)) {
+                    getRecommandTimeFromServer();
+
+                    if (isPageOpen) {
+                        page.startAnimation(translateDownAnim);
+                    } else {
+                        page.setVisibility(View.VISIBLE);
+                        page.startAnimation(translateUpAnim);
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "추천시간을 받을 수 있는 조건이 아닙니다.", Toast.LENGTH_LONG).show();
+                }
+
+
+//                if (isPageOpen) {
+//                    page.startAnimation(translateDownAnim);
+//                } else {
+//                    page.setVisibility(View.VISIBLE);
+//                    page.startAnimation(translateUpAnim);
+//                }
+            }
+        });
+
+
 
         //Ion방식의 통신 준비
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
@@ -294,6 +337,61 @@ public class RegisterPlanActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void getRecommandTimeFromServer() {
+
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(this).getConscryptMiddleware().enable(false);
+
+        String startDate = strStartDate + " " + strStartTime;
+        Log.i("추천시간()", startDate);
+        Log.i("추천시간()cid", Integer.toString(MainActivity.cid));
+        JsonObject json = new JsonObject();
+        json.addProperty("cid",MainActivity.cid);
+        json.addProperty("startDate", startDate);
+
+        Ion.with(getApplicationContext())
+                .load("POST", url.getServerUrl() + "/recommendSche")
+                .setHeader("Content-Type","application/json")
+                .setJsonObjectBody(json)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+
+                        if(e != null) {
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        } else {
+                            parseDataFromServer(result);
+                        }
+                    }
+                });
+
+        //startDate와 endDat
+    }
+
+
+    public void parseDataFromServer(JsonObject result) {
+        String message = result.get("message").getAsString();
+
+        if(message.equals("success")) {
+            JsonArray data = result.get("data").getAsJsonArray();
+
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(layoutManager);
+
+            t_adapter = new RecommandTimeAdapter(this, itemList);
+            for(int i = 0; i<data.size(); i++) {
+                t_adapter.addItem(new RecommandTimeItem(Integer.toString(i+1), data.get(i).getAsString()));
+            }
+            recyclerView.setAdapter(t_adapter);
+            t_adapter.notifyDataSetChanged();
+
+        }
+        else {
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        }
     }
 
     public void Dialog() {
