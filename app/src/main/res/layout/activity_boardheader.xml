@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <ImageView
@@ -11,9 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:maxHeight="150dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/tempboardpic" />
+        android:src="@mipmap/ic_launcher" />
 
     <!--달력 이름 게시판 설명 -->
     <LinearLayout
@@ -43,7 +43,7 @@
             android:layout_margin="5dp"
             android:background="#f8f8f8"
             android:padding="10dp"
-            android:text="프로젝트에 대한 간단한 설명이 나옵니다 간단하게 적어주면 될 듯프로젝트에 대한 간단한 설명이 나옵니다 간단하게 적어주면 될 듯"
+            android:text="게시판에 대한 설명이 없습니다."
             android:textColor="#444444"
             android:textSize="14sp" />
 
@@ -66,27 +66,32 @@
 
         //공유멤버사진 및 오른쪽 공유버튼
 
+        <!--
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/header_recycler"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
             //공유버튼
 
         </LinearLayout>
+        -->
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/header_recycler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
+
 
     <View
         android:id="@+id/view8"
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:background="#f6f6f6"/>
+        android:background="#f6f6f6" />
 
     <TextView
         android:layout_width="wrap_content"

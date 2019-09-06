@@ -1,6 +1,7 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -39,6 +40,8 @@ import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 */
 public class CreateCalendarActivity extends AppCompatActivity {
 
+    public static Activity CreateCalendarclearActivity;
+
     private EditText calendarName;
     private EditText aboutCalendar;
     private Button registerCal;
@@ -62,6 +65,10 @@ public class CreateCalendarActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        //삭제를위해
+        CreateCalendarclearActivity=CreateCalendarActivity.this;
 
         Intent intent = getIntent();
         int code = intent.getExtras().getInt("where");

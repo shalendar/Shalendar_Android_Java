@@ -54,7 +54,6 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
         return (null != teamPicList ? teamPicList.size() : 0);
     }
 
-
     public class TeamItemHolder extends RecyclerView.ViewHolder {
 
         protected ImageView sideteamMatePic;

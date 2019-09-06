@@ -1,6 +1,7 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -58,6 +59,8 @@ import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 //    ArrayList<MainPlanItem> mainRecyclerList;
+
+
 
     private TextView textViewTitle;
     private TextView selectedDate;
@@ -136,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         userToken = pref.getString("userToken", "NO_TOKEN");
         Log.i("Main화면::넘겨받은 토큰", userToken);
@@ -166,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        mainRecyclerList=new ArrayList<>();
 
 
-          mainRecyclerView = (RecyclerView)findViewById(R.id.mainRecyclerview);
+        mainRecyclerView = (RecyclerView)findViewById(R.id.mainRecyclerview);
 //        mainRecyclerView.setHasFixedSize(true);
 //        MainPlanAdapter m_adapter = new MainPlanAdapter(mainRecyclerList,this);
 //        mainRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
@@ -372,8 +377,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Date formatDate = date.getDate();
                 String selectionDate = format.format(formatDate);
 
+                Calendar c = Calendar.getInstance();
+                c.setTime(formatDate);
+                int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 
-                Log.i("shot_Day test", selectionDate + "");
+                String day = Global.getDayOfWeek(dayOfWeek);
+
+
+                Log.i("shot_Day test", selectionDate + "" + day);
 //                materialCalendarView.clearSelection();
 
 
@@ -429,9 +440,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 csd.sche_title = csdList.get(i).sche_title;
                 csd.startDate = csdList.get(i).startDate;
+                csd.middleDate = csdList.get(i).middleDate;
                 csd.startTime = csdList.get(i).startTime;
                 csd.endDate = csdList.get(i).endDate;
                 csd.endTime = csdList.get(i).endTime;
+                csd.sid = csdList.get(i).sid;
                 shotDayList.add(csd);
                 animationItemCount++;
             }
@@ -443,8 +456,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String startDate = calendarDayToStringFormat(shotDayList.get(i).startDate);
             String endDate = calendarDayToStringFormat(shotDayList.get(i).endDate);
 
+            String d_day = getDday(shotDayList.get(i).middleDate, shotDayList.get(i).endDate);
+
             mitem.setMainPlanname(shotDayList.get(i).sche_title);
-            mitem.setMainPlantime(startDate + " >> " + endDate);
+
+
+            if(startDate.equals(endDate)) {
+                mitem.setMainPlantime(startDate);
+                mitem.setMainPlanDday("");
+            }
+            else {
+                mitem.setMainPlantime(startDate + " ~ " + endDate);
+                mitem.setMainPlanDday(d_day);
+            }
+            mitem.setSid(shotDayList.get(i).sid);
 
             ArrayList<MainPlanTeamIteam> mtItem = new ArrayList<>();
             for(int j=0; j<6; j++){
@@ -457,13 +482,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    //일정이 여러날에 걸친 경우
+    //D-day보여준다.
+    public String getDday(CalendarDay currentDay, CalendarDay endDay) {
+
+        int count = 0;
+
+        while(currentDay.isBefore(endDay)) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(currentDay.getDate());
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            currentDay = CalendarDay.from(c.getTime());
+            count++;
+        }
+
+        if(count == 0) {
+            return "D - day";
+        }
+
+        else
+            return "D - " + Integer.toString(count);
+    }
+
+
+
     public String calendarDayToStringFormat(CalendarDay date) {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         Date formatDate = date.getDate();
-        String result = format.format(formatDate);
+        String parseDate = format.format(formatDate);
 
-        return result;
+        Calendar c = Calendar.getInstance();
+        c.setTime(formatDate);
+        int dayofWeek = c.get(Calendar.DAY_OF_WEEK);
+
+        String day = Global.getDayOfWeek(dayofWeek);
+        String resultDate = parseDate + day;
+
+        return resultDate;
     }
 
 
@@ -978,4 +1034,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
+
 }
