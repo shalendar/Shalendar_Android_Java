@@ -44,9 +44,9 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="15dp"
                     android:text="게시판"
-                    android:textStyle="bold"
                     android:textColor="#4a4a4a"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <View
                     android:layout_width="0dp"

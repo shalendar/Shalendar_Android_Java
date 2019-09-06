@@ -4,16 +4,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="#ffffff"
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:background="#FFFFFF"
-        android:paddingLeft="16dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/planDetail_title_textView"
@@ -103,6 +104,7 @@
             android:layout_height="40dp"
             android:layout_gravity="center"
             android:background="#f8f8f8"
+            android:gravity="left"
             android:paddingLeft="4dp"
             android:paddingTop="10dp"
             android:text="4월 5일 금요일 오전 10:00 ~ 4월 6일 토요일 오전 10:00"
@@ -116,12 +118,15 @@
         android:id="@+id/view7"
         android:layout_width="match_parent"
         android:layout_height="6dp"
-        android:background="#f6f6f6"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="#f6f6f6" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="3dp"
         android:text="댓글"
         android:textAllCaps="false"
         android:textColor="#4a4a4a"

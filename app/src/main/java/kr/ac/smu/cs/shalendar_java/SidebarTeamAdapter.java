@@ -42,6 +42,9 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
                     .centerCrop()
                     .resize(50,50)
                     .load(teamIteam.getTeammatePic());
+            holder.sideteamMatePic.setBackground(new ShapeDrawable(new OvalShape()));
+            holder.sideteamMatePic.setClipToOutline(true);
+
         }
 
     }
