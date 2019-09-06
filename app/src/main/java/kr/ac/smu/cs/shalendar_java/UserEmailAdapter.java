@@ -1,5 +1,8 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +17,7 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
-public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.ViewHolder>{
+public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.ViewHolder> {
 
     ArrayList<UserEmail> items = new ArrayList<>();
 
@@ -42,8 +45,8 @@ public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.View
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CheckBox checkBox = (CheckBox)v;
-                UserEmail contact = (UserEmail)checkBox.getTag();
+                CheckBox checkBox = (CheckBox) v;
+                UserEmail contact = (UserEmail) checkBox.getTag();
 
                 contact.setIs_checked(checkBox.isChecked());
                 items.get(pos).setIs_checked(checkBox.isChecked());
@@ -88,18 +91,25 @@ public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.View
             userImage = itemView.findViewById(R.id.inviteList_userImage);
             userEmail = itemView.findViewById(R.id.registeredUserEmail_TextView);
             checkBox = itemView.findViewById(R.id.checkBox);
+
+
         }
 
         public void setItem(UserEmail item) {
-
-            if(item.getUserImageURL().equals("DEFAULT :: profile_IMAGE"))
+            userImage.setBackground(new ShapeDrawable(new OvalShape()));
+            if (Build.VERSION.SDK_INT >= 21) {
+                userImage.setClipToOutline(true);
+            }
+            if (item.getUserImageURL().equals("DEFAULT :: profile_IMAGE")) {
                 userImage.setImageResource(R.drawable.profile_default);
-            else {
+            } else {
                 Ion.with(userImage)
                         .centerCrop()
-                        .resize(80,80)
+                        .resize(80, 80)
                         .load(item.getUserImageURL());
             }
+            userImage.setBackground(new ShapeDrawable(new OvalShape()));
+            userImage.setClipToOutline(true);
             userEmail.setText(item.getUserEmail());
 //            checkBox.setChecked(item.getIs_checked());
         }

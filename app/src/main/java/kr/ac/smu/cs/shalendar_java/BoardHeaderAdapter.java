@@ -1,6 +1,8 @@
 package kr.ac.smu.cs.shalendar_java;
 
 
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -62,6 +64,9 @@ public class BoardHeaderAdapter extends RecyclerView.Adapter<BoardHeaderAdapter.
                         .centerCrop()
                         .resize(200, 200)
                         .load(data.getTeammate_pic());
+                teammate_pic.setBackground(new ShapeDrawable(new OvalShape()));
+                teammate_pic.setClipToOutline(true);
+
             }
 
             teammate_name.setText(data.getTeammate_name());

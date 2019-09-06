@@ -2,6 +2,8 @@ package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,6 +101,9 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
 
             super(itemView);
             this.waitPeoplePic=(ImageView)itemView.findViewById(R.id.waitListPicture);
+            waitPeoplePic.setBackground(new ShapeDrawable(new OvalShape()));
+            waitPeoplePic.setClipToOutline(true);
+
             this.emailID=(TextView)itemView.findViewById(R.id.waitListID);
             this.calendarName=(TextView)itemView.findViewById(R.id.calendarName);
             this.invitedName=(TextView)itemView.findViewById(R.id.invitedName);

@@ -57,17 +57,19 @@ dependencies {
     //JSON
     //implementation files('libs/json-simple-1.1.1.jar')
 
-
     //Ion Library
     implementation 'com.koushikdutta.ion:ion:2.+'
 
     //Firbase 추가
 //    implementation 'com.google.firebase:firebase-core:17.0.0'
 
-
     //Firebase FCM추가
 //    implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+
+    // 원 이미지 추가
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
+
 }
 
 // Add to the bottom of the file

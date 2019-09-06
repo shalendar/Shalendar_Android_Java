@@ -15,5 +15,4 @@ public class NetWorkUrl {
     public String getServerUrl() {
         return this.toServer_URL;
     }
-
 }
