@@ -89,6 +89,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
             calName = calendarData.get("calName").getAsString();
             calContent = calendarData.get("calContent").getAsString();
+            Toast.makeText(context, calContent, Toast.LENGTH_SHORT).show();
 
             boardHeadertitle.setText(calName);
             boardHeaderContent.setText(calContent);
@@ -204,7 +205,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     JsonObject json = new JsonObject();
 
                                     json.addProperty("sid", Global.getSid());
-                                    Log.d("ttt", "가져온 sid는 "+Global.getSid());
+                                    Log.d("ttt", "가져온 sid는 " + Global.getSid());
                                     Ion.with(itemView.getContext())
                                             .load("POST", url.getServerUrl() + "/deleteSche")
                                             .setHeader("Content-Type", "application/json")
@@ -252,7 +253,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                     //sid오류
                     Global.setSid(boardList.get(getAdapterPosition() - 1).getSid());
-                    Log.d("어댑터sid","sid는"+Global.getSid());
+                    Log.d("어댑터sid", "sid는" + Global.getSid());
 
                     JsonObject json = new JsonObject();
 
@@ -365,12 +366,13 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0)
-            return TYPE_HEADER;
-        else if (position == boardList.size() + 1)
-            return TYPE_FOOTER;
-        else
-            return TYPE_ITEM;
+        return position;
+//        if (position == 0)
+//            return TYPE_HEADER;
+//        else if (position == boardList.size() + 1)
+//               return TYPE_FOOTER;
+//        else
+//            return TYPE_ITEM;
     }
 
 }

@@ -1,5 +1,6 @@
 package kr.ac.smu.cs.shalendar_java;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
@@ -47,6 +48,8 @@ import java.util.Date;
  */
 public class RegisterPlanActivity extends AppCompatActivity {
 
+    public static Activity RegisterplanclearActivity;
+
     private EditText planTitle;
     private EditText aboutPlan;
     private EditText location;
@@ -92,7 +95,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
 
-
     //시작 날짜, 종료 날짜 비교
     int intFirstday, intLastday, intFirstmon, intLastmon;
     int startHour, startMinute, endHour, endMinute;
@@ -104,6 +106,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_plan);
 
+        //삭제를위해
+        RegisterplanclearActivity=RegisterPlanActivity.this;
 
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         //값이 없으면 default로 0
@@ -281,9 +285,9 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 json.addProperty("sContent", aboutSched);
                 json.addProperty("startDate", strStartDate + " " + strStartTime);
                 //json.addProperty("startTime",strStartTime);
-                json.addProperty("endDate",strEndDate + " " + strEndTime);
+                json.addProperty("endDate", strEndDate + " " + strEndTime);
                 //json.addProperty("endTime",strEndTime);
-                json.addProperty("area",strLocation);
+                json.addProperty("area", strLocation);
 
                 //서버 응답 받을 동안 로딩 창 실행.
                 final ProgressDialog progressDialog = new ProgressDialog(RegisterPlanActivity.this);
@@ -297,7 +301,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         .load("POST", url.getServerUrl() + "/createSche")
                         .progressDialog(progressDialog)
                         //요청 헤더 지정
-                        .setHeader("Content-Type","application/json")
+                        .setHeader("Content-Type", "application/json")
                         .setHeader("Authorization", userToken)
                         .setJsonObjectBody(json)
 
@@ -307,22 +311,19 @@ public class RegisterPlanActivity extends AppCompatActivity {
                             @Override
                             public void onCompleted(Exception e, JsonObject result) {
 
-                                if(e != null) { //서버 연결 오류
+                                if (e != null) { //서버 연결 오류
                                     Toast.makeText(getApplicationContext(), "Problom in Server Connection", Toast.LENGTH_LONG).show();
-                                }
-
-                                else {// 서버 연결 성공 시
+                                } else {// 서버 연결 성공 시
                                     //프로그래스 dialog종료
                                     progressDialog.dismiss();
                                     String message = result.get("message").getAsString();
                                     //Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
 
-                                    if(message.equals("success"))
+                                    if (message.equals("success"))
                                         Dialog();
                                     else
                                         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                  //  setResult(RESULT_OK);
-                                   // finish();
+                                    //  setResult(RESULT_OK);
                                 }
                             }
                         });
@@ -413,8 +414,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
     };
 
 
-
-
     //7.10 추가부분
     private class SlidingPageAnimationListener implements Animation.AnimationListener {
         @Override
@@ -469,7 +468,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                             Date date1 = format1.parse("" + hourOfDay + ":" + minute);
                             startTime.setText(new SimpleDateFormat("hh:mm a").format(date1.getTime()));
                             strStartTime = new SimpleDateFormat("HH:mm:ss").format(date1.getTime());
-                            Log.i("시작 시간",strStartTime);
+                            Log.i("시작 시간", strStartTime);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -524,7 +523,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         intFirstday = dayOfMonth;
                         strStartDate = dateFormatByUserCase(1, year, month, dayOfMonth);
 
-                        Log.i("시작 날짜",strStartDate);
+                        Log.i("시작 날짜", strStartDate);
 
 
                     }

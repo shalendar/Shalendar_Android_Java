@@ -1,6 +1,7 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -58,6 +59,8 @@ import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 //    ArrayList<MainPlanItem> mainRecyclerList;
+
+
 
     private TextView textViewTitle;
     private TextView selectedDate;
@@ -135,6 +138,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         userToken = pref.getString("userToken", "NO_TOKEN");
@@ -1029,4 +1034,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
+
 }
