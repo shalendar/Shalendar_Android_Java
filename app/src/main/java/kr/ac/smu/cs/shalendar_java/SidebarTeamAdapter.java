@@ -1,6 +1,8 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +42,9 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
                     .centerCrop()
                     .resize(50,50)
                     .load(teamIteam.getTeammatePic());
+            holder.sideteamMatePic.setBackground(new ShapeDrawable(new OvalShape()));
+            holder.sideteamMatePic.setClipToOutline(true);
+
         }
 
     }
