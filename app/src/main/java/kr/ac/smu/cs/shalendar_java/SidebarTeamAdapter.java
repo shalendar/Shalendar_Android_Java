@@ -1,6 +1,8 @@
 package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +50,6 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
     public int getItemCount() {
         return (null != teamPicList ? teamPicList.size() : 0);
     }
-
 
     public class TeamItemHolder extends RecyclerView.ViewHolder {
 
