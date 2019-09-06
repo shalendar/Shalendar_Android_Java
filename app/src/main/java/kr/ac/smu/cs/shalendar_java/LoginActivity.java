@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,8 +18,12 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
+import java.io.File;
+
 /*
     Login하는 Activity
     Login -> MainActivity로 넘어간다.
@@ -197,6 +202,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("img_url", img_url);
             editor.apply();
 
+//            createPersonalCalendar();
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 //            intent.putExtra("userEmail", userEmail);
@@ -212,4 +218,57 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "서버 연결 실패", Toast.LENGTH_LONG).show();
         }
     }
+
+//    public String getURLForResource(int resourceID) {
+//        return Uri.parse("android.resource://" + R.class.getPackage().getName() + "/" +resourceID).toString();
+//    }
+//
+//
+//    public void createPersonalCalendar() {
+//
+//        String calImgUrl = getURLForResource(R.drawable.tempboardpic);
+//        File file = new File(calImgUrl);
+//
+//        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
+//        progressDialog.setMessage("공유 달력을 등록중입니다~");
+//        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+//        progressDialog.show();
+//
+//        Future ion = Ion.with(getApplicationContext())
+//                .load("POST", url.getServerUrl() + "/createCal")
+//                //요청 헤더 지정
+//                //.setHeader("Content-Type","application/json")
+//                .setHeader("Authorization", userToken)
+//                .setTimeout(60000)
+//                .setMultipartParameter("calName", userName + "님의 개인 달력")
+//                .setMultipartParameter("calContent", "개인 달력")
+//                .setMultipartFile("file", file)
+//                //응답형식
+//                .asJsonObject()
+//                .setCallback(new FutureCallback<JsonObject>() {
+//                    @Override
+//                    public void onCompleted(Exception e, JsonObject result) {
+//
+//                        if (e != null) { //서버 연결 오류
+//                            Log.i("달력 생성 에러코드", e.getMessage());
+//                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+//                        } else {// 서버 연결 성공 시
+//                            progressDialog.dismiss();
+//                            String message = result.get("message").getAsString();
+//                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+//
+//                            if (message.equals("success"))
+//                                Toast.makeText(getApplicationContext(), "개인 달력 생성" + message, Toast.LENGTH_LONG).show();
+//                            else
+//                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                });
+//
+//        try {
+//            ion.get();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 }

@@ -163,7 +163,7 @@ public class CreateMember2 extends AppCompatActivity {
 
         String message = result.get("message").getAsString();
         if(message.equals("success")) {
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "회원 등록 " + message, Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), CreateMember3.class);
             startActivity(intent);
         }
