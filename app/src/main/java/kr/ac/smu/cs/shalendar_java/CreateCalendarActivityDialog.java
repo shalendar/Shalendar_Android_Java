@@ -41,8 +41,8 @@ public class CreateCalendarActivityDialog extends Dialog {
             public void onClick(View v) {
                 Intent intent2 = new Intent(getContext(), MainActivity.class);
                 getContext().startActivity(intent2);
+                dismiss();
                 Bactivity.finish();
-
             }
         });
     }
