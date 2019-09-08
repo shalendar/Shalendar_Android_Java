@@ -85,8 +85,6 @@
             android:name=".PlanDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-
-
         <activity
             android:name=".UpdatePlanActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -109,13 +107,13 @@
         <activity
             android:name=".WaitInvite"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".SideBar"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!--<activity-->
+            <!--android:name=".SideBar"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
 
-        <activity
-            android:name=".WaitInvite"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!--<activity-->
+            <!--android:name=".WaitInvite"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
 
     </application>
 

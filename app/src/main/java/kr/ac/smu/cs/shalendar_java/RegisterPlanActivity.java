@@ -100,6 +100,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
     int startHour, startMinute, endHour, endMinute;
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -239,17 +241,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
                         page.startAnimation(translateUpAnim);
                     }
 
-                } else {
+                } else
                     Toast.makeText(getApplicationContext(), "추천시간을 받을 수 있는 조건이 아닙니다.", Toast.LENGTH_LONG).show();
-                }
-
-
-//                if (isPageOpen) {
-//                    page.startAnimation(translateDownAnim);
-//                } else {
-//                    page.setVisibility(View.VISIBLE);
-//                    page.startAnimation(translateUpAnim);
-//                }
             }
         });
 
@@ -259,15 +252,12 @@ public class RegisterPlanActivity extends AppCompatActivity {
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(this).getConscryptMiddleware().enable(false);
 
+
+
         //여기서 전송버튼 누르면 서버 통신
         buttonCompleteRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent();
-//                intent.putExtra("start", strfirstDate);
-//                intent.putExtra("last", strlastDate);
-//                setResult(RESULT_OK, intent);
-//                finish();
 
                 scheTitle = planTitle.getText().toString().trim();
                 aboutSched = aboutPlan.getText().toString().trim();
@@ -275,58 +265,68 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 //startTime
                 //strEndDate
                 //startEndTime
-                strLocation = planTitle.getText().toString().trim();
+                strLocation = location.getText().toString().trim();
+
+                if(!scheTitle.equals("") && strStartDate != null && strStartTime != null && strEndDate != null && strEndTime != null &&
+                        !aboutSched.equals("") && !strLocation.equals("")) {
+
+                    Log.i("strTitle", planTitle.getText() + "라라");
+                    Log.i("aboutSched", aboutSched + "왜 안오니");
+                    Log.i("strLocation", strLocation + "이건 뭐야");
 
 
-                JsonObject json = new JsonObject();
+                    JsonObject json = new JsonObject();
 
-                json.addProperty("cid", MainActivity.cid);
-                json.addProperty("title", scheTitle);
-                json.addProperty("sContent", aboutSched);
-                json.addProperty("startDate", strStartDate + " " + strStartTime);
-                //json.addProperty("startTime",strStartTime);
-                json.addProperty("endDate", strEndDate + " " + strEndTime);
-                //json.addProperty("endTime",strEndTime);
-                json.addProperty("area", strLocation);
+                    json.addProperty("cid", MainActivity.cid);
+                    json.addProperty("title", scheTitle);
+                    json.addProperty("sContent", aboutSched);
+                    json.addProperty("startDate", strStartDate + " " + strStartTime);
+                    //json.addProperty("startTime",strStartTime);
+                    json.addProperty("endDate", strEndDate + " " + strEndTime);
+                    //json.addProperty("endTime",strEndTime);
+                    json.addProperty("area", strLocation);
 
-                //서버 응답 받을 동안 로딩 창 실행.
-                final ProgressDialog progressDialog = new ProgressDialog(RegisterPlanActivity.this);
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                progressDialog.setMessage("잠시만 기다려주세요. 해당 일정 등록 중 입니다~");
-                progressDialog.show();
+                    //서버 응답 받을 동안 로딩 창 실행.
+                    final ProgressDialog progressDialog = new ProgressDialog(RegisterPlanActivity.this);
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    progressDialog.setMessage("잠시만 기다려주세요. 해당 일정 등록 중 입니다~");
+                    progressDialog.show();
 
 
-                //일정 추가에 관한 정보 서버 전송
-                Ion.with(getApplicationContext())
-                        .load("POST", url.getServerUrl() + "/createSche")
-                        .progressDialog(progressDialog)
-                        //요청 헤더 지정
-                        .setHeader("Content-Type", "application/json")
-                        .setHeader("Authorization", userToken)
-                        .setJsonObjectBody(json)
+                    //일정 추가에 관한 정보 서버 전송
+                    Ion.with(getApplicationContext())
+                            .load("POST", url.getServerUrl() + "/createSche")
+                            .progressDialog(progressDialog)
+                            //요청 헤더 지정
+                            .setHeader("Content-Type", "application/json")
+                            .setHeader("Authorization", userToken)
+                            .setJsonObjectBody(json)
 
-                        //응답은 JsonObject로 받겠다.
-                        .asJsonObject()
-                        .setCallback(new FutureCallback<JsonObject>() {
-                            @Override
-                            public void onCompleted(Exception e, JsonObject result) {
+                            //응답은 JsonObject로 받겠다.
+                            .asJsonObject()
+                            .setCallback(new FutureCallback<JsonObject>() {
+                                @Override
+                                public void onCompleted(Exception e, JsonObject result) {
 
-                                if (e != null) { //서버 연결 오류
-                                    Toast.makeText(getApplicationContext(), "Problom in Server Connection", Toast.LENGTH_LONG).show();
-                                } else {// 서버 연결 성공 시
-                                    //프로그래스 dialog종료
-                                    progressDialog.dismiss();
-                                    String message = result.get("message").getAsString();
-                                    //Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
+                                    if (e != null) { //서버 연결 오류
+                                        Toast.makeText(getApplicationContext(), "Problom in Server Connection", Toast.LENGTH_LONG).show();
+                                    } else {// 서버 연결 성공 시
+                                        //프로그래스 dialog종료
+                                        progressDialog.dismiss();
+                                        String message = result.get("message").getAsString();
+                                        //Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
 
-                                    if (message.equals("success"))
-                                        Dialog();
-                                    else
-                                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                    //  setResult(RESULT_OK);
+                                        if (message.equals("success"))
+                                            Dialog();
+                                        else
+                                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
+
+                else
+                    Toast.makeText(getApplicationContext(), "누락된 정보가 있습니다.", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -344,6 +344,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(this).getConscryptMiddleware().enable(false);
+
 
         String startDate = strStartDate + " " + strStartTime;
         Log.i("추천시간()", startDate);
@@ -396,7 +397,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
     }
 
     public void Dialog() {
-        dialog = new RegisterPlanActivityDialog(RegisterPlanActivity.this, leftListener); // 왼쪽 버튼 이벤트
+        dialog = new RegisterPlanActivityDialog(RegisterPlanActivity.this, okButton); // 왼쪽 버튼 이벤트
         // 오른쪽 버튼 이벤트
 
         //요청 이 다이어로그를 종료할 수 있게 지정함
@@ -405,10 +406,10 @@ public class RegisterPlanActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    //다이얼로그 클릭이벤트
-    private View.OnClickListener leftListener = new View.OnClickListener() {
+//    다이얼로그 클릭이벤트
+    private View.OnClickListener okButton = new View.OnClickListener() {
         public void onClick(View v) {
-            Toast.makeText(RegisterPlanActivity.this, "버튼을 클릭하였습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterPlanActivity.this, "dialog버튼을 클릭하였습니다.", Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         }
     };
@@ -589,7 +590,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
        return 타입 : String
        이 함수를 이용하여 strFirstDate, strLastDate에 만들어진 형식을 저장할 수 있다.
      */
-
     private String dateFormatByUserCase(int flag, int year, int month, int dayOfMonth) {
 
         String format = null;
