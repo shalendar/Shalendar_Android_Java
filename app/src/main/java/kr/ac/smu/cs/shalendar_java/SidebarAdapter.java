@@ -134,6 +134,7 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
                 @Override
                 public void onClick(View v) {
+                    MainActivity.cid = calendar_ID;
                     if (MainActivity.cid == 0) {
                         Toast.makeText(itemView.getContext(), "달력을 먼저 선택해주세요", Toast.LENGTH_SHORT).show();
                     } else {

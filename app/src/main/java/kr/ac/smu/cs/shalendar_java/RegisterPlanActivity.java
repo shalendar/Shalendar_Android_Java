@@ -100,8 +100,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
     int startHour, startMinute, endHour, endMinute;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -109,7 +107,7 @@ public class RegisterPlanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register_plan);
 
         //삭제를위해
-        RegisterplanclearActivity=RegisterPlanActivity.this;
+        RegisterplanclearActivity = RegisterPlanActivity.this;
 
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         //값이 없으면 default로 0
@@ -119,23 +117,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
         //7.10추가 부분
 
         page = findViewById(R.id.page);
-
         sndbutton = findViewById(R.id.sendButton);
-
         recyclerView = findViewById(R.id.recotime_Recycler);
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-//        recyclerView.setLayoutManager(layoutManager);
-//
-//        t_adapter = new RecommandTimeAdapter(this, itemList);
-
-//        t_adapter.addItem(new RecommandTimeItem("1", "14:00-15:00"));
-//        t_adapter.addItem(new RecommandTimeItem("2", "15:00-16:00"));
-//        t_adapter.addItem(new RecommandTimeItem("3", "16:00-17:00"));
-//        t_adapter.addItem(new RecommandTimeItem("4", "17:00-18:00"));
-
-//        recyclerView.setAdapter(t_adapter);
-
-//        t_adapter.notifyDataSetChanged();
 
         //애니메이션
         translateUpAnim = AnimationUtils.loadAnimation(this, R.anim.translate_up);
@@ -205,17 +188,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
         //시간 선택
         initTime();
 
-        /*
-         추천시간 버튼 누를시 RecommandTimeActivity로 넘어간다.
-
-        buttonToRecommandTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), RecommandTimeActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_RECOMMANDTIME_ACTIVITY);
-            }
-        });
-        */
 
         //추천시간 눌릴때
         reccomandtime_button = findViewById(R.id.register_getTime_Button);

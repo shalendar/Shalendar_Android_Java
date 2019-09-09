@@ -12,7 +12,7 @@
         android:allowBackup="true"
         android:icon="@drawable/launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
@@ -29,7 +29,7 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/face" />
+            android:resource="@drawable/launcher" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -40,7 +40,8 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id2"
             android:value="@string/default_datapayload_channel_id" />
 
-        <activity android:name=".CreateCalendarActivityDialog" />
+        <activity
+            android:name=".CreateCalendarActivityDialog" />
         <activity
             android:name=".CreateCalendarActivity"
             android:theme="@style/AppTheme.NoActionBar" />
