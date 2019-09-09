@@ -16,6 +16,7 @@ public class CreateCalendarActivityDialog extends Dialog {
     private Button gotomain;
     CreateCalendarActivity Bactivity = (CreateCalendarActivity) CreateCalendarActivity.CreateCalendarclearActivity;
 
+
     public CreateCalendarActivityDialog(Context context, View.OnClickListener singleListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
     }
