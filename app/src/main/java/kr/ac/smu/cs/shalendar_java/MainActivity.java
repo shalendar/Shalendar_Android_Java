@@ -10,8 +10,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -189,7 +192,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (cid == 0) {
             Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
             textViewTitle.setText("달력이름");
-        } else {
+            setContentView(R.layout.defualt_activity_main);
+        }
+
+        else {
             textViewTitle.setText(MainActivity.calName);
             //materialCalendar뷰 초기화
             initCalendarView();
@@ -788,6 +794,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             if (message.equals("image change success")) {
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+
+                                imageView.setBackground(new ShapeDrawable(new OvalShape()));
+                                if(Build.VERSION.SDK_INT >= 21) {
+                                    imageView.setClipToOutline(true);
+                                }
 
                                 Ion.with(imageView)
                                         .centerCrop()

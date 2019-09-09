@@ -189,6 +189,13 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent intent = new Intent(context, UpdatePlanActivity.class);
+                                    intent.putExtra("scheTitle", boardList.get(getAdapterPosition()-1).getPlanname());
+//                                    intent.putExtra("startDate", boardList.get(getAdapterPosition()-1).dateandtime);
+//                                    intent.putExtra("startTime", boardList.get(getAdapterPosition()-1).getPlanname());
+//                                    intent.putExtra("endDate", boardList.get(getAdapterPosition()-1).getPlanname());
+//                                    intent.putExtra("endTime", boardList.get(getAdapterPosition()-1).getPlanname());
+//                                    intent.putExtra("aboutSche", boardList.get(getAdapterPosition()-1).ge);
+                                    intent.putExtra("location", boardList.get(getAdapterPosition()-1).getLocation());
                                     context.startActivity(intent);
                                     dialog.cancel();
                                 }
