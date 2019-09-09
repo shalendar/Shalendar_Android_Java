@@ -68,7 +68,7 @@ public class CreateCalendarActivity extends AppCompatActivity {
 
 
         //삭제를위해
-        CreateCalendarclearActivity=CreateCalendarActivity.this;
+        CreateCalendarclearActivity = CreateCalendarActivity.this;
 
         Intent intent = getIntent();
         int code = intent.getExtras().getInt("where");
