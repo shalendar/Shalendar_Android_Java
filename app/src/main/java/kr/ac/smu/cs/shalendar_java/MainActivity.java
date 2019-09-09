@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (cid == 0) {
             Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
             textViewTitle.setText("달력이름");
-            setContentView(R.layout.defualt_activity_main);
+            //setContentView(R.layout.defualt_activity_main);
         }
 
         else {
