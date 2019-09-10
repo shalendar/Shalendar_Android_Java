@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button buttonToBoard;
     private Button buttonToRegisterPlan;
 
+    //해당날짜 일정이 있나없나 확인 flag  없으면 0 있으면 1
+    private int dateFlag = 0;
 
     //UserToken
     private String userToken;
@@ -165,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         calendarRelative = findViewById(R.id.main_relative);
 
         //애니메이션
-        mainanidownarrow=findViewById(R.id.main_downarrow);
+        mainanidownarrow = findViewById(R.id.main_downarrow);
 
         translateUpAnim = AnimationUtils.loadAnimation(this, R.anim.maintranslate_up);
         translateDownAnim = AnimationUtils.loadAnimation(this, R.anim.maintranslate_down);
@@ -396,48 +398,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                 insertData(date);
-
-
                 ///////애니메이션 구현
-
-                if (isPageOpen) {
-                    //calendarRelative.setClickable(false);
-//                    main_animation.setVisibility(View.INVISIBLE);
-//                    Toast.makeText(getApplicationContext(), "열림", Toast.LENGTH_SHORT).show();
-//                    main_animation.startAnimation(translateDownAnim);
-
-                }
-                    /*
-                    calendarLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            main_animation.startAnimation(translateDownAnim);
-                        }
-                    });*/
-
-
-                else {
-                    main_animation.setVisibility(View.VISIBLE);
-                    main_animation.startAnimation(translateUpAnim);
-                }
-
-
-                mainanidownarrow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                         main_animation.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getApplicationContext(), "열림", Toast.LENGTH_SHORT).show();
-                    main_animation.startAnimation(translateDownAnim);
-                    }
-                });
-
 
 
                 Toast.makeText(getApplicationContext(), selectionDate, Toast.LENGTH_SHORT).show();
 
+                if (!isPageOpen && dateFlag == 1) {
+                    main_animation.setVisibility(View.VISIBLE);
+                    main_animation.startAnimation(translateUpAnim);
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "해당일에는 일정이 없습니다.", Toast.LENGTH_SHORT).show();
+                    main_animation.setVisibility(View.INVISIBLE);
+                    isPageOpen = false;
+                }
+
+                mainanidownarrow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        main_animation.setVisibility(View.INVISIBLE);
+                        Toast.makeText(getApplicationContext(), "열림", Toast.LENGTH_SHORT).show();
+                        main_animation.startAnimation(translateDownAnim);
+                    }
+                });
+
+
                 //TextView에 삽입
                 selectedDate.setText(selectionDate);
                 materialCalendarView.clearSelection();
+
 
             }
         });
@@ -468,8 +457,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 csd.endTime = csdList.get(i).endTime;
                 csd.sid = csdList.get(i).sid;
                 shotDayList.add(csd);
-                animationItemCount++;
+                animationItemCount++;//일정갯수
             }
+        }
+
+        if (shotDayList.size() == 0) {
+            //일정이 없다는 뜻
+            dateFlag = 0;
+        } else {
+            dateFlag = 1;
         }
 
         for (int i = 0; i < animationItemCount; i++) {
@@ -503,6 +499,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mitem.setTeamPicList(mtItem);
             mainRecyclerList.add(mitem);
         }
+
     }
 
     public void getUsersInCalendar() {
@@ -857,7 +854,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
 
                                 imageView.setBackground(new ShapeDrawable(new OvalShape()));
-                                if(Build.VERSION.SDK_INT >= 21) {
+                                if (Build.VERSION.SDK_INT >= 21) {
                                     imageView.setClipToOutline(true);
                                 }
 
@@ -984,23 +981,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode,resultCode,data);
-//
-//        if(requestCode == CodeNumber.TO_REGISTERPLAN_ACTIVITY) {
-//            if(resultCode == RESULT_OK) {
-//                //String strfirstDate = data.getStringExtra("start");
-//                //String strlastDate = data.getStringExtra("last");
-//                //map.put(strfirstDate,strlastDate);
-//               // Log.d("시작날짜 key", strfirstDate);
-//                //Log.d("종료날짜 value", map.get(strfirstDate));
-//                new ApiSimulator(map).executeOnExecutor(Executors.newSingleThreadExecutor());
-//            }
-//        }
-//    }
-
-
     public void showAllSche() {
 
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
@@ -1099,3 +1079,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 }
+

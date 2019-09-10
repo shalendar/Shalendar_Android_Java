@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,6 +52,9 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     ImageView boardHeaderImage;
     TextView boardHeadertitle;
     TextView boardHeaderContent;
+
+
+    //BoardActivity boardActivity = new BoardActivity();
 
     public BoarderAdapter(int sharedPeoplenum, JsonArray shareUserData, JsonObject calendarData) {
         this.sharedPeoplenum = sharedPeoplenum;
@@ -144,7 +148,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         boardList.add(data);
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
+    class ItemViewHolder extends RecyclerView.ViewHolder  {
 
         //서버 통신
         private NetWorkUrl url = new NetWorkUrl();
@@ -234,6 +238,8 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                                     }
                                                 }
                                             });
+
+                                    //boardActivity.onRefresh();
 
                                     dialog.cancel();
                                 }
