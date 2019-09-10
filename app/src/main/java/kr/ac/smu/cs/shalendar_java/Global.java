@@ -2,7 +2,11 @@ package kr.ac.smu.cs.shalendar_java;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.os.Build;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.koushikdutta.ion.Ion;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -72,6 +76,26 @@ public class Global {
         }
 
         return dayOfWeek;
+    }
+
+    public void setProfileImage(ImageView userProfile, String profile_img) {
+        if (!(profile_img.equals("DEFAULT :: profile_IMAGE"))) {
+
+            userProfile.setBackground(new ShapeDrawable(new OvalShape()));
+            if(Build.VERSION.SDK_INT >= 21) {
+                userProfile.setClipToOutline(true);
+            }
+
+            Ion.with(userProfile)
+                    .centerCrop()
+                    .resize(250, 250)
+                    .load(profile_img);
+        } else {
+            Ion.with(userProfile)
+                    .centerCrop()
+                    .placeholder(R.drawable.profile_default)
+                    .resize(250, 250);
+        }
     }
 
 }

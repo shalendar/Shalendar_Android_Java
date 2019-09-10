@@ -2,20 +2,21 @@ package kr.ac.smu.cs.shalendar_java;
 
 public class MainPlanTeamIteam {
 
-    private int teammatePic;
+    private String teammatePic;
 
     public MainPlanTeamIteam() {
+
     }
 
-    public MainPlanTeamIteam(int teammatePic) {
+    public MainPlanTeamIteam(String teammatePic) {
         this.teammatePic = teammatePic;
     }
 
-    public int getTeammatePic() {
+    public String getTeammatePic() {
         return teammatePic;
     }
 
-    public void setTeammatePic(int teammatePic) {
+    public void setTeammatePic(String teammatePic) {
         this.teammatePic = teammatePic;
     }
 }

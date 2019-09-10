@@ -193,16 +193,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent intent = new Intent(context, UpdatePlanActivity.class);
-
-                                    getScheduleFromServer(Global.getSid());
-//                                    intent.putExtra("sid_update", Global.getSid());
-//                                    intent.putExtra("scheTitle", boardList.get(getAdapterPosition()-1).getPlanname());
-//                                    intent.putExtra("startDate", boardList.get(getAdapterPosition()-1).dateandtime);
-//                                    intent.putExtra("startTime", boardList.get(getAdapterPosition()-1).getPlanname());
-//                                    intent.putExtra("endDate", boardList.get(getAdapterPosition()-1).getPlanname());
-//                                    intent.putExtra("endTime", boardList.get(getAdapterPosition()-1).getPlanname());
-//                                    intent.putExtra("aboutSche", boardList.get(getAdapterPosition()-1).ge);
-//                                    intent.putExtra("location", boardList.get(getAdapterPosition()-1).getLocation());
+                                    intent.putExtra("sid_update", Global.getSid());
                                     context.startActivity(intent);
                                     dialog.cancel();
                                 }
@@ -383,16 +374,12 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                         @Override
                         public void onCompleted(Exception e, JsonObject result) {
                             //응답 받을 변수
-                            String userName, schedTitle, aboutSched, schedLocation;
+                            String userProfile, userName, schedTitle, aboutSched, schedLocation;
                             String startDate, startTime, endDate, endTime, startToEnd;
 
                             if (e != null) {
                                 Toast.makeText(itemView.getContext(), "Server Connection Error!", Toast.LENGTH_LONG).show();
                             } else {
-                                //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
-                                //data: 다음에 나오는 것들도 JsonObject형식.
-                                //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
-                                //JSONArray가 아님. 얘는 [,]로 묶여 있어야 함.
 
                                 String message = result.get("message").getAsString();
                                 //서버로 부터 응답 메세지가 success이면...
@@ -403,6 +390,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                                     //data: {} 에서 {}안에 있는 것들도 JsonObject
                                     JsonObject data = result.get("data").getAsJsonObject();
+
 
                                     userName = data.get("id").getAsString();
                                     schedTitle = data.get("title").getAsString();
@@ -418,7 +406,14 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     endDate = endDate.substring(0, 16);
                                     startToEnd = startDate + " ~ " + endDate;
 
+                                    if (data.get("img_url").isJsonNull())
+                                        userProfile = "DEFAULT :: profile_IMAGE";
+                                    else
+                                        userProfile = data.get("img_url").getAsString();
+
+
                                     Intent intent = new Intent(context, PlanDetailActivity.class);
+                                    intent.putExtra("userProfile", userProfile);
                                     intent.putExtra("userName", userName);
                                     intent.putExtra("schedTitle", schedTitle);
                                     intent.putExtra("aboutSched", aboutSched);

@@ -43,6 +43,7 @@ public class PlandetailAdapter extends BaseAdapter {
         }
 
         PlandetailItem item = items.get(position);
+        view.setReply_profile_img(item.reply_picture);
         view.setReply_profile_name(item.reply_name);
         view.setReply_date(item.reply_date);
         view.setReply_content(item.reply_content);

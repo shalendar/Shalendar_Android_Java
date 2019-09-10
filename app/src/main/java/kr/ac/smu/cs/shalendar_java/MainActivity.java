@@ -138,6 +138,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     RecyclerView mainRecyclerView;
 
+    //달력 내부 사용자 이미지
+    ArrayList<String> usersImage = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,15 +197,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (cid == 0) {
             Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
             textViewTitle.setText("달력이름");
-            //setContentView(R.layout.defualt_activity_main);
-        } else {
+//            setContentView(R.layout.defualt_activity_main);
+        }
+
+        else {
             textViewTitle.setText(MainActivity.calName);
             //materialCalendar뷰 초기화
+            getUsersInCalendar();
             initCalendarView();
             //서버로 부터 해당 달력의 일정을 가져온다.
             showAllSche();
             //서버로 부터 받은 모든 일정을 달력에 표시
             setCalendarView();
+
         }
 
         /*
@@ -481,15 +488,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             mitem.setSid(shotDayList.get(i).sid);
 
+
+            ///////////////////////////////////////////////////////////
             ArrayList<MainPlanTeamIteam> mtItem = new ArrayList<>();
-            for (int j = 0; j < 6; j++) {
-                mtItem.add(new MainPlanTeamIteam(R.drawable.face));
+            for (int j = 0; j < usersImage.size(); j++) {
+                mtItem.add(new MainPlanTeamIteam(usersImage.get(j)));
             }
+            ///////////////////////////////////////////////////////////
 
             mitem.setTeamPicList(mtItem);
             mainRecyclerList.add(mitem);
         }
 
+    }
+
+    public void getUsersInCalendar() {
+
+        JsonObject json = new JsonObject();
+        Log.i("사용자 main", Integer.toString(cid));
+        Log.i("사용자 main", userToken);
+
+        json.addProperty("cid", cid);
+
+        Future ion = Ion.with(getApplicationContext())
+                .load("POST", url.getServerUrl() + "/readUserCal")
+                .setHeader("Content-Type", "application/json")
+                .setHeader("Authorization", userToken)
+                .setJsonObjectBody(json)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+
+                        if(e != null)
+                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        else {
+                            String message = result.get("message").getAsString();
+                            Log.i("Main공유달력 사용자 명수", message);
+
+                            if(message.equals("success")) {
+                                JsonArray data = result.get("data").getAsJsonArray();
+
+                                Log.i("Main공유달력 사용자 명수", Integer.toString(data.size()));
+                                for(int i = 0; i<data.size(); i++) {
+                                    JsonObject userData = data.get(i).getAsJsonObject();
+                                    String imageURL;
+
+                                    if (userData.get("img_url").isJsonNull())
+                                        imageURL = "DEFAULT :: profile_IMAGE";
+                                    else
+                                        imageURL = userData.get("img_url").getAsString();
+                                    usersImage.add(imageURL);
+                                }
+
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(), "공유달력 사용자 없음", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+                });
+        try {
+            ion.get();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
