@@ -109,10 +109,10 @@
 
                     <ImageButton
                         android:layout_gravity="center"
-                        android:layout_width="20dp"
-                        android:layout_height="10dp"
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
                         android:id="@+id/main_downarrow"
-                        android:src="@drawable/main_ani_downarrow"
+                        android:background="@drawable/pinkarrow"
                         android:adjustViewBounds="true"
                         />
 

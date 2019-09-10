@@ -136,6 +136,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         buttonToHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) { Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
             }
         });
