@@ -185,13 +185,13 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                                     //여기 캘린더 수정화면으로 바꿔야함
                                     MainActivity.cid = calendar_ID;
                                     Intent intent = new Intent(context, CreateCalendarActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     //99999 캘린더 수정 코드
                                     intent.putExtra("where", 99999);
                                     intent.putExtra("cid", MainActivity.cid);
                                     intent.putExtra("calImage", getItem(getAdapterPosition()).getCalendarImage());
                                     intent.putExtra("calName", calendarName);
                                     intent.putExtra("aboutCal",calendarContent);
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     context.startActivity(intent);
                                     dialog.cancel();
                                 }
@@ -202,9 +202,10 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                                 public void onClick(DialogInterface dialog, int which) {
                                     deleteCalendar(calendar_ID);
                                     Intent intent = new Intent(context, MainActivity.class);
-                                    MainActivity.cid = 0;
                                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    MainActivity.cid = 0;
                                     context.startActivity(intent);
+
                                     dialog.cancel();
                                 }
                             });

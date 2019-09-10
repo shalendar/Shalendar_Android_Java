@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
@@ -72,14 +71,23 @@
 
                 <!--리사이클러뷰-->
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/BoarderRecyclerView"
+                <android.support.v4.widget.SwipeRefreshLayout
+                    android:id="@+id/mainswipeRefresh"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/downButtons"
-                    android:layout_marginBottom="-1dp">
+                    android:layout_above="@+id/downButtons">
 
-                </android.support.v7.widget.RecyclerView>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/BoarderRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/downButtons"
+                        android:layout_marginBottom="-1dp">
+
+                    </android.support.v7.widget.RecyclerView>
+
+                </android.support.v4.widget.SwipeRefreshLayout>
+
 
                 <!--밑에 버튼 세개 모인 리니어레이아웃-->
                 <LinearLayout
