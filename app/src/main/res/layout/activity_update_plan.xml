@@ -277,7 +277,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/round_button"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:text="작성 완료"
+                    android:text="수정 완료"
                     android:textColor="@color/buttonTextColor"
                     android:textStyle="bold" />
             </LinearLayout>

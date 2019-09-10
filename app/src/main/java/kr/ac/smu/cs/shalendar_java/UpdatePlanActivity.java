@@ -64,6 +64,9 @@ public class UpdatePlanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_plan);
 
+        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
+        Ion.getDefault(this).getConscryptMiddleware().enable(false);
+
         //buttonCompleteUpdate = findViewById(R.id.sendButton);
         planTitle = findViewById(R.id.update_title_EditText);
         aboutPlan = findViewById(R.id.update_aboutPlan_EditText);
@@ -76,19 +79,110 @@ public class UpdatePlanActivity extends AppCompatActivity {
         buttonCompleteRegister = findViewById(R.id.update_registerPlan_Button);
         recommandedTime = findViewById(R.id.update_getTime_TextView);
 
+        Intent intent = getIntent();
+        int sid_update = intent.getIntExtra("sid_update", 0);
+
+        //서버로 부터 이전 data들 받아와 set하기
+        JsonObject json = new JsonObject();
+
+        json.addProperty("sid", sid_update);
+
+        final ProgressDialog progressDialog = new ProgressDialog(UpdatePlanActivity.this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setMessage("이전 정보를 불러오는 중입니다~");
+        progressDialog.show();
+
+
+        Ion.with(getApplicationContext())
+                .load("POST", url.getServerUrl() + "/showSche")
+                .setHeader("Content-Type", "application/json")
+                .setJsonObjectBody(json)
+                .asJsonObject() //응답
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        //응답 받을 변수
+                        String userName_up, schedTitle_up, aboutSched_up, schedLocation_up;
+                        String start_up, startDate_up, startTime_up, end_up, endDate_up, endTime_up, startToEnd_up;
+
+                        if (e != null) {
+                            Toast.makeText(getApplicationContext(), "Server Connection Error!", Toast.LENGTH_LONG).show();
+                        } else {
+
+                            String message = result.get("message").getAsString();
+                            //서버로 부터 응답 메세지가 success이면...
+
+                            if (message.equals("success")) {
+                                //서버 응답 오면 로딩 창 해제
+                                progressDialog.dismiss();
+
+                                //data: {} 에서 {}안에 있는 것들도 JsonObject
+                                JsonObject data = result.get("data").getAsJsonObject();
+
+                                userName_up = data.get("id").getAsString();
+                                schedTitle_up = data.get("title").getAsString();
+                                aboutSched_up = data.get("sContent").getAsString();
+                                schedLocation_up = data.get("area").getAsString();
+                                start_up = data.get("startDate").getAsString();
+//                                startTime_up = data.get("startTime").getAsString();
+                                end_up = data.get("endDate").getAsString();
+//                                endTime = data.get("endTime").getAsString();
+
+
+                                //뒤에 0.000 잘라내기
+                                startDate_up = start_up.substring(0, 10);
+                                int year_s = Integer.parseInt(start_up.substring(0,4));
+                                int month_s = Integer.parseInt(start_up.substring(5,7));
+                                int dayOfMonth_s = Integer.parseInt(start_up.substring(8,10));
+                                strStartDate = dateFormatByUserCase(1, year_s, month_s-1, dayOfMonth_s);
+
+                                startTime_up = start_up.substring(11, 16);
+                                String hourOfDay_s = startTime_up.substring(0,2);
+                                String minute_s = startTime_up.substring(3,5);
+                                endDate_up = end_up.substring(0, 10);
+                                int year_e = Integer.parseInt(end_up.substring(0,4));
+                                int month_e = Integer.parseInt(end_up.substring(5,7));
+                                int dayOfMonth_e = Integer.parseInt(end_up.substring(8,10));
+                                strEndDate = dateFormatByUserCase(2, year_e, month_e-1, dayOfMonth_e);
+
+                                endTime_up = end_up.substring(11, 16);
+                                String hourOfDay_e = startTime_up.substring(0,2);
+                                String minute_e = startTime_up.substring(3,5);
+
+                                SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
+                                try {
+                                    Date date_s = format1.parse("" + hourOfDay_s + ":" + minute_s);
+                                    Date date_e = format1.parse("" + hourOfDay_e + ":" + minute_e);
+                                    startTime.setText(new SimpleDateFormat("hh:mm a").format(date_s.getTime()));
+                                    strStartTime = new SimpleDateFormat("HH:mm:ss").format(date_s.getTime());
+                                    endTime.setText(new SimpleDateFormat("hh:mm a").format(date_e.getTime()));
+                                    strEndTime = new SimpleDateFormat("HH:mm:ss").format(date_e.getTime());
+                                    Log.i("수정 시작 시간", strStartTime);
+                                    Log.i("수정 끝 시간", strEndTime);
+
+                                } catch (Exception e2) {
+                                    e2.printStackTrace();
+                                }
+
+                                planTitle.setText(schedTitle_up);
+                                aboutPlan.setText(aboutSched_up);
+                                location.setText(schedLocation_up);
+
+                                Log.i("result", data.get("id").getAsString());
+                            } else {
+
+                                Toast.makeText(getApplicationContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
+                            }
+
+                        }
+                    }
+                });
 
         //날짜 선택
         initDate();
 
         //시간 선택
         initTime();
-
-
-        //일정 수정 화면으로 이동 서버 통신 준비.
-
-        Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
-        Ion.getDefault(this).getConscryptMiddleware().enable(false);
-
 
         buttonCompleteRegister.setOnClickListener(new View.OnClickListener() {
 
@@ -184,7 +278,7 @@ public class UpdatePlanActivity extends AppCompatActivity {
                         try {
                             Date date1 = format1.parse("" + hourOfDay + ":" + minute);
                             startTime.setText(new SimpleDateFormat("hh:mm a").format(date1.getTime()));
-                            strStartTime = new SimpleDateFormat("HH-mm-ss").format(date1.getTime());
+                            strStartTime = new SimpleDateFormat("HH:mm:ss").format(date1.getTime());
                             Log.i("시작 시간", strStartTime);
                         } catch (Exception e) {
                             e.printStackTrace();

@@ -2,11 +2,15 @@ package kr.ac.smu.cs.shalendar_java;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
@@ -30,7 +34,19 @@ public class MainPlanTeamAdapter extends RecyclerView.Adapter<MainPlanTeamAdapte
     @Override
     public void onBindViewHolder(TeamItemHolder holder, int position) {
         MainPlanTeamIteam teamIteam = teamList.get(position);
-        holder.teammatePic.setImageResource(teamIteam.getTeammatePic());
+//        holder.teammatePic.setImageResource(teamIteam.getTeammatePic());
+
+        if(teamIteam.getTeammatePic().equals("DEFAULT :: profile_IMAGE"))
+            holder.teammatePic.setImageResource(R.drawable.profile_default);
+        else {
+            Ion.with(holder.teammatePic)
+                    .centerCrop()
+                    .resize(50,50)
+                    .load(teamIteam.getTeammatePic());
+            holder.teammatePic.setBackground(new ShapeDrawable(new OvalShape()));
+            holder.teammatePic.setClipToOutline(true);
+
+        }
 
     }
 

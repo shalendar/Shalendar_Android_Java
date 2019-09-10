@@ -6,7 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -100,17 +105,21 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
         View header = getLayoutInflater().inflate(R.layout.activity_plandetailreply_header, null, false);
         plandetail_Listview.addHeaderView(header);
 
+        final ImageView userProfile = findViewById(R.id.plandetail_header_profile_pic);
         final TextView schedTitle = findViewById(R.id.planDetail_title_textView);
         final TextView userName = findViewById(R.id.plandetail_header_profile_name);
         final TextView location = findViewById(R.id.plandetail_header_location);
         final TextView aboutSched = findViewById(R.id.plandetail_header_aboutSchedule);
         final TextView startToEndTime = findViewById(R.id.plandetail_header_startToEndTime);
 
+        Global global = new Global();
 
         Intent intent = getIntent();
-        intent.getStringExtra("title");
+        String profile_img = intent.getStringExtra("userProfile");
 
-        schedTitle.append(intent.getStringExtra("schedTitle"));
+        global.setProfileImage(userProfile, profile_img);
+
+        schedTitle.setText(intent.getStringExtra("schedTitle"));
         userName.setText(intent.getStringExtra("userName"));
         location.setText(intent.getStringExtra("area"));
         aboutSched.setText(intent.getStringExtra("aboutSched"));
@@ -212,7 +221,7 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                     @Override
                                     public void onCompleted(Exception e, JsonObject result) {
 
-                                        String comments, id, rdate;
+                                        String comments, id, rdate, profile_img_url;
                                         int commentNum;
 
                                         if (e != null) {
@@ -240,7 +249,13 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                                     comments = jsonArr1.get("comments").getAsString();
                                                     id = jsonArr1.get("id").getAsString();
                                                     rdate = jsonArr1.get("rdate").getAsString();
-                                                    plandetailAdapter.addItem(new PlandetailItem(id, rdate, comments, commentNum));
+
+                                                    if (jsonArr1.get("img_url").isJsonNull())
+                                                        profile_img_url = "DEFAULT :: profile_IMAGE";
+                                                    else
+                                                        profile_img_url = jsonArr1.get("img_url").getAsString();
+
+                                                    plandetailAdapter.addItem(new PlandetailItem(profile_img_url, id, rdate, comments, commentNum));
                                                     plandetailAdapter.notifyDataSetChanged();
                                                 }
 
@@ -468,7 +483,7 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                             @Override
                             public void onCompleted(Exception e, JsonObject result) {
 
-                                String comments, id, rdate;
+                                String comments, id, rdate, profile_img_url;
                                 int commentNum;
 
                                 if (e != null) {
@@ -496,7 +511,14 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                             comments = jsonArr1.get("comments").getAsString();
                                             id = jsonArr1.get("id").getAsString();
                                             rdate = jsonArr1.get("rdate").getAsString();
-                                            plandetailAdapter.addItem(new PlandetailItem(id, rdate, comments, commentNum));
+
+                                            if (jsonArr1.get("img_url").isJsonNull())
+                                                profile_img_url = "DEFAULT :: profile_IMAGE";
+                                            else
+                                                profile_img_url = jsonArr1.get("img_url").getAsString();
+
+
+                                            plandetailAdapter.addItem(new PlandetailItem(profile_img_url, id, rdate, comments, commentNum));
                                             plandetailAdapter.notifyDataSetChanged();
                                         }
 

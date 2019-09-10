@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -193,7 +194,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         JsonObject json = new JsonObject();
         json.addProperty("", "");
 
-        Ion.with(getContext())
+        Future ion = Ion.with(getContext())
                 .load("POST", url.getServerUrl() + "/readAllCal")
                 .setHeader("Content-Type", "application/json")
                 .setHeader("Authorization", userToken)
@@ -212,6 +213,11 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                         }
                     }
                 });
+        try {
+            ion.get();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     //서버 응답 처리
