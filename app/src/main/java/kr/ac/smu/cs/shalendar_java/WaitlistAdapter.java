@@ -56,6 +56,8 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
 
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        Global global = new Global();
+
         String waitPeopleImg = waitList.get(position).getWaitPeoplePic();
         String senderEmailID = waitList.get(position).getEmailID();
         String invitedCalName = waitList.get(position).getCalendarName();
@@ -69,10 +71,12 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         holder.emailID.setText(senderEmailID);
         holder.setCalendarID(calendarID);
 
-        Ion.with(holder.waitPeoplePic)
-                .centerCrop()
-                .resize(50,50)
-                .load(waitPeopleImg);
+        global.setProfileImage(holder.waitPeoplePic, waitPeopleImg);
+
+//        Ion.with(holder.waitPeoplePic)
+//                .centerCrop()
+//                .resize(50,50)
+//                .load(waitPeopleImg);
 
     }
 
@@ -101,9 +105,6 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
 
             super(itemView);
             this.waitPeoplePic=(ImageView)itemView.findViewById(R.id.waitListPicture);
-            waitPeoplePic.setBackground(new ShapeDrawable(new OvalShape()));
-            waitPeoplePic.setClipToOutline(true);
-
             this.emailID=(TextView)itemView.findViewById(R.id.waitListID);
             this.calendarName=(TextView)itemView.findViewById(R.id.calendarName);
             this.invitedName=(TextView)itemView.findViewById(R.id.invitedName);

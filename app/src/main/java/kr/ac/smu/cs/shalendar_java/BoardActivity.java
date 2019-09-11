@@ -67,6 +67,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.concurrent.Future;
 
 import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
 
@@ -299,7 +300,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                 Log.i("게시판 넘어온 cid", Integer.toString(MainActivity.cid));
 
 
-                Ion.with(getApplicationContext())
+                Future ion = Ion.with(getApplicationContext())
                         .load("POST", url.getServerUrl() + "/initBoard")
                         .setHeader("Content-Type", "application/json")
                         //.progressDialog(progressDialog)
@@ -400,6 +401,12 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                 }
                             }
                         });
+                try {
+                    ion.get();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 mSwipeRefreshLayout.setRefreshing(false);
             }
         },1000);
@@ -531,7 +538,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
         progressDialog.show();
 
-        Ion.with(this)
+        Future ion = Ion.with(this)
                 .load("POST",url.getServerUrl() + "/imageChange")
                 //.setHeader("Content-Type", "application/json")
                 .setHeader("Authorization", userToken)
@@ -566,6 +573,11 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                         }
                     }
                 });
+        try {
+            ion.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
