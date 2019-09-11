@@ -190,7 +190,13 @@ public class WaitInvite extends AppCompatActivity {
                 senderID = invitationData.get("sender").getAsString();
                 receiver = invitationData.get("receiver").getAsString();
                 senderName = invitationData.get("senderName").getAsString();
-                sender_img = invitationData.get("sender_img").getAsString();
+
+
+                if (invitationData.get("sender_img").isJsonNull())
+                    sender_img = "DEFAULT :: profile_IMAGE";
+                else
+                    sender_img = invitationData.get("sender_img").getAsString();
+
                 cid = invitationData.get("cid").getAsInt();
                 calName = invitationData.get("cName").getAsString();
                 w_adapter.addItem(new WaitListItem(sender_img, senderID, calName, receiver, senderName, cid));

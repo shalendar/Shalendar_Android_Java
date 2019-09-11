@@ -4,10 +4,14 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -31,6 +35,9 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static android.content.Context.MODE_PRIVATE;
 import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
@@ -220,6 +227,20 @@ public class CreateCalendarActivity extends AppCompatActivity {
                         imageURL = calImage_old;
                     }
 
+                    AssetManager manager = getAssets();
+                    InputStream open;
+
+                    try {
+                        open = manager.open(imageURL);
+                        Bitmap bitmap = BitmapFactory.decodeStream(open);
+                        FileOutputStream os = openFileOutput(imageURL, Context.MODE_WORLD_READABLE);
+                        bitmap.compress(Bitmap.CompressFormat.JPEG,100,os);
+                        os.close();
+                    }catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
                     File file = new File(imageURL);
                     //서버 통신.
 
@@ -261,7 +282,11 @@ public class CreateCalendarActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-
+                    try {
+                        ion.get();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
                 }
             });

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -262,15 +263,20 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Global.setSid(boardList.get(getAdapterPosition() - 1).getSid());
                     Log.d("어댑터sid", "sid는" + Global.getSid());
 
-                    getScheduleFromServer(Global.getSid());
-//                    JsonObject json = new JsonObject();
-//
-//                    json.addProperty("sid", Global.getSid());
-//
-//                    final ProgressDialog progressDialog = new ProgressDialog(itemView.getContext());
-//                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//                    progressDialog.setMessage("해당 댓글로 이동중~" + boardList.get(getAdapterPosition() - 1).getSid());
-//                    progressDialog.show();
+
+
+//                    getScheduleFromServer(Global.getSid());
+                    JsonObject json = new JsonObject();
+
+                    json.addProperty("sid", Global.getSid());
+
+                    final ProgressDialog progressDialog = new ProgressDialog(itemView.getContext());
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.setMessage("해당 댓글로 이동중~" + boardList.get(getAdapterPosition() - 1).getSid());
+                    progressDialog.show();
+
+                    Global global = new Global();
+                    global.netWork_ShowSche(itemView.getContext(), progressDialog, json, url);
 //
 //
 //                    Ion.with(itemView.getContext())
@@ -365,7 +371,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             progressDialog.show();
 
 
-            Ion.with(itemView.getContext())
+            Future ion = Ion.with(itemView.getContext())
                     .load("POST", url.getServerUrl() + "/showSche")
                     .setHeader("Content-Type", "application/json")
                     .setJsonObjectBody(json)
@@ -392,7 +398,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                                     JsonObject data = result.get("data").getAsJsonObject();
 
 
-                                    userName = data.get("id").getAsString();
+                                    userName = data.get("userName").getAsString();
                                     schedTitle = data.get("title").getAsString();
                                     aboutSched = data.get("sContent").getAsString();
                                     schedLocation = data.get("area").getAsString();
@@ -431,6 +437,11 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                             }
                         }
                     });
+            try {
+                ion.get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
 

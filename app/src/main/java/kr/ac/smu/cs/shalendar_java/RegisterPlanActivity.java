@@ -180,9 +180,9 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 ////////////////////////////////////////////////
                 //추천시간 서버 통신
                 ////////////////////////////////////////////////
-                Log.i("추천시간 버튼에서", strStartDate);
+//                Log.i("추천시간 버튼에서", strStartDate);
 //                Log.i("추천시간 버튼에서", strStartTime);
-                Log.i("추천시간 버튼에서", strEndDate);
+//                Log.i("추천시간 버튼에서", strEndDate);
 //                Log.i("추천시간 버튼에서", strEndTime);
 
                 if(strStartTime != null && strStartDate != null && strEndDate != null && strStartDate.equals(strEndDate)) {
