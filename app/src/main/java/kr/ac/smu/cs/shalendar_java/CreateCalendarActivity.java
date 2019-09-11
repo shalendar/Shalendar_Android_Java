@@ -155,11 +155,6 @@ public class CreateCalendarActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-                    try {
-                        ion.get();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             });
 
