@@ -42,6 +42,7 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+
 import android.os.Handler;
 
 import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
@@ -51,7 +52,7 @@ import static kr.ac.smu.cs.shalendar_java.CodeNumber.PICK_IMAGE_REQUEST;
   app bar의 메뉴에서 '일정 수정', '일정 삭제' 선택시
   UpdatePlan, DeletePlanActivity로 각각 넘어간다.
  */
-public class PlanDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
+public class PlanDetailActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     SwipeRefreshLayout mSwipeRefreshLayout;//새로고침
 
@@ -80,11 +81,21 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
 
     ImageButton backButton;
 
+    int buttonFlag;
+
+    public int getButtonFlag() {
+        return buttonFlag;
+    }
+
+    public void setButtonFlag(int buttonFlag) {
+        this.buttonFlag = buttonFlag;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         //댓글생성, 수정 구분을 위한 Flag
-        final int buttonFlag = 0;
+
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan_detail);
@@ -154,9 +165,9 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
 
             @Override
             public void onClick(View v) {
-
+                //setButtonFlag(0);
                 //그냥 댓글 생성
-                if (buttonFlag == 0) {
+                if (getButtonFlag() == 0) {
 
                     replyInputString = replyInput.getText().toString();
                     if (replyInputString.length() == 0) {
@@ -211,70 +222,14 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                         Toast.makeText(getApplicationContext(), "받아오기 시작", Toast.LENGTH_SHORT).show();
 
 
-                        Ion.with(getApplicationContext())
-                                .load("POST", url.getServerUrl() + "/readComments")
-                                .setHeader("Content-Type", "application/json")
-                                .setHeader("Authorization", userToken)
-                                .setJsonObjectBody(json)
-                                .asJsonObject()
-                                .setCallback(new FutureCallback<JsonObject>() {
-                                    @Override
-                                    public void onCompleted(Exception e, JsonObject result) {
-
-                                        String comments, id, rdate, profile_img_url;
-                                        int commentNum;
-
-                                        if (e != null) {
-                                            Toast.makeText(getApplicationContext(), "Server Connection Error!", Toast.LENGTH_LONG).show();
-                                        } else {
-                                            //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
-                                            //data: 다음에 나오는 것들도 JsonObject형식.
-                                            //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
-                                            //JSONArray가 아님. 얘는 [,]로 묶여 있어야 함.
-
-                                            String message = result.get("message").getAsString();
-                                            //서버로 부터 응답 메세지가 success이면...
-
-                                            if (message.equals("success")) {
-                                                //서버 응답 오면 로딩 창 해제
-                                                // progressDialog.dismiss();
-
-                                                //data: {} 에서 {}안에 있는 것들도 JsonObject
-
-                                                JsonArray data = result.getAsJsonArray("data");
-
-                                                for (int i = 0; i < data.size(); i++) {
-                                                    JsonObject jsonArr1 = data.get(i).getAsJsonObject();
-                                                    commentNum = jsonArr1.get("commentNum").getAsInt();
-                                                    comments = jsonArr1.get("comments").getAsString();
-                                                    id = jsonArr1.get("id").getAsString();
-                                                    rdate = jsonArr1.get("rdate").getAsString();
-
-                                                    if (jsonArr1.get("img_url").isJsonNull())
-                                                        profile_img_url = "DEFAULT :: profile_IMAGE";
-                                                    else
-                                                        profile_img_url = jsonArr1.get("img_url").getAsString();
-
-                                                    plandetailAdapter.addItem(new PlandetailItem(profile_img_url, id, rdate, comments, commentNum));
-                                                    plandetailAdapter.notifyDataSetChanged();
-                                                }
-
-                                                //Log.i("result",data.get("id").getAsString());
-                                            } else {
-
-                                                Toast.makeText(getApplicationContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
-                                            }
-
-                                        }
-                                    }
-                                });
+                        onRefresh();
 
                         //replyInput.clearFocus();
-                        //replyInput.setText("");
+                        replyInput.setText("");
 
-                        Toast.makeText(getApplicationContext(), "FLAG값"+buttonFlag, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "FLAG값" + buttonFlag, Toast.LENGTH_LONG).show();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
                     }
 
@@ -293,8 +248,6 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                            final int position, long id) {
                 Toast.makeText(getApplicationContext(), plandetailAdapter.items.get(position - 1).getReply_name(), Toast.LENGTH_SHORT).show();
 
-                //플래그
-                final int buttonFlag = 1;
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
                 dialog.setTitle("댓글 수정/삭제");
@@ -302,6 +255,10 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                         .setPositiveButton("수정", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+
+                                //플래그
+                                setButtonFlag(1);
+
                                 replyInput.requestFocus();
                                 //키보드 올라오는 코드
                                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -349,6 +306,7 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                                             if (message.equals("success")) {
                                                                 //서버 응답 오면 로딩 창 해제
                                                                 Toast.makeText(getApplicationContext(), "수정성공", Toast.LENGTH_SHORT).show();
+                                                                setButtonFlag(0);
                                                             } else {
                                                                 Toast.makeText(getApplicationContext(), "수정실패", Toast.LENGTH_SHORT).show();
                                                             }
@@ -358,24 +316,23 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                                     }
 
                                                 });
-//                                        try {
-//                                            ion.get();
-//                                        } catch (Exception e) {
-//                                            e.printStackTrace();
-//                                        }
+                                        try {
+                                            ion.get();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
                                         replyInput.clearFocus();
                                         replyInput.setText("");
 
                                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
                                         plandetailAdapter.items.clear();
                                         onRefresh();
+
                                     }
                                 });
-
-
                                 dialog.cancel();
                             }
                         })
@@ -434,15 +391,19 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                 onRefresh();
 
                                 dialog.cancel();
+
                             }
                         });
 
                 plandetailAdapter.notifyDataSetChanged();
                 AlertDialog alertDialog = dialog.create();
                 alertDialog.show();
+
                 return false;
             }
+
         });
+
 
         backButton = findViewById(R.id.btn_back);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -483,7 +444,7 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                             @Override
                             public void onCompleted(Exception e, JsonObject result) {
 
-                                String comments, id, rdate, profile_img_url;
+                                String comments, name, rdate, profile_img_url;
                                 int commentNum;
 
                                 if (e != null) {
@@ -509,7 +470,7 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                             JsonObject jsonArr1 = data.get(i).getAsJsonObject();
                                             commentNum = jsonArr1.get("commentNum").getAsInt();
                                             comments = jsonArr1.get("comments").getAsString();
-                                            id = jsonArr1.get("id").getAsString();
+                                            name = jsonArr1.get("userName").getAsString();
                                             rdate = jsonArr1.get("rdate").getAsString();
 
                                             if (jsonArr1.get("img_url").isJsonNull())
@@ -518,7 +479,7 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                                 profile_img_url = jsonArr1.get("img_url").getAsString();
 
 
-                                            plandetailAdapter.addItem(new PlandetailItem(profile_img_url, id, rdate, comments, commentNum));
+                                            plandetailAdapter.addItem(new PlandetailItem(profile_img_url, name, rdate, comments, commentNum));
                                             plandetailAdapter.notifyDataSetChanged();
                                         }
 

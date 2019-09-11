@@ -77,6 +77,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
     Button sndbutton;
     //
 
+    ImageButton closeButton;
+
     //userToken
     private String userToken;
 
@@ -121,6 +123,8 @@ public class RegisterPlanActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recotime_Recycler);
 
         //애니메이션
+        closeButton=(ImageButton)findViewById(R.id.closearrow);
+
         translateUpAnim = AnimationUtils.loadAnimation(this, R.anim.translate_up);
         translateDownAnim = AnimationUtils.loadAnimation(this, R.anim.translate_down);
 
@@ -145,28 +149,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
             }
         });
 
-//        //추천시간 눌릴때
-//        reccomandtime_button = findViewById(R.id.register_getTime_Button);
-//        reccomandtime_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                ////////////////////////////////////////////////
-//                //추천시간 서버 통신
-//                ////////////////////////////////////////////////
-//
-//                getRecommandTimeFromServer();
-//
-//                if (isPageOpen) {
-//                    page.startAnimation(translateDownAnim);
-//                } else {
-//                    page.setVisibility(View.VISIBLE);
-//                    page.startAnimation(translateUpAnim);
-//                }
-//            }
-//        });
-
-        //
         planTitle = findViewById(R.id.register_title_EditText);
         aboutPlan = findViewById(R.id.register_aboutPlan_EditText);
         location = findViewById(R.id.register_location_EditText);
@@ -206,12 +188,16 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 if(strStartTime != null && strStartDate != null && strEndDate != null && strStartDate.equals(strEndDate)) {
                     getRecommandTimeFromServer();
 
-                    if (isPageOpen) {
-                        page.startAnimation(translateDownAnim);
-                    } else {
+                    if (!isPageOpen) {
                         page.setVisibility(View.VISIBLE);
                         page.startAnimation(translateUpAnim);
                     }
+                    closeButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            page.startAnimation(translateDownAnim);
+                        }
+                    });
 
                 } else
                     Toast.makeText(getApplicationContext(), "추천시간을 받을 수 있는 조건이 아닙니다.", Toast.LENGTH_LONG).show();
