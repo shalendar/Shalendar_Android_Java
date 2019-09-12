@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -33,6 +34,7 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.ProgressCallback;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -203,6 +205,27 @@ public class CreateCalendarActivity extends AppCompatActivity {
             calendarName.setText(calName_old);
             aboutCalendar.setText(calContent_old);
 
+//
+//            Ion.with(getApplicationContext())
+//                    .load(calImage_old)
+//                    .progress(new ProgressCallback() {
+//                        @Override
+//                        public void onProgress(long downloaded, long total) {
+//                            System.out.println("" + downloaded + " / " + total);
+//                        }
+//                    })
+//                    .write(new File(Environment.))
+//                    .setCallback(new FutureCallback<File>() {
+//                        @Override
+//                        public void onCompleted(Exception e, File file) {
+//                            if (e != null)
+//                                Toast.makeText(getApplicationContext(), "캘린더 이미지 저장 실패", Toast.LENGTH_LONG).show();
+//                            else {
+//                                Toast.makeText(getApplicationContext(), "캘린더 이미지 저장 성공", Toast.LENGTH_LONG).show();
+//                                file2 = new File(path);
+//                            }
+//                        }
+//                    });
 
             //갤러리에서 사진 가져오기 위한 ImageView리스너 구현
             imageView.setOnClickListener(new View.OnClickListener() {
@@ -223,71 +246,55 @@ public class CreateCalendarActivity extends AppCompatActivity {
                     String cid_update = Integer.toString(cid_old);
 
 
-                    if(imageURL == null) {
-                        imageURL = calImage_old;
-                    }
+                    if (imageURL == null) {
+                        Toast.makeText(getApplicationContext(), "이미지를 다른 이미지로 선택해주세요", Toast.LENGTH_LONG).show();
+                    } else {
+                        File file = new File(imageURL);
+                        //서버 통신.
 
-                    AssetManager manager = getAssets();
-                    InputStream open;
+                        final ProgressDialog progressDialog = new ProgressDialog(CreateCalendarActivity.this);
+                        progressDialog.setMessage("공유 달력을 수정 중 입니다~");
+                        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+                        progressDialog.show();
 
-                    try {
-                        open = manager.open(imageURL);
-                        Bitmap bitmap = BitmapFactory.decodeStream(open);
-                        FileOutputStream os = openFileOutput(imageURL, Context.MODE_WORLD_READABLE);
-                        bitmap.compress(Bitmap.CompressFormat.JPEG,100,os);
-                        os.close();
-                    }catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                        final Future ion = Ion.with(getApplicationContext())
+                                .load("POST", url.getServerUrl() + "/updateCal")
+                                //요청 헤더 지정
+                                //.setHeader("Content-Type","application/json")
+                                .setHeader("Authorization", userToken)
+                                .setTimeout(60000)
+                                .setMultipartFile("file", file)
+                                .setMultipartParameter("calName", calName)
+                                .setMultipartParameter("calContent", aboutCal)
+                                .setMultipartParameter("cid", cid_update)
+                                //응답형식
+                                .asJsonObject()
+                                .setCallback(new FutureCallback<JsonObject>() {
+                                    @Override
+                                    public void onCompleted(Exception e, JsonObject result) {
 
-
-                    File file = new File(imageURL);
-                    //서버 통신.
-
-                    final ProgressDialog progressDialog = new ProgressDialog(CreateCalendarActivity.this);
-                    progressDialog.setMessage("공유 달력을 수정 중 입니다~");
-                    progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-                    progressDialog.show();
-
-                    final Future ion = Ion.with(getApplicationContext())
-                            .load("POST", url.getServerUrl() + "/updateCal")
-                            //요청 헤더 지정
-                            //.setHeader("Content-Type","application/json")
-                            .setHeader("Authorization", userToken)
-                            .setTimeout(60000)
-                            .setMultipartFile("file", file)
-                            .setMultipartParameter("calName", calName)
-                            .setMultipartParameter("calContent", aboutCal)
-                            .setMultipartParameter("cid", cid_update)
-                            //응답형식
-                            .asJsonObject()
-                            .setCallback(new FutureCallback<JsonObject>() {
-                                @Override
-                                public void onCompleted(Exception e, JsonObject result) {
-
-                                    if (e != null) { //서버 연결 오류
-                                        Log.i("달력 수정 에러코드", e.getMessage());
-                                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                                    } else {// 서버 연결 성공 시
-                                        progressDialog.dismiss();
-                                        String message = result.get("message").getAsString();
-                                        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-
-                                        if (message.equals("success")) {
-                                            MainActivity.calName = calName;
-                                            Dialog();
-                                        }
-                                        else
+                                        if (e != null) { //서버 연결 오류
+                                            Log.i("달력 수정 에러코드", e.getMessage());
+                                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                        } else {// 서버 연결 성공 시
+                                            progressDialog.dismiss();
+                                            String message = result.get("message").getAsString();
                                             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-                    try {
-                        ion.get();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
+                                            if (message.equals("success")) {
+                                                MainActivity.calName = calName;
+                                                Dialog();
+                                            } else
+                                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+//                        try {
+//                            ion.get();
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+                    }
                 }
             });
 
@@ -325,6 +332,7 @@ public class CreateCalendarActivity extends AppCompatActivity {
 
     //로컬 폰의 갤러리에서 사진 선택
     private void getPictureFromGallery() {
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/jpg");
         try {

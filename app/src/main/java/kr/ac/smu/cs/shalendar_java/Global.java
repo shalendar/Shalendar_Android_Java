@@ -85,8 +85,8 @@ public class Global {
     }
 
     public void setProfileImage(ImageView userProfile, String profile_img) {
-        if (!(profile_img.equals("DEFAULT :: profile_IMAGE"))) {
 
+        if (!(profile_img.equals("DEFAULT :: profile_IMAGE"))) {
             userProfile.setBackground(new ShapeDrawable(new OvalShape()));
             if(Build.VERSION.SDK_INT >= 21) {
                 userProfile.setClipToOutline(true);
@@ -98,10 +98,6 @@ public class Global {
                     .load(profile_img);
         } else {
             userProfile.setImageResource(R.drawable.profile_default);
-//            Ion.with(userProfile)
-//                    .centerCrop()
-//                    .placeholder(R.drawable.profile_default)
-//                    .resize(250, 250);
         }
     }
 

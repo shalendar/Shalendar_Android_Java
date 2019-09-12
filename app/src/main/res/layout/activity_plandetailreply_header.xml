@@ -40,9 +40,11 @@
                 android:id="@+id/plandetail_header_profile_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:paddingLeft="6dp"
                 android:paddingTop="2dp"
-                android:text="박보영"
+                android:text="DEFAULT NAME"
                 android:textColor="#444444"
                 android:textSize="14sp" />
 
@@ -59,14 +61,14 @@
                 android:layout_height="wrap_content"
                 android:text="장소  | "
                 android:textColor="#265570"
-                android:textSize="14sp" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <TextView
                 android:id="@+id/plandetail_header_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
-                android:text="공학관"
+                android:text="DEFAULT DATE"
                 android:textColor="#a4a4a4"
                 android:textSize="14sp" />
 
@@ -79,7 +81,7 @@
             android:layout_marginTop="10dp"
             android:text="일정 설명"
             android:textColor="#265570"
-            android:textSize="14sp" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
             android:id="@+id/plandetail_header_aboutSchedule"
@@ -96,7 +98,7 @@
             android:layout_marginTop="15dp"
             android:text="일정"
             android:textColor="#265570"
-            android:textSize="14sp" />
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <TextView
             android:id="@+id/plandetail_header_startToEndTime"
@@ -105,9 +107,9 @@
             android:layout_gravity="center"
             android:background="#f8f8f8"
             android:gravity="left"
-            android:paddingLeft="4dp"
+            android:paddingLeft="0dp"
             android:paddingTop="10dp"
-            android:text="4월 5일 금요일 오전 10:00 ~ 4월 6일 토요일 오전 10:00"
+            android:text="DEFAULT DATE"
             android:textColor="#4a4a4a"
             android:textSize="14sp" />
 
@@ -126,11 +128,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:paddingLeft="3dp"
+        android:paddingLeft="16dp"
         android:text="댓글"
-        android:textAllCaps="false"
-        android:textColor="#4a4a4a"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
 </LinearLayout>

@@ -564,8 +564,6 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                         .centerCrop()
                                         .resize(250, 250)
                                         .load(imageUrl);
-
-                                progressDialog.dismiss();
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
@@ -575,6 +573,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                 });
         try {
             ion.get();
+            progressDialog.dismiss();
         } catch (Exception e) {
             e.printStackTrace();
         }
