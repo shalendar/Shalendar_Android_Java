@@ -937,12 +937,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+
             case R.id.btn_menu:
                 showMenu();
                 break;
             case R.id.btn_search:
-                Intent intent2 = new Intent(getApplicationContext(), SearchPlanActivity.class);
-                startActivity(intent2);
+                if(cid == 0) {
+                    Toast.makeText(getApplicationContext(), "달력을 먼저 선택하세요~", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent intent2 = new Intent(getApplicationContext(), SearchPlanActivity.class);
+                    startActivity(intent2);
+                }
                 break;
         }
     }

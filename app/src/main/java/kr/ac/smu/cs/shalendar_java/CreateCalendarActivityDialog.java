@@ -33,10 +33,9 @@ public class CreateCalendarActivityDialog extends Dialog {
         getWindow().setAttributes(lpWindow);
 
 
-        setContentView(R.layout.activity_register_plan_dialog);
+        setContentView(R.layout.activity_create_calendar_dialog);
 
         gotomain = findViewById(R.id.CreateCalendarComplete);
-
         gotomain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

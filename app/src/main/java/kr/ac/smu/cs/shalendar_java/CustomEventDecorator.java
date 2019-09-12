@@ -34,19 +34,12 @@ public class CustomEventDecorator implements LineBackgroundSpan {
     public void drawBackground(Canvas canvas, Paint paint, int left, int right, int top, int baseline,
                                int bottom, CharSequence text, int start, int end, int lnum) {
 
-//        Log.d("left", Integer.toString(left));
-//        Log.d("right", Integer.toString(right));
-//        Log.d("top", Integer.toString(top));
-//        Log.d("bottom", Integer.toString(bottom));
-
         int oldColor = paint.getColor();
         if (color != 0) {
             paint.setColor(color);
         }
-        /*
-        canvas.drawCircle((left + right) / 2 - 20, bottom + radius, radius, paint);
-        paint.setColor(oldColor);
-        */
+
+
         switch(pivotNum) {
             case 1:
                 canvas.drawCircle((left + right) / 2, (bottom + top) / 2 + 30, radius, paint);
