@@ -22,14 +22,10 @@ public class CreateMember3 extends AppCompatActivity {
         buttonToLogin = findViewById(R.id.loginpage_button);
 
 
-        Intent intent = getIntent();
-        userEmail = intent.getStringExtra("userEmail");
-        userName = intent.getStringExtra("userName");
-        userPassword = intent.getStringExtra("userPassword");
-
-//        Log.i("사용자 이메일", userEmail);
-//        Log.i("사용자 이름", userName);
-//        Log.i("사용자 비밀번호", userPassword);
+//        Intent intent = getIntent();
+//        userEmail = intent.getStringExtra("userEmail");
+//        userName = intent.getStringExtra("userName");
+//        userPassword = intent.getStringExtra("userPassword");
 
 
         buttonToLogin.setOnClickListener(new View.OnClickListener() {
@@ -37,7 +33,8 @@ public class CreateMember3 extends AppCompatActivity {
             public void onClick(View v) {
 
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivityForResult(intent, CodeNumber.TO_LOGIN_ACTIVITY);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
 
             }
         });

@@ -96,22 +96,35 @@ public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.View
         }
 
         public void setItem(UserEmail item) {
-            Global global = new Global();
-            global.setProfileImage(userImage, item.getUserImageURL());
-//            userImage.setBackground(new ShapeDrawable(new OvalShape()));
-//            if (Build.VERSION.SDK_INT >= 21) {
-//                userImage.setClipToOutline(true);
-//            }
+//            Global global = new Global();
+//            global.setProfileImage(userImage, item.getUserImageURL());
+
 //            if (item.getUserImageURL().equals("DEFAULT :: profile_IMAGE")) {
 //                userImage.setImageResource(R.drawable.profile_default);
 //            } else {
+//                userImage.setBackground(new ShapeDrawable(new OvalShape()));
+//                if (Build.VERSION.SDK_INT >= 21) {
+//                    userImage.setClipToOutline(true);
+//                }
 //                Ion.with(userImage)
 //                        .centerCrop()
 //                        .resize(80, 80)
 //                        .load(item.getUserImageURL());
+//
 //            }
-//            userImage.setBackground(new ShapeDrawable(new OvalShape()));
-//            userImage.setClipToOutline(true);
+
+            if (!(userImage.equals("DEFAULT :: profile_IMAGE"))) {
+                Ion.with(userImage)
+                        .centerCrop()
+                        .resize(250, 250)
+                        .load(item.getUserImageURL());
+            } else {
+                userImage.setImageResource(R.drawable.profile_default);
+            }
+            userImage.setBackground(new ShapeDrawable(new OvalShape()));
+            if(Build.VERSION.SDK_INT >= 21) {
+                userImage.setClipToOutline(true);
+            }
             userEmail.setText(item.getUserEmail());
 //            checkBox.setChecked(item.getIs_checked());
         }
