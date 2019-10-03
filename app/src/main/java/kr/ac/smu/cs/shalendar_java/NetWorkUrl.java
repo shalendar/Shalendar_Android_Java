@@ -10,7 +10,6 @@ package kr.ac.smu.cs.shalendar_java;
  */
 public class NetWorkUrl {
 
-
     private String toServer_URL = "https://91dbe0f6.ngrok.io/MIND";
 
     public String getServerUrl() {

@@ -126,6 +126,7 @@ public class CreateMember2 extends AppCompatActivity {
         progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
         progressDialog.show();
 
+
         Ion.with(getApplicationContext())
                 .load("POST", url.getServerUrl() + "/signup")
                 .setHeader("Content-Type", "application/json")
