@@ -37,18 +37,6 @@ public class SidebarTeamAdapter extends RecyclerView.Adapter<SidebarTeamAdapter.
         Global global = new Global();
 
         global.setProfileImage(holder.sideteamMatePic, teamIteam.getTeammatePic());
-//        if(teamIteam.getTeammatePic().equals("DEFAULT :: profile_IMAGE"))
-//            holder.sideteamMatePic.setImageResource(R.drawable.profile_default);
-//        else {
-//            Ion.with(holder.sideteamMatePic)
-//                    .centerCrop()
-//                    .resize(50,50)
-//                    .load(teamIteam.getTeammatePic());
-//            holder.sideteamMatePic.setBackground(new ShapeDrawable(new OvalShape()));
-//            holder.sideteamMatePic.setClipToOutline(true);
-//
-//        }
-
     }
 
     @Override

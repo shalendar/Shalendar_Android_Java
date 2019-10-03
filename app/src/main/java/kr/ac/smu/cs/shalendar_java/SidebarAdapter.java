@@ -44,9 +44,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
     @Override
     public ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.sidebaritem, null);
-//        SidebarAdapter.ItemRowHolder mh = new SidebarAdapter.ItemRowHolder(v);
-//        return mh;
 
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -57,17 +54,7 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
 
     @Override
     public void onBindViewHolder(ItemRowHolder holder, int position) {
-//        String calendarName = calendarList.get(position).getCalendarName();
-//        String calendarImage = calendarList.get(position).getCalendarImage();
         ArrayList teampicList = calendarList.get(position).getTeamImageList();
-//
-//        holder.calendarSidebarName.setText(calendarName);
-//        holder.calendarSidebarImage.setImageURI(calendarImage);
-
-//        Ion.with(holder.calendarSidebarImage)
-//                .centerCrop()
-//                .placeholder(R.drawable.face)
-//                .load(calendarImage);
 
         SidebarItem item = calendarList.get(position);
         holder.setItem(item);
@@ -114,9 +101,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
         int calendar_ID;
         String calendarName;
         String calendarContent;
-//        String senderName;
-//        String senderImg;
-
         NetWorkUrl url = new NetWorkUrl();
 
 
@@ -138,9 +122,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
                     if (MainActivity.cid == 0) {
                         Toast.makeText(itemView.getContext(), "달력을 먼저 선택해주세요", Toast.LENGTH_SHORT).show();
                     } else {
-//                        if (getAdapterPosition() == 0) {
-//                            Toast.makeText(itemView.getContext(), "해당 달력은 개인 달력 입니다.", Toast.LENGTH_LONG).show();
-//                        } else {
                         Intent intent = new Intent(itemView.getContext(), InviteActivity.class);
                         intent.putExtra("cid", calendar_ID);
                         intent.putExtra("calName", calendarName);
@@ -215,15 +196,6 @@ public class SidebarAdapter extends RecyclerView.Adapter<SidebarAdapter.ItemRowH
             });
         }
 
-
-//        public void setSenderName(String senderName) {
-//            this.senderName = senderName;
-//        }
-
-
-//        public void setSenderImg(String senderImg) {
-//            this.senderImg = senderImg;
-//        }
 
         public void setCid(int calendar_ID) {
             this.calendar_ID = calendar_ID;

@@ -44,24 +44,6 @@ public class PlandetailItemView extends LinearLayout {
 
         Global global = new Global();
         global.setProfileImage(reply_profile_img, profile_img);
-//        if (!(profile_img.equals("DEFAULT :: profile_IMAGE"))) {
-//
-//            reply_profile_img.setBackground(new ShapeDrawable(new OvalShape()));
-//            if(Build.VERSION.SDK_INT >= 21) {
-//                reply_profile_img.setClipToOutline(true);
-//            }
-//
-//            Ion.with(reply_profile_img)
-//                    .centerCrop()
-//                    .resize(250, 250)
-//                    .load(profile_img);
-//        } else {
-//
-//            Ion.with(reply_profile_img)
-//                    .centerCrop()
-//                    .placeholder(R.drawable.profile_default)
-//                    .resize(250, 250);
-//        }
     }
     public void setReply_profile_name(String profile_name){ reply_profile_name.setText(profile_name);}
     public void setReply_date(String date){ reply_date.setText(date);}

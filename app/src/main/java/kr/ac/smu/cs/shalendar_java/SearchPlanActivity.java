@@ -125,19 +125,12 @@ public class SearchPlanActivity extends AppCompatActivity {
             }
         });
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.search_toolbar);
-//        setSupportActionBar(toolbar);
-
     }
 
     /*
      서버로 부터 온 응답 파싱하는 부분.
      */
     public void parseResponse(String message, JsonObject result) {
-
-        //파싱전 먼저들어온 item지우기
-        //adapter.items.clear();
-
 
         if(message.equals("success")) {
 

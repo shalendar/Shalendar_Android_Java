@@ -73,11 +73,6 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
 
         global.setProfileImage(holder.waitPeoplePic, waitPeopleImg);
 
-//        Ion.with(holder.waitPeoplePic)
-//                .centerCrop()
-//                .resize(50,50)
-//                .load(waitPeopleImg);
-
     }
 
     @Override

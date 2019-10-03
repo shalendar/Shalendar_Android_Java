@@ -103,27 +103,12 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         findViewById(R.id.btn_add_calender).setOnClickListener(this);
         findViewById(R.id.btn_invite).setOnClickListener(this);
         findViewById(R.id.image_profile).setOnClickListener(this);
-//
-//        imageView = findViewById(R.id.image_profile);
-//        imageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                getPictureFromGallery();
-//            }
-//        });
 
 
         //사용자 ID 프로필 set
         TextView userName = findViewById(R.id.userName_textView);
         TextView userID = findViewById(R.id.userID_textView);
         ImageView imageView = findViewById(R.id.image_profile);
-
-//        imageView.setBackground(new ShapeDrawable(new OvalShape()));
-//        if(Build.VERSION.SDK_INT >= 21) {
-//            imageView.setClipToOutline(true);
-//        }
-
-
 
         SharedPreferences pref = getContext().getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         userProfile_Name = pref.getString("userName", "DEFAULT :: USER");
@@ -133,7 +118,6 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
         userName.setText(userProfile_Name);
         userID.setText(userProfile_ID);
-
 
         Log.i("사용자 프로필 이미지??", userProfile_ImgURL);
 
@@ -156,10 +140,6 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                     .resize(250, 250);
         }
 
-
-
-
-
         //리사이클러
         calendarRecyclerList = new ArrayList<>();
 
@@ -176,8 +156,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
         s_adapter.notifyDataSetChanged();
 
     }
-
-
+    
     //서버에서 응답받은 것 파싱해서 여기에서 추가하면 된다.
     public void insertData() {
 
@@ -208,7 +187,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                             Toast.makeText(getContext(), "Sever Connection Error", Toast.LENGTH_LONG).show();
                         } else {
                             String message = result.get("message").getAsString();
-                            Toast.makeText(getContext(), "/readAllcal::" + message, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "달력을 불러옵니다~", Toast.LENGTH_LONG).show();
                             parseDataFromServer(message, result);
                         }
                     }
@@ -244,21 +223,13 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
 
                 Log.i("전달 받은 cid", Integer.toString(cid_Array[i]));
                 Log.i("공유달력 내부의 사용자 명수 ", Integer.toString(innerData2.size()));
-//                Log.i("해당 달력에 있는 사용자이름", innerData2.get(i).getAsJsonObject().get("userName").getAsString());
 
                 SidebarItem sitem = new SidebarItem();
 
-                //sitem.setSenderName(userProfile_Name);
-                //sitem.setSenderImg(userProfile_ImgURL);
                 sitem.setCalendarName(innerData.get("calName").getAsString());
                 sitem.setCalendarImage(innerData.get("img_url").getAsString());
                 sitem.setCalendarContent(innerData.get("calContent").getAsString());
                 sitem.setCalendar_ID(cid_Array[i]);
-
-//                String calName = innerData.get("calName").getAsString();
-//                String cal_img = innerData.get("img_url").getAsString();
-//                s_adapter.addItem(new SidebarItem(calName, cal_img));
-
 
                 ArrayList<SidebarTeamItem> stItem = new ArrayList<>();
 
@@ -279,7 +250,7 @@ public class Sidebar extends LinearLayout implements View.OnClickListener {
                 calendarRecyclerList.add(sitem);
             }
         } else {
-            Toast.makeText(getContext(), "/readAllCal 현재 달력 없음", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "사이드바에서 달력을 선택하세요", Toast.LENGTH_LONG).show();
         }
     }
 

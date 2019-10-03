@@ -13,9 +13,7 @@
             android:id="@+id/waitListPicture"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
             android:adjustViewBounds="true" />
-            <!--android:background="@mipmap/ic_launcher" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="calendarName"
-                    android:textSize="16sp" />
+                    android:textSize="11sp" />
 
                 <TextView
                     android:id="@+id/invitedName"
@@ -50,15 +48,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="invitedName"
-                    android:textSize="16sp" />
+                    android:textSize="11sp" />
 
                 <TextView
                     android:id="@+id/inviteName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="inviteName"
-                    android:textSize="16sp" />
+                    android:text="E-mail"
+                    android:textSize="11sp" />
 
             </LinearLayout>
         </LinearLayout>

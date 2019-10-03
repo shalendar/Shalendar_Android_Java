@@ -63,8 +63,6 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.calendarData = calendarData;
     }
 
-    //사람을 받아옴
-
 
     @NonNull
     @Override
@@ -184,7 +182,7 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 @Override
                 public boolean onLongClick(View v) {
                     Global.setSid(boardList.get(getAdapterPosition() - 1).getSid());
-                    Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname() + "이거 수정한다잉", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(v.getContext(), boardList.get(getAdapterPosition() - 1).getPlanname() + "이거 수정한다잉", Toast.LENGTH_SHORT).show();
 
                     AlertDialog.Builder dialog = new AlertDialog.Builder(v.getContext());
                     dialog.setTitle("일정 수정/삭제");
@@ -264,8 +262,6 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     Log.d("어댑터sid", "sid는" + Global.getSid());
 
 
-
-//                    getScheduleFromServer(Global.getSid());
                     JsonObject json = new JsonObject();
 
                     json.addProperty("sid", Global.getSid());
@@ -277,71 +273,6 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
                     Global global = new Global();
                     global.netWork_ShowSche(itemView.getContext(), progressDialog, json, url);
-//
-//
-//                    Ion.with(itemView.getContext())
-//                            .load("POST", url.getServerUrl() + "/showSche")
-//                            .setHeader("Content-Type", "application/json")
-//                            .setJsonObjectBody(json)
-//                            .asJsonObject() //응답
-//                            .setCallback(new FutureCallback<JsonObject>() {
-//                                @Override
-//                                public void onCompleted(Exception e, JsonObject result) {
-//                                    //응답 받을 변수
-//                                    String userName, schedTitle, aboutSched, schedLocation;
-//                                    String startDate, startTime, endDate, endTime, startToEnd;
-//
-//                                    if (e != null) {
-//                                        Toast.makeText(itemView.getContext(), "Server Connection Error!", Toast.LENGTH_LONG).show();
-//                                    } else {
-//                                        //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
-//                                        //data: 다음에 나오는 것들도 JsonObject형식.
-//                                        //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
-//                                        //JSONArray가 아님. 얘는 [,]로 묶여 있어야 함.
-//
-//                                        String message = result.get("message").getAsString();
-//                                        //서버로 부터 응답 메세지가 success이면...
-//
-//                                        if (message.equals("success")) {
-//                                            //서버 응답 오면 로딩 창 해제
-//                                            progressDialog.dismiss();
-//
-//                                            //data: {} 에서 {}안에 있는 것들도 JsonObject
-//                                            JsonObject data = result.get("data").getAsJsonObject();
-//
-//                                            userName = data.get("id").getAsString();
-//                                            schedTitle = data.get("title").getAsString();
-//                                            aboutSched = data.get("sContent").getAsString();
-//                                            schedLocation = data.get("area").getAsString();
-//                                            startDate = data.get("startDate").getAsString();
-//                                            //startTime = data.get("startTime").getAsString();
-//                                            endDate = data.get("endDate").getAsString();
-//                                            //endTime = data.get("endTime").getAsString();
-//
-//                                            //뒤에 0.000 잘라내기
-//                                            startDate = startDate.substring(0, 16);
-//                                            endDate = endDate.substring(0, 16);
-//                                            startToEnd = startDate + " ~ " + endDate;
-//
-//                                            Intent intent = new Intent(context, PlanDetailActivity.class);
-//                                            intent.putExtra("userName", userName);
-//                                            intent.putExtra("schedTitle", schedTitle);
-//                                            intent.putExtra("aboutSched", aboutSched);
-//                                            intent.putExtra("area", schedLocation);
-//                                            intent.putExtra("startToEnd", startToEnd);
-//
-//                                            context.startActivity(intent);
-//
-//                                            Log.i("result", data.get("id").getAsString());
-//                                        } else {
-//
-//                                            Toast.makeText(itemView.getContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
-//                                        }
-//
-//                                    }
-//                                }
-//                            });
-
                 }
             });
 
@@ -459,22 +390,9 @@ public class BoarderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
-    class FooterViewHolder extends RecyclerView.ViewHolder {
-
-        FooterViewHolder(View footerView) {
-            super(footerView);
-        }
-    }
-
     @Override
     public int getItemViewType(int position) {
         return position;
-//        if (position == 0)
-//            return TYPE_HEADER;
-//        else if (position == boardList.size() + 1)
-//               return TYPE_FOOTER;
-//        else
-//            return TYPE_ITEM;
     }
 
 }
