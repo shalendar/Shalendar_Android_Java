@@ -9,7 +9,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="dummy_text1">2019년 09월 08일 Ver 1.0.0</string>
-    <string name="dummy_text2">상명대학교 졸업 프로젝트\n컴퓨터 과학과 고진권(팀장 및 안드로이드)\n컴퓨터 과학과 박성준(안드로이드)</string>
+    <string name="dummy_text2">상명대학교 졸업 프로젝트\n컴퓨터 과학과 고진권, 박성준, 박지상, 김형택, 정구일</string>
     <string name="title_activity_demo">Demo</string>
     <string name="title_license">라이센스</string>
     <string name="title_questions">자주하는 질문</string>

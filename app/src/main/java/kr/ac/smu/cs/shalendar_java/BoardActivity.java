@@ -145,7 +145,7 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         SharedPreferences pref = getSharedPreferences("pref_USERTOKEN", MODE_PRIVATE);
         userToken = pref.getString("userToken", "NO_TOKEN");
-        Log.i("Board화면::넘겨받은 토큰", userToken);
+        //Log.i("Board화면::넘겨받은 토큰", userToken);
 
         //JS
         init();
@@ -166,121 +166,9 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         Ion.getDefault(getApplicationContext()).getConscryptMiddleware().enable(false);
 
         onRefresh();
-        /*
-        final JsonObject json = new JsonObject();
-
-        json.addProperty("cid", MainActivity.cid);
-        Log.i("게시판 넘어온 cid", Integer.toString(MainActivity.cid));
-
-//        final ProgressDialog progressDialog = new ProgressDialog(getApplicationContext());
-//        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//        progressDialog.setMessage("잠시만 기다려주세요. 게시판화면 불러오는중~");
-//        progressDialog.show();
-
-        Ion.with(getApplicationContext())
-                .load("POST", url.getServerUrl() + "/initBoard")
-                .setHeader("Content-Type", "application/json")
-                //.progressDialog(progressDialog)
-                .setJsonObjectBody(json)
-                .asJsonObject() //응답
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        //받을 변수
-                        String datetime, planname, location, replynum;
-                        String id, pw, userName, img_url, calName, calContent;
-                        int cid, sid, numOfComments, userCount;
-                        String title, sContent, startDate, endDate, area, planDate;
 
 
-                        if (e != null) {
-                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-
-                        } else {
-                            //응답 형식이 { "data":{"id":"jacob456@hanmail.net", "cid":1, "sid":10, "title":"korea"}, "message":"success"}
-                            //data: 다음에 나오는 것들도 JsonObject형식.
-                            //따라서 data를 JsonObject로 받고, 다시 이 data를 이용하여(어찌보면 JsonObject안에 또다른 JsonObject가 있는 것이다.
-                            //JSONArray가 아님. 얘는 [,]로 묶여 있어야 함.
-
-                            String message = result.get("message").getAsString();
-                            sharePeopleNum = result.get("sharePeopleNum").getAsInt();
-
-
-                            //여기서부터 SharedPreference써본다잉
-                            SharedPreferences sharedPnum = getSharedPreferences("Peoplenum", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPnum.edit();
-                            editor.putInt("Peoplenum",sharePeopleNum);
-                            editor.apply();
-
-
-                            Log.i("요기요1", Integer.toString(sharePeopleNum));
-
-                            //b_adapter.setSharedNumber(sharePeopleNum);
-
-                            //서버로 부터 응답 메세지가 success이면...
-
-                            if (message.equals("success")) {
-                                //서버 응답 오면 로딩 창 해제
-                                //progressDialog.dismiss();
-
-                                //shareuserdata: {} 에서 {}안에 있는 것들도 JsonObject
-                                JsonArray sharedUserData = result.get("shareUserData").getAsJsonArray();
-
-
-                                for (int i = 0; i < sharePeopleNum; i++) {
-                                    JsonObject jsonArr = sharedUserData.get(i).getAsJsonObject();
-                                    id = jsonArr.get("id").getAsString();
-                                    //pw=jsonArr.get("pw").getAsString();
-
-                                }
-
-
-                                //calendardata: {} 에서 {}안에 있는 것들도 JsonObject
-                                JsonObject calendarData = result.get("calendarData").getAsJsonObject();
-                                //calName = calendarData.get("calName").getAsString();
-                                //calContent = calendarData.get("calContent").getAsString();
-                                //userCount=calendarData.get("userCount").getAsInt();
-
-                                b_adapter = new BoarderAdapter(sharePeopleNum, sharedUserData, calendarData);
-                                boardRecyclerView.setAdapter(b_adapter);
-
-
-                                //scheduleData: {} 에서 {}안에 있는 것들도 JsonObject
-                                JsonArray scheduleData = result.get("scheduleData").getAsJsonArray();
-                                //문제없음
-
-                                for (int i = 0; i < scheduleData.size(); i++) {
-                                    JsonObject jsonArr1 = scheduleData.get(i).getAsJsonObject();
-                                    cid = jsonArr1.get("cid").getAsInt();
-                                    sid = jsonArr1.get("sid").getAsInt();
-                                    title = jsonArr1.get("title").getAsString();
-                                    sContent = jsonArr1.get("sContent").getAsString();
-                                    startDate = jsonArr1.get("startDate").getAsString();
-                                    endDate = jsonArr1.get("endDate").getAsString();
-                                    area = jsonArr1.get("area").getAsString();
-                                    numOfComments = jsonArr1.get("numOfComments").getAsInt();
-                                    String numOfCommentsstring = Integer.toString(numOfComments);
-                                    //date 형식에 맞춰 잘라내기
-                                    startDate = startDate.substring(0,16);
-                                    endDate = endDate.substring(0,16);
-                                    //plan의 일자
-                                    planDate = startDate+" ~ "+endDate;
-
-                                    b_adapter.addItem(new BoardPlanItem(planDate, title, area, numOfCommentsstring, sid));
-
-                                }
-
-                                b_adapter.notifyDataSetChanged();
-                                // boardRecyclerView.setAdapter(b_adapter);
-                            } else {
-                                Toast.makeText(getApplicationContext(), "해당 일정이 없습니다.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }
-                });
-                   */
-
-        Log.i("누가 먼저 실행되는 거임??333", "BoardActivity Ion 통신 끝");
+        //Log.i("누가 먼저 실행되는 거임??333", "BoardActivity Ion 통신 끝");
     }
 
     //새로고침
@@ -328,17 +216,8 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                     String message = result.get("message").getAsString();
                                     sharePeopleNum = result.get("sharePeopleNum").getAsInt();
 
-                            /*
-                            //여기서부터 SharedPreference써본다잉
-                            SharedPreferences sharedPnum = getSharedPreferences("Peoplenum", MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPnum.edit();
-                            editor.putInt("Peoplenum",sharePeopleNum);
-                            editor.apply();
-                            */
 
                                     Log.i("요기요1", Integer.toString(sharePeopleNum));
-
-                                    //b_adapter.setSharedNumber(sharePeopleNum);
 
                                     //서버로 부터 응답 메세지가 success이면...
 
@@ -349,21 +228,10 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
                                         //shareuserdata: {} 에서 {}안에 있는 것들도 JsonObject
                                         JsonArray sharedUserData = result.get("shareUserData").getAsJsonArray();
 
-                                /*
-                                for (int i = 0; i < sharePeopleNum; i++) {
-                                    JsonObject jsonArr = sharedUserData.get(i).getAsJsonObject();
-                                    id = jsonArr.get("id").getAsString();
-                                    //pw=jsonArr.get("pw").getAsString();
 
-                                }
-                                */
 
                                         //calendardata: {} 에서 {}안에 있는 것들도 JsonObject
                                         JsonObject calendarData = result.get("calendarData").getAsJsonObject();
-                                        //calName = calendarData.get("calName").getAsString();
-                                        //calContent = calendarData.get("calContent").getAsString();
-                                        //userCount=calendarData.get("userCount").getAsInt();
-
                                         b_adapter = new BoarderAdapter(sharePeopleNum, sharedUserData, calendarData);
                                         boardRecyclerView.setAdapter(b_adapter);
 
@@ -484,7 +352,6 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-
     private String getPathFromURI(Uri contentUri) {
         String[] proj = { MediaStore.Images.Media.DATA };
         Log.d("여기까지", "ㅇ5");
@@ -496,9 +363,6 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
 
         return cursor.getString(column_index);
     }
-
-
-
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -676,7 +540,6 @@ public class BoardActivity extends AppCompatActivity implements View.OnClickList
             } else {
 
                 isExitFlag = true;
-                //Toast.makeText(this, "뒤로가기를 한번더 누르시면 앱이 종료됩니다.",  Toast.LENGTH_SHORT).show();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

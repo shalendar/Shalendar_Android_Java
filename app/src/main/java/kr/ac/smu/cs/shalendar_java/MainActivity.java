@@ -417,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onClick(View v) {
                         main_animation.setVisibility(View.INVISIBLE);
-                        Toast.makeText(getApplicationContext(), "열림", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(), "열림", Toast.LENGTH_SHORT).show();
                         main_animation.startAnimation(translateDownAnim);
                     }
                 });
@@ -1023,8 +1023,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             String message = result.get("message").getAsString();
                             if (message.equals("success")) {
                                 JsonArray data = result.get("data").getAsJsonArray();
-                                //scheduleData = new ScheduleData[data.size()];
-                                //schedList = new ArrayList<>();
 
                                 Log.i("들어있는 일정 개수", Integer.toString(data.size()));
 

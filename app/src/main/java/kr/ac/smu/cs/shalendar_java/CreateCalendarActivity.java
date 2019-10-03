@@ -169,13 +169,10 @@ public class CreateCalendarActivity extends AppCompatActivity {
                 }
             });
         }
-        //!-----------------수정화면에서 올 경우-----------------------------------------------------
+        //-----------------수정화면에서 올 경우-----------------------------------------------------
         else {
             setContentView(R.layout.activity_modify_calendar);
-
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermissions();
-//        }
 
             int flag = 0;
 
@@ -205,28 +202,6 @@ public class CreateCalendarActivity extends AppCompatActivity {
             calendarName.setText(calName_old);
             aboutCalendar.setText(calContent_old);
 
-//
-//            Ion.with(getApplicationContext())
-//                    .load(calImage_old)
-//                    .progress(new ProgressCallback() {
-//                        @Override
-//                        public void onProgress(long downloaded, long total) {
-//                            System.out.println("" + downloaded + " / " + total);
-//                        }
-//                    })
-//                    .write(new File(Environment.))
-//                    .setCallback(new FutureCallback<File>() {
-//                        @Override
-//                        public void onCompleted(Exception e, File file) {
-//                            if (e != null)
-//                                Toast.makeText(getApplicationContext(), "캘린더 이미지 저장 실패", Toast.LENGTH_LONG).show();
-//                            else {
-//                                Toast.makeText(getApplicationContext(), "캘린더 이미지 저장 성공", Toast.LENGTH_LONG).show();
-//                                file2 = new File(path);
-//                            }
-//                        }
-//                    });
-
             //갤러리에서 사진 가져오기 위한 ImageView리스너 구현
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -234,7 +209,6 @@ public class CreateCalendarActivity extends AppCompatActivity {
                     getPictureFromGallery();
                 }
             });
-
 
             registerCal = (Button) findViewById(R.id.register_complete);
             registerCal.setOnClickListener(new View.OnClickListener() {
@@ -289,15 +263,9 @@ public class CreateCalendarActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
-//                        try {
-//                            ion.get();
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
                     }
                 }
             });
-
 
             ImageButton backButton = findViewById(R.id.btn_back);
             backButton.setOnClickListener(new View.OnClickListener() {
@@ -306,7 +274,6 @@ public class CreateCalendarActivity extends AppCompatActivity {
                     onBackPressed();
                 }
             });
-
         }
 
     }
