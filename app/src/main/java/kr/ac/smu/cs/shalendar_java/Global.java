@@ -49,6 +49,8 @@ class CalendarScheduleData {
 
 public class Global {
 
+    private JsonObject jsonResult;
+
     private static int sid = 0;
 
     public static int getSid() {
@@ -100,6 +102,8 @@ public class Global {
             userProfile.setImageResource(R.drawable.profile_default);
         }
     }
+
+
 
     public void netWork_ShowSche(final Context context, final ProgressDialog progressDialog, JsonObject json, NetWorkUrl url) {
 
