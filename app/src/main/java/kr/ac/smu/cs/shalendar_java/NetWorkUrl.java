@@ -9,7 +9,7 @@ package kr.ac.smu.cs.shalendar_java;
   통신 URL :: getServerUrl() + /signup
  */
 public class NetWorkUrl {
-    
+
     private String toServer_URL = "https://91dbe0f6.ngrok.io/MIND";
 
     public String getServerUrl() {
