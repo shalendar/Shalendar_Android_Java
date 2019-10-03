@@ -96,22 +96,6 @@ public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.View
         }
 
         public void setItem(UserEmail item) {
-//            Global global = new Global();
-//            global.setProfileImage(userImage, item.getUserImageURL());
-
-//            if (item.getUserImageURL().equals("DEFAULT :: profile_IMAGE")) {
-//                userImage.setImageResource(R.drawable.profile_default);
-//            } else {
-//                userImage.setBackground(new ShapeDrawable(new OvalShape()));
-//                if (Build.VERSION.SDK_INT >= 21) {
-//                    userImage.setClipToOutline(true);
-//                }
-//                Ion.with(userImage)
-//                        .centerCrop()
-//                        .resize(80, 80)
-//                        .load(item.getUserImageURL());
-//
-//            }
 
             if (!(userImage.equals("DEFAULT :: profile_IMAGE"))) {
                 Ion.with(userImage)
@@ -126,7 +110,6 @@ public class UserEmailAdapter extends RecyclerView.Adapter<UserEmailAdapter.View
                 userImage.setClipToOutline(true);
             }
             userEmail.setText(item.getUserEmail());
-//            checkBox.setChecked(item.getIs_checked());
         }
 
     }

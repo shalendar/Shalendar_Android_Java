@@ -13,15 +13,8 @@ public class SidebarItem {
     String calendarContent;
     //cid추가
     int calendar_ID;
-//    String senderName;
-//    String senderImg;
 
     ArrayList<SidebarTeamItem> teamImageList;
-
-//    public SidebarItem(String calendarImage, String calendarName) {
-//        this.calendarImage = calendarImage;
-//        this.calendarName = calendarName;
-//    }
 
     public SidebarItem() {
 
@@ -43,21 +36,6 @@ public class SidebarItem {
         return calendarName;
     }
 
-//    public void setSenderName(String senderName) {
-//        this.senderName = senderName;
-//    }
-//
-//    public String getSenderName() {
-//        return this.senderName;
-//    }
-//
-//    public void setSenderImg(String senderImg) {
-//        this.senderImg = senderImg;
-//    }
-//
-//    public String getSenderImg() {
-//        return this.senderImg;
-//    }
 
     public void setCalendarName(String calendarName) {
         this.calendarName = calendarName;

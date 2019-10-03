@@ -102,29 +102,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 Log.d("맞아?", Boolean.toString(userEmail.equals("jacob456@hanmail.net")));
 
-
-                /*
-                  입력하는 e-mail주소 형식 예외처리
-                  사용자 이메일 & 비밀번호 dummy data
-                  서버 닫혀 있을 때 서버 코드 주석처리 하고 아래  if else if else문 수행.
-
-                if(userEmail.equals("jacob") && userPassword.equals("456")) {
-
-                    Toast.makeText(getApplicationContext(), "사용자정보 일치 메인화면으로이동", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
-                }
-
-                else if(userEmail.equals("") || userPassword.equals("")) {
-                    Toast.makeText(getApplicationContext(), "아이디 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
-                }
-
-                else {
-                    Log.d("입력한 ID", userEmail);
-                    Log.d("입력한 비밀번호", userPassword);
-                    Toast.makeText(getApplicationContext(), "아이디/비밀번호가 잘못되었습니다", Toast.LENGTH_SHORT).show();
-                }
-*/
                 //서버 통신코드 Ion 롸이브뤄리 사용
                 final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
                 progressDialog.setMessage("로그인 중 입니다~");
@@ -202,12 +179,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("img_url", img_url);
             editor.apply();
 
-//            createPersonalCalendar();
-
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//            intent.putExtra("userEmail", userEmail);
-//            intent.putExtra("userName", userName);
-//            intent.putExtra("img_url", img_url);
             startActivityForResult(intent, CodeNumber.TO_MAIN_ACTIVITY);
         }
 
@@ -219,56 +191,4 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-//    public String getURLForResource(int resourceID) {
-//        return Uri.parse("android.resource://" + R.class.getPackage().getName() + "/" +resourceID).toString();
-//    }
-//
-//
-//    public void createPersonalCalendar() {
-//
-//        String calImgUrl = getURLForResource(R.drawable.tempboardpic);
-//        File file = new File(calImgUrl);
-//
-//        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this);
-//        progressDialog.setMessage("공유 달력을 등록중입니다~");
-//        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-//        progressDialog.show();
-//
-//        Future ion = Ion.with(getApplicationContext())
-//                .load("POST", url.getServerUrl() + "/createCal")
-//                //요청 헤더 지정
-//                //.setHeader("Content-Type","application/json")
-//                .setHeader("Authorization", userToken)
-//                .setTimeout(60000)
-//                .setMultipartParameter("calName", userName + "님의 개인 달력")
-//                .setMultipartParameter("calContent", "개인 달력")
-//                .setMultipartFile("file", file)
-//                //응답형식
-//                .asJsonObject()
-//                .setCallback(new FutureCallback<JsonObject>() {
-//                    @Override
-//                    public void onCompleted(Exception e, JsonObject result) {
-//
-//                        if (e != null) { //서버 연결 오류
-//                            Log.i("달력 생성 에러코드", e.getMessage());
-//                            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-//                        } else {// 서버 연결 성공 시
-//                            progressDialog.dismiss();
-//                            String message = result.get("message").getAsString();
-//                            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-//
-//                            if (message.equals("success"))
-//                                Toast.makeText(getApplicationContext(), "개인 달력 생성" + message, Toast.LENGTH_LONG).show();
-//                            else
-//                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                });
-//
-//        try {
-//            ion.get();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 }

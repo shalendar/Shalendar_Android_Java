@@ -21,13 +21,6 @@ public class CreateMember3 extends AppCompatActivity {
 
         buttonToLogin = findViewById(R.id.loginpage_button);
 
-
-//        Intent intent = getIntent();
-//        userEmail = intent.getStringExtra("userEmail");
-//        userName = intent.getStringExtra("userName");
-//        userPassword = intent.getStringExtra("userPassword");
-
-
         buttonToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -180,10 +180,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
                 ////////////////////////////////////////////////
                 //추천시간 서버 통신
                 ////////////////////////////////////////////////
-//                Log.i("추천시간 버튼에서", strStartDate);
-//                Log.i("추천시간 버튼에서", strStartTime);
-//                Log.i("추천시간 버튼에서", strEndDate);
-//                Log.i("추천시간 버튼에서", strEndTime);
 
                 if(strStartTime != null && strStartDate != null && strEndDate != null && strStartDate.equals(strEndDate)) {
                     getRecommandTimeFromServer();
@@ -227,10 +223,6 @@ public class RegisterPlanActivity extends AppCompatActivity {
 
                 if(!scheTitle.equals("") && strStartDate != null && strStartTime != null && strEndDate != null && strEndTime != null &&
                         !aboutSched.equals("") && !strLocation.equals("")) {
-
-                    Log.i("strTitle", planTitle.getText() + "라라");
-                    Log.i("aboutSched", aboutSched + "왜 안오니");
-                    Log.i("strLocation", strLocation + "이건 뭐야");
 
 
                     JsonObject json = new JsonObject();

@@ -28,16 +28,3 @@ public class SplashActivity extends Activity {
         }, 1500);
     }
 }
-//
-//        try {
-//            Thread.sleep(3000);
-//        }
-//        catch (InterruptedException e){
-//            e.printStackTrace();
-//        }
-//
-//
-//        Intent intent = new Intent(this, LoginActivity.class);
-//        startActivity(intent);
-//        finish();
-

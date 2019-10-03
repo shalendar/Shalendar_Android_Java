@@ -117,15 +117,7 @@ public class InviteActivity extends AppCompatActivity {
                                 if (e != null) {
                                     Toast.makeText(getApplicationContext(), "Server Connection Error", Toast.LENGTH_LONG).show();
                                 } else {
-//                                    String message = result.get("message").getAsString();
                                     parseFromServer(result);
-//                                    if(message.equals("please check email")) {
-//                                        adapter.addItem(new UserEmail(inputEmail));
-//                                        recyclerView.setAdapter(adapter);
-//                                    }
-//                                    else {
-//                                        Toast.makeText(getApplicationContext(), message + "추가 실패", Toast.LENGTH_LONG).show();
-//                                    }
                                 }
                             }
                         });
@@ -140,8 +132,6 @@ public class InviteActivity extends AppCompatActivity {
                 //recyclerView.setAdapter(adapter);
             }
         });
-
-
 
          /*
            버튼 클릭시 초대장 보낼 이메일 입력하는 액티비티로 이동

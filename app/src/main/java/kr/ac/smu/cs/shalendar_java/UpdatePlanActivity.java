@@ -189,14 +189,10 @@ public class UpdatePlanActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(getApplicationContext(), "눌림", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "일정 수정중 입니다.", Toast.LENGTH_SHORT).show();
 
                 scheTitle = planTitle.getText().toString().trim();
                 aboutSched = aboutPlan.getText().toString().trim();
-                //startDate
-                //startTime
-                //strEndDate
-                //startEndTime
                 strLocation = planTitle.getText().toString().trim();
 
 
@@ -232,9 +228,6 @@ public class UpdatePlanActivity extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), "Error during Server Connection", Toast.LENGTH_LONG).show();
                                 } else {
                                     progressDialog.cancel();
-                                    //Toast.makeText(getApplicationContext(), result.get("message").getAsString(), Toast.LENGTH_LONG).show();
-                                    //setResult(RESULT_OK);
-                                    //finish();
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();

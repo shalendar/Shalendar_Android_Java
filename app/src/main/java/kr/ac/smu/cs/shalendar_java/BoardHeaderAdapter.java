@@ -57,18 +57,6 @@ public class BoardHeaderAdapter extends RecyclerView.Adapter<BoardHeaderAdapter.
         void onBind(BoardTeamItem data) {
             Global global = new Global();
             global.setProfileImage(teammate_pic, data.getTeammate_pic());
-//            if(data.getTeammate_pic().equals("DEFAULT :: profile_IMAGE"))
-//                teammate_pic.setImageResource(R.drawable.profile_default);
-//
-//            else {
-//                Ion.with(teammate_pic)
-//                        .centerCrop()
-//                        .resize(200, 200)
-//                        .load(data.getTeammate_pic());
-//                teammate_pic.setBackground(new ShapeDrawable(new OvalShape()));
-//                teammate_pic.setClipToOutline(true);
-//
-//            }
 
             teammate_name.setText(data.getTeammate_name());
         }

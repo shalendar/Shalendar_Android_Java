@@ -104,11 +104,6 @@ public class CreateMember2 extends AppCompatActivity {
                 }
                 else {
 
-//                    Intent intent = new Intent(getApplicationContext(), CreateMember3.class);
-//                    intent.putExtra("userEmail", userEmail);
-//                    intent.putExtra("userName", userName);
-//                    intent.putExtra("userPassword", userPassword);
-
                     serverNetwork();
                 }
             }

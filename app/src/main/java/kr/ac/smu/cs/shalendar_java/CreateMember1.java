@@ -80,9 +80,6 @@ public class CreateMember1 extends AppCompatActivity {
                                     }
                                 }
                             });
-//                    Intent intent = new Intent(getApplicationContext(), CreateMember2.class);
-//                    intent.putExtra("userEmail", userEmail);
-//                    startActivityForResult(intent, CodeNumber.TO_CREATE_MEMBER2);
                 }
             }
         });

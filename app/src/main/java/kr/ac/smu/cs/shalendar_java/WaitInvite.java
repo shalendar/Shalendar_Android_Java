@@ -144,8 +144,6 @@ public class WaitInvite extends AppCompatActivity {
 
             @Override
             public void onAcceptClick(View v, int pos) {
-                //Toast.makeText(getApplicationContext(),
-                // waitRecyclerList.get(pos).calendarName + Integer.toString(waitRecyclerList.get(pos).cid), Toast.LENGTH_LONG).show();
                 ACCEPT_FLAG = 1;
                 String senderEmail = waitRecyclerList.get(pos).emailID;
                 String receiver = waitRecyclerList.get(pos).invitedName;

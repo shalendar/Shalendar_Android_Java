@@ -219,15 +219,13 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
 
                         //댓글읽기 코드
                         plandetailAdapter.items.clear();
-                        Toast.makeText(getApplicationContext(), "받아오기 시작", Toast.LENGTH_SHORT).show();
-
 
                         onRefresh();
 
                         //replyInput.clearFocus();
                         replyInput.setText("");
 
-                        Toast.makeText(getApplicationContext(), "FLAG값" + buttonFlag, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "댓글 등록중~", Toast.LENGTH_LONG).show();
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
@@ -246,7 +244,7 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,
                                            final int position, long id) {
-                Toast.makeText(getApplicationContext(), plandetailAdapter.items.get(position - 1).getReply_name(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), plandetailAdapter.items.get(position - 1).getReply_name(), Toast.LENGTH_SHORT).show();
 
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(view.getContext());
@@ -384,8 +382,6 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
                                         });
 
                                 //댓글읽어오기 코드
-                                //plandetailAdapter.items.clear();
-                                Toast.makeText(getApplicationContext(), "받아오기 시작", Toast.LENGTH_SHORT).show();
 
                                 plandetailAdapter.items.clear();
                                 onRefresh();
@@ -416,6 +412,7 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
 
     @Override
     public void onRefresh() {
+        plandetailAdapter.items.clear();
         Ion.getDefault(this).configure().setLogging("ion-sample", Log.DEBUG);
         Ion.getDefault(this).getConscryptMiddleware().enable(false);
 
@@ -426,7 +423,7 @@ public class PlanDetailActivity extends AppCompatActivity implements SwipeRefres
             public void run() {
                 plandetailAdapter.notifyDataSetChanged();
 
-                //댓글 받아오는 통시 시작
+                //댓글 받아오는 통신 시작
                 //서버와 통신. 헤더 부분의 정보를 서버응답으로 부터 온 정보들을 파싱하여 set한다.
 
                 JsonObject json = new JsonObject();
