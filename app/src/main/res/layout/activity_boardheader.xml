@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/boardHeaderImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:src="@mipmap/ic_launcher" />
+
+    <!--달력 이름 게시판 설명 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="vertical">
+
+        //달력 이름
+
+        <TextView
+            android:id="@+id/boardHeadertitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="졸업프로젝트"
+            android:textColor="#1a1a1a"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        //내용인데 보더값
+
+        <TextView
+            android:id="@+id/boardHeaderContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="#f8f8f8"
+            android:padding="10dp"
+            android:text="게시판에 대한 설명이 없습니다."
+            android:textColor="#444444"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="공유하고 있는 사람"
+                android:textColor="#265570"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+
+        //공유멤버사진 및 오른쪽 공유버튼
+
+        <!--
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            //공유버튼
+
+        </LinearLayout>
+        -->
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/header_recycler"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+    <View
+        android:id="@+id/view8"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:background="#f6f6f6" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:text="일정"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

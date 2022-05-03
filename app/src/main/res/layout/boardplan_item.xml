@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--BoardActivity에서 아래 리스트뷰에 들어갈 아이템입니다-->
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <!--//날짜와 시간-->
+    <TextView
+        android:id="@+id/dateandtime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#265570"
+        android:text="시간"
+        android:layout_margin="5dp"/>
+
+    <!--//일정이름-->
+    <TextView
+        android:id="@+id/planname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#4a4a4a"
+        android:text="일정이름"
+        android:layout_margin="5dp"/>
+
+    <!--//장소-->
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#a4a4a4"
+        android:text="장소"
+        android:layout_margin="5dp"/>
+
+    <LinearLayout
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!--//댓글 아이콘-->
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@drawable/feed_comment_icon"/>
+
+        <!--//댓글수-->
+
+        <TextView
+            android:paddingLeft="5dp"
+            android:id="@+id/replynum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="#c5c5c5"
+            android:letterSpacing="0.01"
+            android:text="댓글수"/>
+
+    </LinearLayout>
+
+</LinearLayout>

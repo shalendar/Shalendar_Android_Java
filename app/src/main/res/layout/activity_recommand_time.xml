@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RecommandTimeActivity">
+
+    <TextView
+        android:id="@+id/recommandTime_title_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="RecommandTimeActivity(추천시간 받는 뷰)"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <Button
+        android:id="@+id/recommandTime_getTime_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="추천시간 받기"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+</LinearLayout>
